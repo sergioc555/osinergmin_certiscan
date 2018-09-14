@@ -1,0 +1,4063 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.ExpedienteProductoMapper">
+
+	<resultMap id="expedienteProductoResult" type="com.certicom.certiscan.domain.ExpedienteProducto">
+	
+		<id column="id_expediente_producto" property="id_expediente_producto"  javaType="java.lang.Integer" jdbcType="INTEGER"/>
+		 
+		<!-- <id column="productoid" property="productoid" javaType="java.lang.Integer" jdbcType="INTEGER"/> -->
+		<!-- <id column="usuarioid" property="usuarioid" javaType="java.lang.Integer" jdbcType="INTEGER"/>-->
+		<result column="expedienteid" property="expedienteid"/>
+		<result column="periodo" property="periodo" />
+		<result column="fecha_asignacion" property="fecha_asignacion" />
+		<result column="id_estado" property="idEstado" />
+		<result column="id_categoria_call" property="idCategoriaCall" />
+
+		<result column="idusuario" property="idusuario"/>
+		<result column="nom_promotor" property="nom_promotor"/> 
+		<result column="nom_oficina" property="nom_oficina"/>
+		<result column="cant_exp" property="cant_exp"/>
+		<result column="estado_expediente" property="estadoExpediente"/>
+		<result column="id_estado_expediente" property="idEstadoExpediente"/>
+		<result column="id_estado_facturacion" property="idEstadoFacturacion"/>
+		<result column="id_indicadores_call" property="id_indicadores_call"/>
+		<result column="cantidad_lima" property="cantidad_lima"/>
+		<result column="total_lima" property="total_lima"/>
+		<result column="cantidad_provincia" property="cantidad_provincia"/>
+		<result column="total_provincia" property="total_provincia"/>
+		<result column="rango_cantidad" property="rango_cantidad"/>
+		<result column="estadoExpediente" property="estadoExpediente"/>
+		<result column="flgcklist" property="flgcklist"/>
+		<result column="totPendiente" property="totPendiente"/>
+		<result column="totEnProceso" property="totEnProceso"/>
+		<result column="totConcluido" property="totConcluido"/>
+
+		<result column="nombre_ejecutivo" property="nombre_ejecutivo"/>
+		<result column="cant_pendiente" property="cant_pendiente"/>
+		<result column="mont_pendiente" property="mont_pendiente"/>
+		<result column="cant_proceso" property="cant_proceso"/>
+		<result column="mont_proceso" property="mont_proceso"/>
+		<result column="cant_concluido" property="cant_concluido"/>
+		<result column="mont_concluido" property="mont_concluido"/>
+		<result column="cant_asignado" property="cant_asignado"/>
+		<result column="mont_asignado" property="mont_asignado"/>
+		<result column="cant_presentados" property="cant_presentados"/>
+		<result column="des_productos" property="des_productos"/>
+		<result column="des_empresa" property="des_empresa"/>
+		<result column="cod_banco" property="cod_banco"/>
+		<result column="num_doc" property="num_doc"/>
+		<result column="nom_cliente" property="nom_cliente"/>
+		<result column="territorio_ofc" property="territorio_ofc"/>
+		<result column="prestamo_soles" property="prestamo_soles"/>
+		<result column="des_estado" property="des_estado"/>
+		<result column="nom_supervisor" property="nom_supervisor"/>
+		<result column="estado_rescont" property="estado_rescont"/>
+		<result column="rc_telefono" property="rc_telefono"/>
+		<result column="rc_fecha" property="rc_fecha"/>
+		<result column="rc_comentario" property="rc_comentario"/>
+		<result column="rc_estado_rescont" property="rc_estado_rescont"/>
+		<result column="id_supervisor" property="idUsuarioSupervisor"/>
+		<result column="des_productos" property="des_productos"/>
+		<result column="des_negocio" property="des_negocio"/>
+		<result column="ultima_cita" property="ultima_cita"/>
+		<result column="estado_envioph" property="estado_envioph"/>
+		<result column="cant_aperturado" property="cant_aperturado"/>
+		<result column="cant_rechazado" property="cant_rechazado"/>
+		<result column="id_expediente_cuentas_envios" property="id_expediente_cuentas_envios"/>
+		<result column="cod_oficina" property="cod_oficina"/>
+		<result column="id_sub_producto" property="id_sub_producto"/>
+		<result column="sub_productoDesc" property="sub_productoDesc"/>
+		<result column="des_sub_productos" property="des_sub_productos"/>
+		<result column="productoid" property="productoid"/>
+		
+		
+		<result column="ece_nacional" property="ece_nacional"/>
+		<result column="ece_nacionalidad" property="ece_nacionalidad"/>
+		<result column="ece_pais" property="ece_pais"/>
+		<result column="ece_nombres" property="ece_nombres"/>
+		<result column="ece_ape_paterno" property="ece_ape_paterno"/>
+		<result column="ece_ape_materno" property="ece_ape_materno"/>
+		<result column="ece_fec_nacimiento" property="ece_fec_nacimiento"/>
+		<result column="ece_carnet_extranjeria" property="ece_carnet_extranjeria"/>
+		<result column="ece_direccion" property="ece_direccion"/>
+		<result column="ece_fec_caducidad" property="ece_fec_caducidad"/>
+		<result column="usuario_campo" property="usuario_campo"/>
+		<result column="supervisor_campo" property="supervisor_campo"/>
+		<result column="provincia" property="provincia"/>
+		<result column="concesionario" property="conces"/>
+		
+		
+		<association property="usuario" column="idusuario" select="selectUsuario"/>
+		<association property="expediente" column="expediente_id" select="selectExpediente"/>
+		<association property="producto" column="id_producto" select="selectProducto"/>
+		<association property="producto.negocio" column="id_negocio" select="selectNegocio"/>
+		<association property="estado" column="id_estado" select="selectEstado"/>
+		
+	</resultMap>
+	
+	
+	
+	
+	<resultMap id="vGenericReporte" type="src.com.certicom.certiscan.utils.VGeneric">
+		<result property="val01" column="ffvv" />
+		<result property="val02" column="ruc" />
+		<result property="val03" column="nombre_empresa" />
+		<result property="val04" column="provincia" />
+		<result property="val05" column="supervisor" />
+		<result property="val06" column="idusuario" />
+		<result property="val07" column="nombre" />
+		<result property="val08" column="apellido_paterno" />
+		<result property="val09" column="apellido_materno" />
+	</resultMap>
+	
+	
+	<select id="selectUsuario" parameterType="int" resultType="com.certicom.certiscan.domain.Usuario">
+		SELECT * FROM t_usuario WHERE idusuario=#{idusuario}
+	</select>
+	<select id="selectExpediente" parameterType="int" resultType="com.certicom.certiscan.domain.Expediente">
+		SELECT t_expediente.*, 
+		t_expediente.estado_expediente as estadoExpediente, 
+		t_expediente.expediente_apellido_paterno AS expedienteApellidoPaterno, 
+		t_expediente.expediente_apellido_materno AS expedienteApellidoMaterno, 
+		t_expediente.expediente_nombre_completo AS expedienteNombreCompleto, 
+		t_expediente.expediente_territorio AS expedienteTerritorio, 
+		t_expediente.expediente_codigo_territorio AS expedienteCodigoTerritorio, 
+		t_expediente.expediente_oficina AS expedienteOficina, 
+		t_expediente.expediente_codigo_oficina AS expedienteCodigoOficina, 
+		t_expediente.expediente_prestamo AS expedientePrestamo, 
+		t_expediente.expediente_direccion AS expedienteDireccion, 
+		t_expediente.expediente_fecha_ingreso AS expedienteFechaIngreso, 
+		t_expediente.expediente_fecha_registro AS expedienteFechaRegistro, 
+		t_expediente.expediente_id_supervisor_call AS expedienteIdSupervisorCall, 
+		t_expediente.expediente_id_ejecutivo_call AS expedienteIdEjecutivoCall, 
+		t_expediente.expediente_id_supervisor_campo AS expedienteIdSupervisorCampo, 
+		t_expediente.expediente_id_ejecutivo_campo AS expedienteIdEjecutivoCampo, 
+		t_expediente.expediente_subproducto AS expedienteSubProducto, 
+		t_expediente.expediente_numero as expedienteNumero 
+		FROM t_expediente WHERE expediente_id=#{expediente_id}
+	</select>
+	<select id="selectProducto" parameterType="int" resultType="com.certicom.certiscan.domain.Producto">
+		SELECT * FROM t_producto WHERE id_producto=#{id_producto}
+	</select>
+	<select id="selectNegocio" parameterType="int" resultType="com.certicom.certiscan.domain.Negocio">
+		SELECT * FROM t_negocio WHERE id_negocio=#{id_negocio}
+	</select>
+	<select id="selectEstado" parameterType="int" resultType="com.certicom.certiscan.domain.Estados">
+		SELECT * FROM t_estado WHERE id_estado=#{id_estado}
+	</select>
+	
+	<select id="findByPeriodoByPeriodoByNumDoc"  resultMap="expedienteProductoResult" >
+		select expedienteProducto.id_expediente_producto, 
+		       expedienteProducto.fecha_asignacion, expediente.expediente_id, usuario.idusuario
+		from   t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_producto producto on producto.id_producto =  expediente.id_producto
+			inner join t_negocio negocio on negocio.id_negocio = producto.id_negocio 
+			left join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		where 
+			expediente.periodo=#{periodo} and expediente.num_doc=#{numDoc} and negocio.id_negocio = #{id_negocio}
+			and usuario.idusuario =#{idusuario}
+	</select>
+	
+	<select id="findByPeriodoByProductoByPeriodoByNumDoc"  resultMap="expedienteProductoResult" >
+		select expedienteProducto.id_expediente_producto, expediente.provincia as provincia,
+	           expedienteProducto.fecha_asignacion, expediente.expediente_id as expedienteid, usuario.idusuario, 
+	           (coalesce(expediente.nombre_completo,'') || ' '|| coalesce(expediente.apellido_paterno,'') ||' ' || coalesce(expediente.apellido_materno,'')) as nom_cliente 
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		left join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		where 
+			expediente.periodo=#{periodo} and expediente.expediente_producto=#{idProducto} and expediente.num_doc=#{numDoc} 
+			and usuario.idusuario = #{idusuario}
+	</select>
+	
+	<select id="findByExpedienteULTIMO"  resultMap="expedienteProductoResult" >
+		select expedienteProducto.id_expediente_producto, 
+	           expedienteProducto.fecha_asignacion, expediente.expediente_id, usuario.idusuario 
+		    from t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			left join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+			where 
+			expedienteProducto.periodo=#{periodo} and expedienteProducto.idusuario = #{p_idusuario} 
+			and expedienteProducto.id_producto=#{p_productoId} and expedienteProducto.expediente_id=#{p_expedienteId}
+			ORDER BY expedienteProducto.id_expediente_producto DESC LIMIT 1
+	</select>
+	
+	<select id="buscarExpedientePorPromotorPAGINATOR"  resultMap="expedienteProductoResult" >
+		select expedienteProducto.id_expediente_producto, expedienteProducto.id_categoria_call as idCategoriaCall, indicadorCall.descripcion as descripcionIndicador, 
+			   expedienteProducto.fecha_asignacion, expediente.expediente_id, expediente.estado_nuevo as estadoNuevo, producto.id_producto, negocio.id_negocio, estado.id_estado, usuario.idusuario,
+	           concat(usuarioSupervisor.apellido_paterno, ' ', usuarioSupervisor.apellido_materno, ' ', usuarioSupervisor.nombre) AS nombreSupervisor,  usuarioSupervisor.idusuario as idUsuarioSupervisor, 
+	           concat(usuarioCoordinador.apellido_paterno, ' ', usuarioCoordinador.apellido_materno, ' ', usuarioCoordinador.nombre) AS nombreCoordinador,expediente.estado_expediente as estadoExpediente 
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+		where 
+			expediente.periodo=#{e_periodo} 
+			 
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		<choose>
+						<when test="item.key == 'estadoNuevo'">
+							and  expediente.estado_nuevo = #{item.value} 
+						</when>
+						<when test="item.key == 'nombre_completo'">
+							and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+			         		) 
+						</when>
+						<when test="item.key == 'nombreSupervisor'">
+							and ( usuarioSupervisor.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioSupervisor.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioSupervisor.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'nombreCoordinador'">
+							and ( usuarioCoordinador.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioCoordinador.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioCoordinador.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<otherwise>
+							and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+			  		</choose>
+	           </foreach> 
+            </if>
+            
+            <if test="e_idusuario != null">
+		       and expedienteProducto.idusuario = #{e_idusuario}
+            </if>
+            <if test="e_idusuarioC != null">
+		       and usuarioCoordinador.idusuario = #{e_idusuarioC}
+            </if>
+            <if test="e_idusuarioS != null">
+		       and usuarioSupervisor.idusuario = #{e_idusuarioS}
+            </if>
+            
+            <if test="id_productoS != 0">
+		       and expedienteProducto.id_producto = #{id_productoS}
+            </if>
+            
+            <if test="tipo_baseS != ''">
+		       and expediente.tipo_base = #{tipo_baseS}
+            </if>
+            
+            <if test="sortField != null">
+				order by ${sortField} ${sortOrder}    
+		    </if>
+		    
+		    <if test="sortField == null">
+				order by expediente.prestamo_soles DESC    
+		    </if>
+		    
+		    
+			 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+	
+	
+	<select id="buscarExpedientePorPromotorPAGINATORxUBIGEOxIdExpedienteProducto"  resultMap="expedienteProductoResult" >
+		select expedienteProducto.id_expediente_producto, expedienteProducto.id_categoria_call as idCategoriaCall, indicadorCall.descripcion as descripcionIndicador, 
+				expediente.estado_envioph as estado_envioph, 
+			   expedienteProducto.fecha_asignacion, expediente.expediente_id, expediente.estado_nuevo as estadoNuevo, producto.id_producto, negocio.id_negocio, estado.id_estado, usuario.idusuario,
+	           concat(usuarioSupervisor.apellido_paterno, ' ', usuarioSupervisor.apellido_materno, ' ', usuarioSupervisor.nombre) AS nombreSupervisor,  usuarioSupervisor.idusuario as idUsuarioSupervisor, 
+	           concat(usuarioCoordinador.apellido_paterno, ' ', usuarioCoordinador.apellido_materno, ' ', usuarioCoordinador.nombre) AS nombreCoordinador,expediente.estado_expediente as estadoExpediente,
+	           concat_ws(' - ', NULLIF(expediente.numero_telefono1,''), NULLIF(expediente.numero_telefono2,''), NULLIF(expediente.numero_telefono3,''),NULLIF(expediente.celular1,''),NULLIF(expediente.celular2,''),NULLIF(expediente.celular3,'')) as telefonos_contacto,
+	           (select  tcita || ' - ' || c.fecha  ||  ' ' || to_char((c.hora),'HH24:MI PM') from  t_cita_contacto c 
+				 where c.id_expediente_producto =  expedienteProducto.id_expediente_producto  order by c.citacontactoid desc limit 1)  AS ultima_cita
+	   
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call 
+<!-- 		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario -->
+		where 
+			expedienteProducto.id_expediente_producto=#{idExpedienteProducto}
+	</select>
+	
+	<select id="buscarExpedientePorPromotorPAGINATORxUBIGEO"  resultMap="expedienteProductoResult" >
+		select 
+			   (select descripcion from t_comentario where idcomentario = (select max(idcomentario) from t_comentario where expediente_id = expediente.expediente_id)) || ' / ' ||
+			   (select to_char(fec_hora, 'DD-MM-YYYY HH12:MI:SS') from t_comentario where idcomentario = (select max(idcomentario) from t_comentario where expediente_id = expediente.expediente_id)) as descomentario,
+			   expedienteProducto.id_expediente_producto, 
+			   expedienteProducto.id_categoria_call as idCategoriaCall, 
+			   indicadorCall.descripcion as descripcionIndicador, 
+			   expedienteProducto.fecha_asignacion, 
+			   expediente.expediente_id, 
+			   expediente.estado_nuevo as estadoNuevo, 
+			   producto.id_producto, 
+			   negocio.id_negocio, 
+			   estado.id_estado,
+			   CASE expediente.id_sub_producto WHEN 334 THEN 'LIFE MILE'
+			   ELSE ''
+       		   END AS des_sub_productos,
+       		   expediente.fecha_reg,
+			   expediente.id_sub_producto,
+			   usuario.idusuario,
+<!-- 			   usuario.concesionario as conces, -->
+			   expediente.estado_envioph as estado_envioph , 
+	           concat(usuarioSupervisor.apellido_paterno, ' ', usuarioSupervisor.apellido_materno, ' ', usuarioSupervisor.nombre) AS nombreSupervisor,  
+	           usuarioSupervisor.idusuario as idUsuarioSupervisor, 
+	           concat(usuarioCoordinador.apellido_paterno, ' ', usuarioCoordinador.apellido_materno, ' ', usuarioCoordinador.nombre) AS nombreCoordinador,
+	           expediente.estado_expediente as estadoExpediente,
+	           concat_ws(' - ', NULLIF(expediente.numero_telefono1,''), NULLIF(expediente.numero_telefono2,''), NULLIF(expediente.numero_telefono3,''), NULLIF(expediente.numero_telefono4,''), NULLIF(expediente.numero_telefono5,''), NULLIF(expediente.numero_telefono6,''), NULLIF(expediente.numero_telefono7,''), NULLIF(expediente.numero_telefono8,''), NULLIF(expediente.numero_telefono9,''), NULLIF(expediente.numero_telefono10,''),
+	           					NULLIF(expediente.celular1,''),NULLIF(expediente.celular2,''),NULLIF(expediente.celular3,''),NULLIF(expediente.celular4,''),NULLIF(expediente.celular5,''),NULLIF(expediente.celular6,''),NULLIF(expediente.celular7,''),NULLIF(expediente.celular8,''),NULLIF(expediente.celular9,''),NULLIF(expediente.celular10,'')) as telefonos_contacto,
+	           (select  tcita || ' - ' || c.fecha  ||  ' ' || to_char((c.hora),'HH24:MI PM') from  t_cita_contacto c 
+				 where c.id_expediente_producto =  expedienteProducto.id_expediente_producto  order by c.citacontactoid desc limit 1)  AS ultima_cita,
+				 
+				 expediente.id_sub_producto as id_sub_producto,
+				 subproducto.descripcion as sub_productoDesc,
+				vend.concesionario as concesionario
+	    from 
+		    (((((((((t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id) 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto)
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio)
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado = 10)
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario)
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario)
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario)
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call) 
+		left join t_sub_producto subproducto on subproducto.id_sub_producto = expediente.id_sub_producto) 
+		left join t_usuario vend on vend.idusuario = expediente.idusuario_referente
+		where 
+			expediente.periodo=#{e_periodo}
+			
+			<if test="departamento!= null and departamento!= ''">
+				and expediente.departamento = #{departamento} 
+			</if>
+			<if test="provincia!= null and provincia!= ''">
+				and expediente.provincia = #{provincia}  
+			</if>
+			<if test="distrito!= null and distrito!= ''">
+				and expediente.distrito = #{distrito} 
+			</if>
+			
+			 and expediente.estado_general=true
+			 
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		<choose>
+						<when test="item.key == 'estadoNuevo'">
+							and  expediente.estado_nuevo = #{item.value} 
+						</when>
+						<when test="item.key == 'nombre_completo'">
+							and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+			         		) 
+						</when>
+						<when test="item.key == 'nombreSupervisor'">
+							and ( usuarioSupervisor.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioSupervisor.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioSupervisor.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'nombreCoordinador'">
+							and ( usuarioCoordinador.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioCoordinador.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioCoordinador.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'telefonos_contacto'">
+							and ( expediente.numero_telefono1 like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		      expediente.numero_telefono2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.numero_telefono3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular1 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+			         		) 
+						</when>
+						
+						<when test="item.key == 'id_sub_producto'">
+							 <if test="id_sub_producto != ''">
+						       and expediente.id_sub_producto = 334
+					         </if>
+						</when>
+						
+						<when test="item.key == 'conces'">
+						and  vend.concesionario = #{item.value} 
+						</when>
+						
+						<otherwise>
+							and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+			  		</choose>
+	           </foreach> 
+            </if>
+            
+            <if test="prioridadAtencion != ''">
+		       and expediente.prioridad = #{prioridadAtencion} 
+            </if>
+            
+            <if test="e_idusuario != null and e_idusuario != 0">
+		       and expedienteProducto.idusuario = #{e_idusuario}
+            </if>
+            
+            <if test="cod_perfil != null">
+            	and expediente.idusuario_referente = #{cod_perfil}
+            </if>
+            
+            <if test="e_idusuarioC != null">
+            	<choose>
+            		<when test="idUsuario == 2071">
+						and negocio.id_negocio = #{idNegocio}
+					</when>
+					<when test="id_productoS == 6">
+						and negocio.id_negocio = #{idNegocio}
+					</when>
+					<otherwise>
+						and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+					</otherwise>
+				</choose>
+		    </if>
+		    <if test="e_idusuarioBack != 0">
+            	and negocio.id_negocio = 11 
+		    </if>
+		    
+		    
+		    <if test="idUsuario=1782  ">
+				  and negocio.id_negocio = #{idNegocio}  
+			</if>
+				
+				
+            <if test="e_idusuarioS != null and e_idusuarioS != 0">
+		       and usuarioSupervisor.idusuario = #{e_idusuarioS}
+            </if>
+            
+            <if test="id_productoS != 0">
+		       and expedienteProducto.id_producto = #{id_productoS}
+		       <if test="id_productoS == 6">
+		       	and (expediente.estado_operacion is null or expediente.estado_operacion != 'ABANDONO')
+		       </if>
+            </if>
+            
+            <if test="tipo_baseS != ''">
+		       and expediente.tipo_base = #{tipo_baseS}
+            </if>
+            
+             <if test="des_estadoS != ''">
+		     and expediente.comentario_contacto like '%'||#{des_estadoS}||'%'
+            </if>
+
+            <if test="f_prioridad != 'TODOS'">
+		       and expediente.prioridad_cliente = #{f_prioridad}
+            </if>
+
+            <if test="f_segmento != null and f_segmento != 'TODOS'">
+		       and expediente.segmento = #{f_segmento}
+            </if>
+            
+            <if test="f_buro != null and f_buro != 'TODOS'">
+				and expediente.buro = #{f_buro}
+         	</if>
+            
+             <if test="des_tipoplanilla != ''">
+	         and expediente.tipo_planilla = #{des_tipoplanilla}
+         </if> 
+            
+            <if test="sortField != null">
+				order by ${sortField} ${sortOrder}    
+		    </if>
+		    
+		    <if test="sortField == null">
+		    	<choose>
+		    	<when test="cod_perfil != null">
+		    		order by expediente.fecha_reg DESC
+		    	</when>
+		    	<otherwise>
+					order by expediente.prestamo_soles DESC    
+		    	</otherwise>
+		    	</choose>
+		    </if>
+		    
+		    
+			 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+	
+	
+	<select id="buscarExpedientePorPromotorPAGINATORxUBIGEOxEXPEDIENTE"  resultMap="expedienteProductoResult" >
+		select expedienteProducto.id_expediente_producto, expedienteProducto.flgcklist, expedienteProducto.id_categoria_call as idCategoriaCall, indicadorCall.descripcion as descripcionIndicador, indicadorCall.id_indicadores_call,
+			   expedienteProducto.fecha_asignacion, expediente.expediente_id, expediente.estado_nuevo as estadoNuevo, producto.id_producto, negocio.id_negocio, estado.id_estado, usuario.idusuario,
+	           concat(usuarioSupervisor.apellido_paterno, ' ', usuarioSupervisor.apellido_materno, ' ', usuarioSupervisor.nombre) AS nombreSupervisor,  usuarioSupervisor.idusuario as idUsuarioSupervisor, 
+	           concat(usuarioCoordinador.apellido_paterno, ' ', usuarioCoordinador.apellido_materno, ' ', usuarioCoordinador.nombre) AS nombreCoordinador,expediente.estado_expediente as estadoExpediente,
+	           concat(usuarioCampo.apellido_paterno, ' ', usuarioCampo.apellido_materno, ' ', usuarioCampo.nombre) AS usuario_campo,
+	           concat(usuarioSupervisorCampo.apellido_paterno, ' ', usuarioSupervisorCampo.apellido_materno, ' ', usuarioSupervisorCampo.nombre) AS supervisor_campo
+	           
+	    from 
+		    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+			inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+			inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado =10
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+			left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+			
+			left join t_usuario usuarioCampo on expediente.expediente_id_ejecutivo_call = usuarioCampo.idusuario
+			left join t_usuario usuarioSupervisorCampo on expediente.expediente_id_supervisor_call = usuarioSupervisorCampo.idusuario
+			
+		where 
+			expediente.periodo=#{e_periodo} 
+			<if test="departamento != null and departamento !=''">
+				and expediente.departamento = #{departamento}
+			</if>
+			<if test="provincia != null and provincia != ''">
+				and expediente.provincia = #{provincia} 
+			</if>
+			<if test="distrito !=null and distrito !=''">
+				expediente.distrito = #{distrito} 
+			</if>
+
+			 and expediente.estado_general=true
+<!-- 			 and (expediente.estado_expediente=true or expediente.estado_prefacturacion)  -->
+<!-- 			 and indicadorCall.generar_expediente = true -->
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		<choose>
+						<when test="item.key == 'estadoNuevo'">
+							and  expediente.estado_nuevo = #{item.value} 
+						</when>
+						<when test="item.key == 'nombre_completo'">
+							and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+			         		) 
+						</when>
+						<when test="item.key == 'nombreSupervisor'">
+							and ( usuarioSupervisor.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioSupervisor.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioSupervisor.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'nombreCoordinador'">
+							and ( usuarioCoordinador.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioCoordinador.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioCoordinador.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<otherwise>
+							and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+			  		</choose>
+	           </foreach> 
+            </if>
+            
+            <if test="e_idusuario != null">
+		       and expedienteProducto.idusuario = #{e_idusuario}
+            </if>
+            <if test="e_idusuarioC != null">
+            	<choose>
+            		<when test="idUsuario == 2071">
+						and negocio.id_negocio = #{idNegocio}
+					</when>
+					<otherwise>
+						and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+					</otherwise>
+				</choose>
+		    </if>
+            <if test="e_idusuarioS != null">
+		       and usuarioSupervisor.idusuario = #{e_idusuarioS}
+            </if>
+            
+            <if test="id_productoS != 0">
+		       and expedienteProducto.id_producto = #{id_productoS}
+            </if>
+            
+            <if test="tipo_baseS != ''">
+		       and expediente.tipo_base = #{tipo_baseS}
+            </if>
+            
+            <if test="sdniS != 'TODOS'">
+		       and expediente.num_doc = #{sdniS}
+            </if>
+
+            <if test="f_prioridad != 'TODOS'">
+		       and expediente.prioridad_cliente = #{f_prioridad}
+            </if>
+            
+            <if test="idNegocio != 0">
+		       and negocio.id_negocio = #{idNegocio}
+            </if>
+            
+            <if test="sortField != null">
+				order by ${sortField} ${sortOrder}    
+		    </if>
+		    
+		    <if test="sortField == null">
+				order by expediente.prestamo_soles DESC    
+		    </if>
+		    
+		    
+			 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+	
+	<select id="buscarExpedientePorPromotorPAGINATORxUBIGEOxEXPEDIENTExDOCU"  resultMap="expedienteProductoResult" >
+		select expedienteProducto.id_expediente_producto, expedienteProducto.flgcklist, expedienteProducto.id_categoria_call as idCategoriaCall, indicadorCall.descripcion as descripcionIndicador, indicadorCall.id_indicadores_call,
+			   expedienteProducto.fecha_asignacion, expediente.expediente_id, expediente.estado_nuevo as estadoNuevo, producto.id_producto, negocio.id_negocio, estado.id_estado, usuario.idusuario,
+	           concat(usuarioSupervisor.apellido_paterno, ' ', usuarioSupervisor.apellido_materno, ' ', usuarioSupervisor.nombre) AS nombreSupervisor,  usuarioSupervisor.idusuario as idUsuarioSupervisor, 
+	           concat(usuarioCoordinador.apellido_paterno, ' ', usuarioCoordinador.apellido_materno, ' ', usuarioCoordinador.nombre) AS nombreCoordinador,expediente.estado_expediente as estadoExpediente,
+	           concat(usuarioCampo.apellido_paterno, ' ', usuarioCampo.apellido_materno, ' ', usuarioCampo.nombre) AS usuario_campo,
+	           concat(usuarioSupervisorCampo.apellido_paterno, ' ', usuarioSupervisorCampo.apellido_materno, ' ', usuarioSupervisorCampo.nombre) AS supervisor_campo
+	           
+	    from 
+		    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+			inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+			inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado =10
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+			left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+			
+			left join t_usuario usuarioCampo on expediente.expediente_id_ejecutivo_call = usuarioCampo.idusuario
+			left join t_usuario usuarioSupervisorCampo on expediente.expediente_id_supervisor_call = usuarioSupervisorCampo.idusuario
+			
+		where 
+			expediente.periodo=#{e_periodo} 
+			and expedienteProducto.flgcklist = false
+			<if test="departamento != null and departamento !=''">
+				and expediente.departamento = #{departamento}
+			</if>
+			<if test="provincia != null and provincia != ''">
+				and expediente.provincia = #{provincia} 
+			</if>
+			<if test="distrito !=null and distrito !=''">
+				expediente.distrito = #{distrito} 
+			</if>
+
+			 and expediente.estado_general=true
+<!-- 			 and (expediente.estado_expediente=true or expediente.estado_prefacturacion)  -->
+<!-- 			 and indicadorCall.generar_expediente = true -->
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		<choose>
+						<when test="item.key == 'estadoNuevo'">
+							and  expediente.estado_nuevo = #{item.value} 
+						</when>
+						<when test="item.key == 'nombre_completo'">
+							and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+			         		) 
+						</when>
+						<when test="item.key == 'nombreSupervisor'">
+							and ( usuarioSupervisor.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioSupervisor.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioSupervisor.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'nombreCoordinador'">
+							and ( usuarioCoordinador.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioCoordinador.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioCoordinador.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<otherwise>
+							and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+			  		</choose>
+	           </foreach> 
+            </if>
+            
+            <if test="e_idusuario != null">
+		       and expedienteProducto.idusuario = #{e_idusuario}
+            </if>
+            <if test="e_idusuarioC != null">
+            	<choose>
+            		<when test="idUsuario == 2071">
+						and negocio.id_negocio = #{idNegocio}
+					</when>
+					<otherwise>
+						and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+					</otherwise>
+				</choose>
+		    </if>
+            <if test="e_idusuarioS != null">
+		       and usuarioSupervisor.idusuario = #{e_idusuarioS}
+            </if>
+            
+            <if test="id_productoS != 0">
+		       and expedienteProducto.id_producto = #{id_productoS}
+            </if>
+            
+            <if test="tipo_baseS != ''">
+		       and expediente.tipo_base = #{tipo_baseS}
+            </if>
+            
+            <if test="sdniS != 'TODOS'">
+		       and expediente.num_doc = #{sdniS}
+            </if>
+
+            <if test="f_prioridad != 'TODOS'">
+		       and expediente.prioridad_cliente = #{f_prioridad}
+            </if>
+            
+            <if test="idNegocio != 0">
+		       and negocio.id_negocio = #{idNegocio}
+            </if>
+            
+            <if test="sortField != null">
+				order by ${sortField} ${sortOrder}    
+		    </if>
+		    
+		    <if test="sortField == null">
+				order by expediente.prestamo_soles DESC    
+		    </if>
+		    
+		    
+			 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+	
+	<select id="buscarExpedientePorPromotorPAGINATORxUBIGEOxEXPEDIENTExDOCU2"  resultMap="expedienteProductoResult" >
+		select expedienteProducto.id_expediente_producto, expedienteProducto.flgcklist, expedienteProducto.id_categoria_call as idCategoriaCall, indicadorCall.descripcion as descripcionIndicador, indicadorCall.id_indicadores_call,
+			   expedienteProducto.fecha_asignacion, expediente.expediente_id, expediente.estado_nuevo as estadoNuevo, producto.id_producto, negocio.id_negocio, estado.id_estado, usuario.idusuario,
+	           concat(usuarioSupervisor.apellido_paterno, ' ', usuarioSupervisor.apellido_materno, ' ', usuarioSupervisor.nombre) AS nombreSupervisor,  usuarioSupervisor.idusuario as idUsuarioSupervisor, 
+	           concat(usuarioCoordinador.apellido_paterno, ' ', usuarioCoordinador.apellido_materno, ' ', usuarioCoordinador.nombre) AS nombreCoordinador,expediente.estado_expediente as estadoExpediente,
+	           concat(usuarioCampo.apellido_paterno, ' ', usuarioCampo.apellido_materno, ' ', usuarioCampo.nombre) AS usuario_campo,
+	           concat(usuarioSupervisorCampo.apellido_paterno, ' ', usuarioSupervisorCampo.apellido_materno, ' ', usuarioSupervisorCampo.nombre) AS supervisor_campo
+	           
+	    from 
+		    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+			inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+			inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado =10
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+			left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+			
+			left join t_usuario usuarioCampo on expediente.expediente_id_ejecutivo_call = usuarioCampo.idusuario
+			left join t_usuario usuarioSupervisorCampo on expediente.expediente_id_supervisor_call = usuarioSupervisorCampo.idusuario
+			
+		where 
+			expediente.periodo=#{e_periodo} 
+			and expedienteProducto.flgcklist = false
+			<if test="departamento != null and departamento !=''">
+				and expediente.departamento = #{departamento}
+			</if>
+			<if test="provincia != null and provincia != ''">
+				and expediente.provincia = #{provincia} 
+			</if>
+			<if test="distrito !=null and distrito !=''">
+				expediente.distrito = #{distrito} 
+			</if>
+
+			 and expediente.estado_general=true
+<!-- 			 and (expediente.estado_expediente=true or expediente.estado_prefacturacion)  -->
+<!-- 			 and indicadorCall.generar_expediente = true -->
+			            
+            <if test="e_idusuario != null">
+		       and expedienteProducto.idusuario = #{e_idusuario}
+            </if>
+            <if test="e_idusuarioC != null">
+            	<choose>
+            		<when test="idUsuario == 2071">
+						and negocio.id_negocio = #{idNegocio}
+					</when>
+					<otherwise>
+						and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+					</otherwise>
+				</choose>
+		    </if>
+            <if test="e_idusuarioS != null">
+		       and usuarioSupervisor.idusuario = #{e_idusuarioS}
+            </if>
+            
+            <if test="id_productoS != 0">
+		       and expedienteProducto.id_producto = #{id_productoS}
+            </if>
+            
+            <if test="tipo_baseS != ''">
+		       and expediente.tipo_base = #{tipo_baseS}
+            </if>
+            
+            <if test="sdniS != 'TODOS'">
+		       and expediente.num_doc = #{sdniS}
+            </if>
+
+            <if test="f_prioridad != 'TODOS'">
+		       and expediente.prioridad_cliente = #{f_prioridad}
+            </if>
+            
+            <if test="idNegocio != 0">
+		       and negocio.id_negocio = #{idNegocio}
+            </if>
+		    <if test="sortField == null">
+				order by expediente.prestamo_soles DESC    
+		    </if>
+		    
+	</select>
+	
+	<select id="getCountExpedientePorPromotor"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+		where 
+			expediente.periodo=#{e_periodo}
+		<if test="filters.entrySet() != null">
+	       <foreach item="item" collection="filters.entrySet()" >
+         		<choose>
+					<when test="item.key == 'estadoNuevo'">
+						and  expediente.estado_nuevo = #{item.value} 
+					</when>
+					<when test="item.key == 'nombre_completo'">
+						and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+		         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+		         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+		         		) 
+					</when>
+					<when test="item.key == 'nombreSupervisor'">
+							and ( usuarioSupervisor.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioSupervisor.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioSupervisor.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'nombreCoordinador'">
+							and ( usuarioCoordinador.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioCoordinador.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioCoordinador.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+					<otherwise>
+						and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+					</otherwise>
+		  		</choose>
+           </foreach> 
+        </if>
+        
+         <if test="e_idusuario != null">
+		      and expedienteProducto.idusuario = #{e_idusuario}
+         </if>
+         <if test="e_idusuarioC != null">
+      		and usuarioCoordinador.idusuario = #{e_idusuarioC}
+         </if>
+         <if test="e_idusuarioS != null">
+      		 and usuarioSupervisor.idusuario = #{e_idusuarioS}
+         </if>
+           <if test="id_productoS != 0">
+      		 and expedienteProducto.id_producto = #{id_productoS}
+         </if>
+         
+         <if test="tipo_baseS != ''">
+	         and expediente.tipo_base = #{tipo_baseS}
+         </if>
+	
+	</select>
+	
+	
+	<select id="getCountExpedientePorPromotorxUBIGEO"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    ((((((((((t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id) 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto)
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio)
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado = 10)
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario)
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario)
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario)
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call)
+		left join t_sub_producto subproducto on subproducto.id_sub_producto = expediente.id_sub_producto) 
+		left join t_usuario vend on vend.idusuario = expediente.idusuario_referente) 
+		where 
+			expediente.periodo=#{e_periodo} 
+			
+			<if test="departamento!= null and departamento!= ''">
+				and expediente.departamento = #{departamento} 
+			</if>
+			<if test="provincia!= null and provincia!= ''">
+				and expediente.provincia = #{provincia}  
+			</if>
+			<if test="distrito!= null and distrito!= ''">
+				and expediente.distrito = #{distrito} 
+			</if> 
+			
+			and expediente.estado_general=true
+		
+		
+		<if test="filters.entrySet() != null">
+	       <foreach item="item" collection="filters.entrySet()" >
+         		<choose>
+					<when test="item.key == 'estadoNuevo'">
+						and  expediente.estado_nuevo = #{item.value} 
+					</when>
+					<when test="item.key == 'nombre_completo'">
+						and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+		         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+		         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+		         		) 
+					</when>
+					<when test="item.key == 'nombreSupervisor'">
+							and ( usuarioSupervisor.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioSupervisor.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioSupervisor.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'nombreCoordinador'">
+							and ( usuarioCoordinador.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioCoordinador.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioCoordinador.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'telefonos_contacto'">
+							and ( expediente.numero_telefono1 like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		      expediente.numero_telefono2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.numero_telefono3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular1 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+			         		) 
+						</when>
+						<when test="item.key == 'id_sub_producto'">
+							 <if test="id_sub_producto != ''">
+						       and expediente.id_sub_producto = 334
+					         </if>
+						</when>
+						<when test="item.key == 'conces'">
+						and  vend.concesionario = #{item.value} 
+						</when>
+						
+					<otherwise>
+						and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+					</otherwise>
+		  		</choose>
+           </foreach> 
+        </if>
+        
+        <if test="prioridadAtencion != ''">
+	       and expediente.prioridad = #{prioridadAtencion} 
+        </if>
+            
+         <if test="e_idusuario != null and e_idusuario != 0">
+		      and expedienteProducto.idusuario = #{e_idusuario}
+         </if>
+         <if test="cod_perfil != null">
+          	and expediente.idusuario_referente = #{cod_perfil}
+ 		</if>
+         
+         <if test="e_idusuarioC != null">
+           	<choose>
+           		<when test="idUsuario == 2071">
+					and negocio.id_negocio = #{idNegocio}
+				</when>
+				<when test="id_productoS == 6">
+					and negocio.id_negocio = #{idNegocio}
+				</when>
+				<otherwise>
+					and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+				</otherwise>
+			</choose>
+	     </if>
+	     <if test="e_idusuarioBack != 0">
+            	and negocio.id_negocio = 11 
+		  </if>
+	     
+	         <if test="idUsuario=1782  ">
+				  and negocio.id_negocio = #{idNegocio}  
+			</if>
+	     
+         <if test="e_idusuarioS != null and e_idusuarioS != 0">
+      		 and usuarioSupervisor.idusuario = #{e_idusuarioS}
+         </if>
+           <if test="id_productoS != 0">
+      		 and expedienteProducto.id_producto = #{id_productoS}
+      		   <if test="id_productoS == 6">
+		       	and (expediente.estado_operacion is null or expediente.estado_operacion != 'ABANDONO')
+		       </if>
+         </if>
+         
+         <if test="tipo_baseS != ''">
+	         and expediente.tipo_base = #{tipo_baseS}
+         </if>
+         <if test="f_prioridad != 'TODOS'">
+	         and expediente.prioridad_cliente = #{f_prioridad}
+         </if>
+         <if test="f_segmento != null and f_segmento != 'TODOS'">
+	         and expediente.segmento = #{f_segmento}
+         </if>
+         
+           <if test="f_buro != null and f_buro != 'TODOS'">
+	         and expediente.buro = #{f_buro}
+         </if>
+         
+          <if test="des_estadoS != ''">
+		       and expediente.comentario_contacto like '%'||#{des_estadoS}||'%'  
+            </if>
+            
+           <if test="des_tipoplanilla != ''">
+	         and expediente.tipo_planilla = #{des_tipoplanilla}
+         </if> 
+	
+	</select>
+	
+	
+	
+	<select id="getCountExpedientePorPromotorxUBIGEOCant"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    ((((((((((t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id) 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto)
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio)
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado = 10)
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario)
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario)
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario)
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call)
+		left join t_sub_producto subproducto on subproducto.id_sub_producto = expediente.id_sub_producto) 
+		left join t_usuario vend on vend.idusuario = expediente.idusuario_referente) 
+		where 
+			expediente.periodo=#{e_periodo} 			
+			and expediente.estado_general=true            
+         <if test="e_idusuario != null and e_idusuario != 0">
+		      and expedienteProducto.idusuario = #{e_idusuario}
+         </if>
+         <if test="cod_perfil != null">
+          	and expediente.idusuario_referente = #{cod_perfil}
+ 		</if>
+         
+         <if test="e_idusuarioC != null">
+           	<choose>
+           		<when test="idUsuario == 2071">
+					and negocio.id_negocio = #{idNegocio}
+				</when>
+				<when test="id_productoS == 6">
+					and negocio.id_negocio = #{idNegocio}
+				</when>
+				<otherwise>
+					and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+				</otherwise>
+			</choose>
+	     </if>
+	     <if test="e_idusuarioBack != 0">
+            	and negocio.id_negocio = 11 
+		  </if>
+	     
+	         <if test="idUsuario=1782  ">
+				  and negocio.id_negocio = #{idNegocio}  
+			</if>
+	     
+         <if test="e_idusuarioS != null and e_idusuarioS != 0">
+      		 and usuarioSupervisor.idusuario = #{e_idusuarioS}
+         </if>
+           <if test="id_productoS != 0">
+      		 and expedienteProducto.id_producto = #{id_productoS}
+      		   <if test="id_productoS == 6">
+		       	and (expediente.estado_operacion is null or expediente.estado_operacion != 'ABANDONO')
+		       </if>
+         </if>
+         
+         <if test="tipo_baseS != ''">
+	         and expediente.tipo_base = #{tipo_baseS}
+         </if>
+	
+	</select>
+	
+		
+	
+	<select id="getCountExpedientePorPromotorxUBIGEOxEXPEDIENTE"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on (expedienteProducto.expediente_id=expediente.expediente_id and expediente.periodo=#{e_periodo}) 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado =10
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+		
+		left join t_usuario usuarioCampo on expediente.expediente_id_ejecutivo_call = usuarioCampo.idusuario
+		left join t_usuario usuarioSupervisorCampo on expediente.expediente_id_supervisor_call = usuarioSupervisorCampo.idusuario
+		where 
+			expediente.periodo=#{e_periodo} 
+		<if test="departamento != null and departamento !=''">
+				and expediente.departamento = #{departamento}
+		</if>
+		<if test="provincia != null and provincia != ''">
+			and expediente.provincia = #{provincia} 
+		</if>
+		<if test="distrito !=null and distrito !=''">
+				expediente.distrito = #{distrito} 
+			</if>
+			
+			and expediente.estado_general=true
+<!-- 			and (expediente.estado_expediente=true or expediente.estado_prefacturacion)  -->
+<!-- 			and indicadorCall.generar_expediente= true -->
+		<if test="filters.entrySet() != null">
+	       <foreach item="item" collection="filters.entrySet()" >
+         		<choose>
+					<when test="item.key == 'estadoNuevo'">
+						and  expediente.estado_nuevo = #{item.value} 
+					</when>
+					<when test="item.key == 'nombre_completo'">
+						and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+		         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+		         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+		         		) 
+					</when>
+					<when test="item.key == 'nombreSupervisor'">
+							and ( usuarioSupervisor.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioSupervisor.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioSupervisor.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'nombreCoordinador'">
+							and ( usuarioCoordinador.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioCoordinador.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioCoordinador.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+					<otherwise>
+						and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+					</otherwise>
+		  		</choose>
+           </foreach> 
+        </if>
+        
+         <if test="e_idusuario != null">
+		      and expedienteProducto.idusuario = #{e_idusuario}
+         </if>
+         <if test="e_idusuarioC != null">
+           	<choose>
+           		<when test="idUsuario == 2071">
+					and negocio.id_negocio = #{idNegocio}
+				</when>
+				<otherwise>
+					and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+				</otherwise>
+			</choose>
+	     </if>
+         <if test="e_idusuarioS != null">
+      		 and usuarioSupervisor.idusuario = #{e_idusuarioS}
+         </if>
+           <if test="id_productoS != 0">
+      		 and expedienteProducto.id_producto = #{id_productoS}
+         </if>
+         
+         <if test="idNegocio != 0">
+		       and negocio.id_negocio = #{idNegocio}
+          </if>
+            
+         <if test="tipo_baseS != ''">
+	         and expediente.tipo_base = #{tipo_baseS}
+         </if>
+         
+         <if test="sdniS != 'TODOS'">
+		       and expediente.num_doc = #{sdniS}
+         </if>
+         <if test="f_prioridad != 'TODOS'">
+	         and expediente.prioridad_cliente = #{f_prioridad}
+         </if>
+	
+	</select>
+	
+	<select id="getCountExpedientePorPromotorxUBIGEOxEXPEDIENTExDOCU"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on (expedienteProducto.expediente_id=expediente.expediente_id and expediente.periodo=#{e_periodo}) 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado =10
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+		
+		left join t_usuario usuarioCampo on expediente.expediente_id_ejecutivo_call = usuarioCampo.idusuario
+		left join t_usuario usuarioSupervisorCampo on expediente.expediente_id_supervisor_call = usuarioSupervisorCampo.idusuario
+		where 
+			expediente.periodo=#{e_periodo}
+			and expedienteProducto.flgcklist = false
+		<if test="departamento != null and departamento !=''">
+				and expediente.departamento = #{departamento}
+		</if>
+		<if test="provincia != null and provincia != ''">
+			and expediente.provincia = #{provincia} 
+		</if>
+		<if test="distrito !=null and distrito !=''">
+				expediente.distrito = #{distrito} 
+			</if>
+			
+			and expediente.estado_general=true
+<!-- 			and (expediente.estado_expediente=true or expediente.estado_prefacturacion)  -->
+<!-- 			and indicadorCall.generar_expediente= true -->
+		<if test="filters.entrySet() != null">
+	       <foreach item="item" collection="filters.entrySet()" >
+         		<choose>
+					<when test="item.key == 'estadoNuevo'">
+						and  expediente.estado_nuevo = #{item.value} 
+					</when>
+					<when test="item.key == 'nombre_completo'">
+						and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+		         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+		         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+		         		) 
+					</when>
+					<when test="item.key == 'nombreSupervisor'">
+							and ( usuarioSupervisor.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioSupervisor.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioSupervisor.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'nombreCoordinador'">
+							and ( usuarioCoordinador.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioCoordinador.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioCoordinador.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+					<otherwise>
+						and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+					</otherwise>
+		  		</choose>
+           </foreach> 
+        </if>
+        
+         <if test="e_idusuario != null">
+		      and expedienteProducto.idusuario = #{e_idusuario}
+         </if>
+         <if test="e_idusuarioC != null">
+           	<choose>
+           		<when test="idUsuario == 2071">
+					and negocio.id_negocio = #{idNegocio}
+				</when>
+				<otherwise>
+					and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+				</otherwise>
+			</choose>
+	     </if>
+         <if test="e_idusuarioS != null">
+      		 and usuarioSupervisor.idusuario = #{e_idusuarioS}
+         </if>
+           <if test="id_productoS != 0">
+      		 and expedienteProducto.id_producto = #{id_productoS}
+         </if>
+         
+         <if test="idNegocio != 0">
+		       and negocio.id_negocio = #{idNegocio}
+          </if>
+            
+         <if test="tipo_baseS != ''">
+	         and expediente.tipo_base = #{tipo_baseS}
+         </if>
+         
+         <if test="sdniS != 'TODOS'">
+		       and expediente.num_doc = #{sdniS}
+         </if>
+         <if test="f_prioridad != 'TODOS'">
+	         and expediente.prioridad_cliente = #{f_prioridad}
+         </if>
+	
+	</select>
+	
+	
+	<select id="getCountExpedientePorPromotorxUBIGEOxEXPEDIENTExALL"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on (expedienteProducto.expediente_id=expediente.expediente_id  and expediente.periodo=#{e_periodo})
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+		where 
+			expediente.periodo=#{e_periodo} and
+			expediente.departamento like ('%' || #{departamento}  || '%') and
+			expediente.provincia like ('%' || #{provincia}  || '%') and
+			expediente.distrito like ('%' || #{distrito}  || '%') 
+			and expediente.estado_general=true
+			
+			and (expediente.estado_expediente=true or expediente.estado_prefacturacion) 
+			
+<!-- 			and indicadorCall.generar_expediente -->
+	    
+         <if test="e_idusuario != null">
+		      and expedienteProducto.idusuario = #{e_idusuario}
+         </if>
+         <if test="e_idusuarioC != null">
+           	<choose>
+           		<when test="idUsuario == 2071">
+					and negocio.id_negocio = #{idNegocio}
+				</when>
+				<otherwise>
+					and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+				</otherwise>
+			</choose>
+	     </if>
+         <if test="e_idusuarioS != null">
+      		 and usuarioSupervisor.idusuario = #{e_idusuarioS}
+         </if>
+           <if test="id_productoS != 0">
+      		 and expedienteProducto.id_producto = #{id_productoS}
+         </if>
+         <if test="idNegocio != 0">
+	        and negocio.id_negocio = #{idNegocio}
+         </if>
+            
+         <if test="tipo_baseS != ''">
+	         and expediente.tipo_base = #{tipo_baseS}
+         </if>
+         <if test="f_prioridad != 'TODOS'">
+	         and expediente.prioridad_cliente = #{f_prioridad}
+         </if>
+	</select>
+	
+	
+	<select id="sumaExpedientePorPromotorxUBIGEOxEXPEDIENTExMONTOAPROBADOxALL"  resultType="BigDecimal">
+		select sum(expediente.prestamo_soles)
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on (expedienteProducto.expediente_id=expediente.expediente_id  and expediente.periodo=#{e_periodo})
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+		where 
+			expediente.periodo=#{e_periodo} and
+			expediente.departamento like ('%' || #{departamento}  || '%') and
+			expediente.provincia like ('%' || #{provincia}  || '%') and
+			expediente.distrito like ('%' || #{distrito}  || '%') 
+			and expediente.estado_general=true
+			and expediente.estado_expediente=true and indicadorCall.generar_expediente
+	    
+         <if test="e_idusuario != null">
+		      and expedienteProducto.idusuario = #{e_idusuario}
+         </if>
+         <if test="e_idusuarioC != null">
+           	<choose>
+           		<when test="idUsuario == 2071">
+					and negocio.id_negocio = #{idNegocio}
+				</when>
+				<otherwise>
+					and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+				</otherwise>
+			</choose>
+	     </if>
+         <if test="e_idusuarioS != null">
+      		 and usuarioSupervisor.idusuario = #{e_idusuarioS}
+         </if>
+           <if test="id_productoS != 0">
+      		 and expedienteProducto.id_producto = #{id_productoS}
+         </if>
+         <if test="idNegocio != 0">
+	        and negocio.id_negocio = #{idNegocio}
+         </if>
+         
+         <if test="tipo_baseS != ''">
+	         and expediente.tipo_base = #{tipo_baseS}
+         </if>
+         <if test="f_prioridad != 'TODOS'">
+	         and expediente.prioridad_cliente = #{f_prioridad}
+         </if>
+	</select>
+	
+	<select id="sumaExpedientePorPromotorxUBIGEOxEXPEDIENTExMONTODESEMBOLSADOxALL"  resultType="BigDecimal">
+		select sum(expediente.expediente_prestamo)
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on (expedienteProducto.expediente_id=expediente.expediente_id  and expediente.periodo=#{e_periodo})
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+		where 
+			expediente.periodo=#{e_periodo} and
+			expediente.departamento like ('%' || #{departamento}  || '%') and
+			expediente.provincia like ('%' || #{provincia}  || '%') and
+			expediente.distrito like ('%' || #{distrito}  || '%') 
+			and expediente.estado_general=true
+			and expediente.estado_expediente=true and indicadorCall.generar_expediente
+	    
+         <if test="e_idusuario != null">
+		      and expedienteProducto.idusuario = #{e_idusuario}
+         </if>
+         <if test="e_idusuarioC != null">
+           	<choose>
+           		<when test="idUsuario == 2071">
+					and negocio.id_negocio = #{idNegocio}
+				</when>
+				<otherwise>
+					and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+				</otherwise>
+			</choose>
+	     </if>
+         <if test="e_idusuarioS != null">
+      		 and usuarioSupervisor.idusuario = #{e_idusuarioS}
+         </if>
+           <if test="id_productoS != 0">
+      		 and expedienteProducto.id_producto = #{id_productoS}
+         </if>
+         <if test="idNegocio != 0">
+	        and negocio.id_negocio = #{idNegocio}
+         </if>
+         
+         <if test="tipo_baseS != ''">
+	         and expediente.tipo_base = #{tipo_baseS}
+         </if>
+         <if test="f_prioridad != 'TODOS'">
+	         and expediente.prioridad_cliente = #{f_prioridad}
+         </if>
+	</select>
+	
+	<select id="buscarExpedAsignadosxPeriodoNegocio"  resultMap="expedienteProductoResult" parameterType="com.certicom.certiscan.domain.ExpedienteProducto">
+	select eje.idusuario,(eje.apellido_paterno || ' ' || eje.apellido_materno || ' ' || eje.nombre) as nom_promotor, count(ep.expediente_id)
+	as cant_exp 
+		from t_expediente_producto  ep inner join t_usuario eje on eje.idusuario = ep.idusuario 
+		inner join t_expediente e on e.expediente_id = ep.expediente_id
+		inner join t_producto p on p.id_producto = e.id_producto
+		inner join t_negocio n on n.id_negocio = p.id_negocio 
+		inner join t_estado es on es.id_estado=ep.id_estado
+		where 
+		e.estado_general = 't'
+		<if test="product !=73 and product !=74 and product != 75">
+		and es.descripcion = 'PENDIENTE' 
+		</if> 
+		and e.periodo = #{periodo}
+		and p.id_producto = #{product}
+		and n.id_negocio = #{negocio}
+		group by eje.idusuario,(eje.apellido_paterno || ' ' || eje.apellido_materno || ' ' || eje.nombre) 
+		order by (eje.apellido_paterno || ' ' || eje.apellido_materno || ' ' || eje.nombre) 
+	
+	</select>
+	
+	<select id="buscarExpedAsignadosxPeriodoNegocioOfi"  resultMap="expedienteProductoResult" parameterType="com.certicom.certiscan.domain.ExpedienteProducto">
+	select ofi.codigo_oficina cod_oficina,(ofi.nombre) as nom_oficina, count(ep.expediente_id)
+	as cant_exp 
+		from t_expediente e inner join t_oficina ofi on ofi.codigo_oficina = e.cod_oficina 
+		inner join t_expediente_producto ep on ep.expediente_id = e.expediente_id
+		inner join t_producto p on p.id_producto = e.id_producto
+		inner join t_negocio n on n.id_negocio = p.id_negocio 
+		inner join t_estado es on es.id_estado=ep.id_estado
+		where es.descripcion = 'PENDIENTE' 
+		and e.periodo = #{periodo} 
+		and p.id_producto = #{product}
+		and n.id_negocio = #{negocio}
+		and ofi.id_negocio= n.id_negocio
+		group by ofi.codigo_oficina,(ofi.nombre)
+		order by (ofi.nombre)
+	
+	</select>
+	
+	<select id="getCountExpedientePorUsuarioByEstadoANT"  resultType="java.lang.Integer">
+		
+		 select count(*) 
+		     from t_expediente_producto expedienteProducto
+		 inner join t_expediente expediente on (expedienteProducto.expediente_id=expediente.expediente_id ) 
+		 left join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		 inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		 left join t_usuario usuarioSupervisor on usuarioSupervisor.idusuario = usuario.id_supervisor
+		 left join t_usuario usuarioCoordinador on usuarioCoordinador.idusuario = usuario.id_coordinador
+		 where 
+			expediente.periodo=#{periodo} 
+			and expedienteProducto.periodo=#{periodo} 
+			and expediente.estado_general=true 
+			and estado.descripcion = #{estadoDescripcion}
+				  
+				
+		<if test="e_producto != 0">
+		      and expedienteProducto.id_producto = #{e_producto}
+         </if>
+		<if test="e_idusuario != null">
+		      and expedienteProducto.idusuario = #{e_idusuario}
+         </if>
+         <if test="e_idusuarioC != null">
+      		and usuarioCoordinador.idusuario = #{e_idusuarioC}
+         </if>
+         <if test="e_idusuarioS != null">
+      		 and usuarioSupervisor.idusuario = #{e_idusuarioS}
+         </if>
+	</select>
+	
+	<select id="getCountExpedientePorUsuarioByEstado" resultMap="expedienteProductoResult">
+		
+		 select coalesce(SUM(CASE WHEN  estado.descripcion = 'PENDIENTE' THEN 1 ELSE 0 END),0) AS totPendiente,
+	coalesce(SUM(CASE WHEN  estado.descripcion = 'EN PROCESO' THEN 1 ELSE 0 END),0) AS totEnProceso,
+	coalesce(SUM(CASE WHEN  estado.descripcion = 'CONCLUIDO' THEN 1 ELSE 0 END),0) AS totConcluido
+		     from t_expediente_producto expedienteProducto
+		 inner join t_expediente expediente on (expedienteProducto.expediente_id=expediente.expediente_id ) 
+		 left join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		 inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		 left join t_usuario usuarioSupervisor on usuarioSupervisor.idusuario = usuario.id_supervisor
+		 left join t_usuario usuarioCoordinador on usuarioCoordinador.idusuario = usuario.id_coordinador
+		 where 
+			expediente.periodo=#{periodo} 
+			and expedienteProducto.periodo=#{periodo} 
+			and expediente.estado_general=true 
+			and estado.descripcion in <foreach item="resultados1" index="index" collection="resultados1"
+					open="(" separator="," close=")">
+					#{resultados1}
+				</foreach>
+			<if test="e_producto != 0">
+		      and expedienteProducto.id_producto = #{e_producto}
+         </if>
+		<if test="e_idusuario != null">
+		      and expedienteProducto.idusuario = #{e_idusuario}
+         </if>
+         <if test="e_idusuarioC != null">
+      		and usuarioCoordinador.idusuario = #{e_idusuarioC}
+         </if>
+         <if test="e_idusuarioS != null">
+      		 and usuarioSupervisor.idusuario = #{e_idusuarioS}
+         </if>
+	</select>
+	
+	
+	<select id="buscarExpedientePorSupervisorPAGINATOR"  resultMap="expedienteProductoResult" >
+		select expedienteProducto.id_expediente_producto, expedienteProducto.id_categoria_call as idCategoriaCall, 
+			   expedienteProducto.fecha_asignacion, expediente.expediente_id, expediente.estado_nuevo as estadoNuevo, producto.id_producto, negocio.id_negocio, estado.id_estado, usuario.idusuario,
+	           concat(usuarioCoordinador.apellido_paterno, ' ', usuarioCoordinador.apellido_materno, ' ', usuarioCoordinador.nombre) AS nombreCoordinador
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		where 
+			expediente.periodo=#{e_periodo} 
+			and  expedienteProducto.idusuario IS NULL
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		<choose>
+						<when test="item.key == 'estadoNuevo'">
+							and  expediente.estado_nuevo = #{item.value} 
+						</when>
+						<otherwise>
+							and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+			  		</choose>
+	           </foreach> 
+            </if>
+            
+          	<choose>
+				<when test="e_idusuario !=null and e_idusuarioC != null">
+					and (expedienteProducto.idusuario_supervisor = #{e_idusuario} or usuarioCoordinador.idusuario = #{e_idusuarioC})
+				</when>
+				<otherwise>
+					<if test="e_idusuario != null">
+				       and expedienteProducto.idusuario_supervisor = #{e_idusuario}
+		            </if>
+		            <if test="e_idusuarioC != null">
+				       and usuarioCoordinador.idusuario = #{e_idusuarioC}
+		            </if>
+				</otherwise>
+	  		</choose>
+            
+            <if test="sortField != null">
+				order by ${sortField} ${sortOrder}    
+		    </if>
+		    
+		    <if test="sortField == null">
+				order by expediente.prestamo_soles DESC    
+		    </if>
+		    
+		    
+			 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+	
+	<select id="getCountExpedientePorSupervisor"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		where 
+			expediente.periodo=#{e_periodo}  
+			and  expedienteProducto.idusuario IS NULL
+		<if test="filters.entrySet() != null">
+	       <foreach item="item" collection="filters.entrySet()" >
+         		<choose>
+					<when test="item.key == 'estadoNuevo'">
+						and  expediente.estado_nuevo = #{item.value} 
+					</when>
+					<otherwise>
+						and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+					</otherwise>
+		  		</choose>
+           </foreach> 
+        </if>
+        
+        <choose>
+			<when test="e_idusuario !=null and e_idusuarioC != null">
+				and (expedienteProducto.idusuario_supervisor = #{e_idusuario} or usuarioCoordinador.idusuario = #{e_idusuarioC})
+			</when>
+			<otherwise>
+				<if test="e_idusuario != null">
+			       and expedienteProducto.idusuario_supervisor = #{e_idusuario}
+	            </if>
+	            <if test="e_idusuarioC != null">
+			       and usuarioCoordinador.idusuario = #{e_idusuarioC}
+	            </if>
+			</otherwise>
+  		</choose>
+            
+    </select>
+    
+    <select id="getCountExpedientePorSupervisorALL"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		where 
+			expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto}
+	    
+         <choose>
+			<when test="e_idusuario !=null and e_idusuarioC != null">
+				and (expedienteProducto.idusuario_supervisor = #{e_idusuario} or usuarioCoordinador.idusuario = #{e_idusuarioC})
+			</when>
+			<otherwise>
+				<if test="e_idusuario != null">
+			       and expedienteProducto.idusuario_supervisor = #{e_idusuario}
+	            </if>
+	            <if test="e_idusuarioC != null">
+			       and usuarioCoordinador.idusuario = #{e_idusuarioC}
+	            </if>
+			</otherwise>
+  		</choose>
+           
+    </select>
+	
+	<select id="getCountExpedientePorSupervisorTODOS"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		where 
+			expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto}
+	    	and  expedienteProducto.idusuario IS NULL
+         <choose>
+			<when test="e_idusuario !=null and e_idusuarioC != null">
+				and (expedienteProducto.idusuario_supervisor = #{e_idusuario} or usuarioCoordinador.idusuario = #{e_idusuarioC})
+			</when>
+			<otherwise>
+				<if test="e_idusuario != null">
+			       and expedienteProducto.idusuario_supervisor = #{e_idusuario}
+	            </if>
+	            <if test="e_idusuarioC != null">
+			       and usuarioCoordinador.idusuario = #{e_idusuarioC}
+	            </if>
+			</otherwise>
+  		</choose>
+           
+    </select>
+    
+    <select id="getSumaMontoExpedientePorSupervisorTODOS"  resultType="BigDecimal">
+		select sum(expediente.prestamo_soles)
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		where 
+			expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto}
+			and  expedienteProducto.idusuario IS NULL
+         <choose>
+			<when test="e_idusuario !=null and e_idusuarioC != null">
+				and (expedienteProducto.idusuario_supervisor = #{e_idusuario} or usuarioCoordinador.idusuario = #{e_idusuarioC})
+			</when>
+			<otherwise>
+				<if test="e_idusuario != null">
+			       and expedienteProducto.idusuario_supervisor = #{e_idusuario}
+	            </if>
+	            <if test="e_idusuarioC != null">
+			       and usuarioCoordinador.idusuario = #{e_idusuarioC}
+	            </if>
+			</otherwise>
+  		</choose>
+           
+    </select>
+    
+    <select id="getCountExpedientePorSupervisorTODOSxREGION"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		where 
+			expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+	    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+	    	and expedienteProducto.idusuario IS NULL
+         <choose>
+			<when test="e_idusuario !=null and e_idusuarioC != null">
+				and (expedienteProducto.idusuario_supervisor = #{e_idusuario} or usuarioCoordinador.idusuario = #{e_idusuarioC})
+			</when>
+			<otherwise>
+				<if test="e_idusuario != null">
+			       and expedienteProducto.idusuario_supervisor = #{e_idusuario}
+	            </if>
+	            <if test="e_idusuarioC != null">
+			       and usuarioCoordinador.idusuario = #{e_idusuarioC}
+	            </if>
+			</otherwise>
+  		</choose>
+           
+    </select>
+    
+    <select id="getSumaMontoExpedientePorSupervisorTODOSxREGION"  resultType="BigDecimal">
+		select sum(expediente.prestamo_soles)
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		where 
+			expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+	    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+	    	and  expedienteProducto.idusuario IS NULL
+         <choose>
+			<when test="e_idusuario !=null and e_idusuarioC != null">
+				and (expedienteProducto.idusuario_supervisor = #{e_idusuario} or usuarioCoordinador.idusuario = #{e_idusuarioC})
+			</when>
+			<otherwise>
+				<if test="e_idusuario != null">
+			       and expedienteProducto.idusuario_supervisor = #{e_idusuario}
+	            </if>
+	            <if test="e_idusuarioC != null">
+			       and usuarioCoordinador.idusuario = #{e_idusuarioC}
+	            </if>
+			</otherwise>
+  		</choose>
+           
+    </select>
+    
+    
+    <select id="getExpedientesPorSupervisorTODOSxREGIONxOFICINA"  resultMap="expedienteProductoResult">
+		select expediente.nombre_oficina as nombreOficina
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		where 
+			expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} 
+	    	and  expedienteProducto.idusuario IS NULL
+         <choose>
+			<when test="e_idusuario !=null and e_idusuarioC != null">
+				and (expedienteProducto.idusuario_supervisor = #{e_idusuario} or usuarioCoordinador.idusuario = #{e_idusuarioC})
+			</when>
+			<otherwise>
+				<if test="e_idusuario != null">
+			       and expedienteProducto.idusuario_supervisor = #{e_idusuario}
+	            </if>
+	            <if test="e_idusuarioC != null">
+			       and usuarioCoordinador.idusuario = #{e_idusuarioC}
+	            </if>
+			</otherwise>
+  		</choose>
+           
+         GROUP BY expediente.nombre_oficina ORDER BY expediente.nombre_oficina
+    </select>
+    
+      <select id="getExpedientesPorSupervisorxTERRITORIO"  resultMap="expedienteProductoResult">
+		select expediente.territorio_ofc as territorio_ofc
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		where 
+			expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto}
+	    	and  expedienteProducto.idusuario IS NULL
+         <choose>
+			<when test="e_idusuario !=null and e_idusuarioC != null">
+				and (expedienteProducto.idusuario_supervisor = #{e_idusuario} or usuarioCoordinador.idusuario = #{e_idusuarioC})
+			</when>
+			<otherwise>
+				<if test="e_idusuario != null">
+			       and expedienteProducto.idusuario_supervisor = #{e_idusuario}
+	            </if>
+	            <if test="e_idusuarioC != null">
+			       and usuarioCoordinador.idusuario = #{e_idusuarioC}
+	            </if>
+			</otherwise>
+  		</choose>
+           
+         GROUP BY expediente.territorio_ofc ORDER BY expediente.territorio_ofc
+    </select>
+    
+    
+        <select id="getOficinasxTerritorioxAsignarSupervisor"  resultMap="expedienteProductoResult">
+		select expediente.nombre_oficina as nombreOficina
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		where 
+			expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto}  
+	    	and  expedienteProducto.idusuario IS NULL
+         <choose>
+			<when test="e_idusuario !=null and e_idusuarioC != null">
+				and (expedienteProducto.idusuario_supervisor = #{e_idusuario} or usuarioCoordinador.idusuario = #{e_idusuarioC})
+			</when>
+			<otherwise>
+				<if test="e_idusuario != null">
+			       and expedienteProducto.idusuario_supervisor = #{e_idusuario}
+	            </if>
+	            <if test="e_idusuarioC != null">
+			       and usuarioCoordinador.idusuario = #{e_idusuarioC}
+	            </if>
+			</otherwise>
+  		</choose>
+  		
+  		<foreach item="item" collection="descripcionTerritorios" open=" and (" close=")" separator=" or ">
+        		expediente.territorio_ofc = #{item}
+       	</foreach> 
+           
+         GROUP BY expediente.nombre_oficina ORDER BY expediente.nombre_oficina
+    </select>
+    
+    
+    <select id="expedientesPorSupervisorNoAsignadosxPeriodoRegionxOficinaALL"  resultMap="expedienteProductoResult" >
+			select expedienteProducto.id_expediente_producto, expediente.*
+		    from 
+			    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+		    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+		    	and  expedienteProducto.idusuario IS NULL
+	    	
+		   <foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach> 
+    </select>
+    
+    <select id="expedientesPorSupervisorNoAsignadosxPeriodoRegionxOficinaMontoMenorALL"  resultMap="expedienteProductoResult" >
+			select expedienteProducto.id_expediente_producto, expediente.*
+		    from 
+			    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+		    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+		    	and  expedienteProducto.idusuario IS NULL
+				and expediente.prestamo_soles &lt; #{monto} 
+			<foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach>
+    </select>
+    
+    <select id="sumaMontoExpedientesPorSupervisorNoAsignadosxPeriodoRegionxOficinaALL"  resultType="BigDecimal">
+			select sum(expediente.prestamo_soles)
+		    from 
+			    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+		    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+		    	and  expedienteProducto.idusuario IS NULL
+	    	
+		   <foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach> 
+    </select>
+    
+    <select id="sumaMontoExpedientesPorSupervisorNoAsignadosxPeriodoRegionxOficinaMontoMenorALL"  resultType="BigDecimal" >
+			select sum(expediente.prestamo_soles)
+		    from 
+			    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+		    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+		    	and  expedienteProducto.idusuario IS NULL
+				and expediente.prestamo_soles &lt; #{monto} 
+			<foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach>
+    </select>
+    
+    
+    
+    <select id="expedientesPorSupervisorNoAsignadosxPeriodoRegionxOficinaMontoMayorALL"  resultMap="expedienteProductoResult" >
+			select expedienteProducto.id_expediente_producto, expediente.*
+		    from 
+			    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+		    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+		    	and  expedienteProducto.idusuario IS NULL
+				and expediente.prestamo_soles &gt; #{monto} 
+			<foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach>
+    </select>
+    
+    <select id="sumaMontoExpedientesPorSupervisorNoAsignadosxPeriodoRegionxOficinaMontoMayorALL"  resultType="BigDecimal" >
+			select sum(expediente.prestamo_soles)
+		    from t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+		    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+		    	and  expedienteProducto.idusuario IS NULL
+				and expediente.prestamo_soles &gt; #{monto} 
+			<foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach>
+    </select>
+    
+     <select id="expedientesPorSupervisorNoAsignadosxPeriodoRegionxOficinaMontoMenorIgualALL"  resultMap="expedienteProductoResult" >
+			select expedienteProducto.id_expediente_producto, expediente.*
+		    from 
+			    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+		    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+		    	and  expedienteProducto.idusuario IS NULL
+				and expediente.prestamo_soles &lt;= #{monto} 
+			<foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach>
+    </select>
+    
+    <select id="sumaMontoExpedientesPorSupervisorNoAsignadosxPeriodoRegionxOficinaMontoMenorIgualALL"  resultType="BigDecimal" >
+			select sum(expediente.prestamo_soles)
+		    from 
+			    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+		    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+		    	and  expedienteProducto.idusuario IS NULL
+				and expediente.prestamo_soles &lt;= #{monto} 
+			<foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach>
+    </select>
+    
+    
+    <select id="expedientesPorSupervisorNoAsignadosxPeriodoRegionxOficinaMontoMayorIgualALL"  resultMap="expedienteProductoResult" >
+			select expedienteProducto.id_expediente_producto, expediente.*
+		    from 
+			    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+		    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+		    	and  expedienteProducto.idusuario IS NULL
+				and expediente.prestamo_soles &gt;= #{monto} 
+			<foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach>
+    </select>
+    
+    <select id="sumaMontoExpedientesPorSupervisorNoAsignadosxPeriodoRegionxOficinaMontoMayorIgualALL"  resultType="BigDecimal" >
+			select sum(expediente.prestamo_soles)
+		    from 
+			    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+		    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+		    	and  expedienteProducto.idusuario IS NULL
+				and expediente.prestamo_soles &gt;= #{monto} 
+			<foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach>
+    </select>
+    
+    
+    <select id="expedientesPorSupervisorNoAsignadosxPeriodoRegionxOficinaMontoALL"  resultMap="expedienteProductoResult" >
+			select expedienteProducto.id_expediente_producto, expediente.*
+		    from 
+			    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+		    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+		    	and  expedienteProducto.idusuario IS NULL
+				and expediente.prestamo_soles = #{monto} 
+			<foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach>
+    </select>
+    
+    <select id="sumaMontoExpedientesPorSupervisorNoAsignadosxPeriodoRegionxOficinaMontoALL"  resultType="BigDecimal" >
+			select sum(expediente.prestamo_soles)
+		    from t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto} and
+		    	expediente.departamento like #{departamento}  and expediente.provincia like #{provincia} and expediente.distrito like #{distrito} 
+		    	and  expedienteProducto.idusuario IS NULL
+				and expediente.prestamo_soles = #{monto} 
+			<foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach>
+    </select>
+    
+    <select id="rptReporteVip" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="expedienteProductoResult">
+    	 select  
+  			 count(case when exp.departamento = 'LIMA' then 1 else null end) as cantidad_lima,
+   			 sum(case when exp.departamento = 'LIMA' then exp.prestamo_soles else 0 end) as total_lima,	
+   			 count(case when exp.departamento != 'LIMA' then 1 else null end) as cantidad_provincia,
+   			 sum(case when exp.departamento != 'LIMA' then exp.prestamo_soles else 0 end) as total_provincia,	
+   			 numeros.rango as rango_cantidad, numeros.ini 
+		 from
+  			(select  ex.expediente_id ,ex.prestamo_soles ,ex.departamento from  t_expediente ex inner join 
+  			 t_producto p on p.id_producto = ex.id_producto	
+ 			 where ex.periodo = #{fini}
+ 			  and  p.id_negocio = #{idnegocio}
+ 			<if test="idproducto !=0">
+ 			and ex.id_producto  = #{idproducto}
+ 			</if>
+	   		order by ex.departamento asc) as exp 
+ 		 right join
+  			(select numero::int as ini ,(numero+9999) as fin,('De S/.' || numero || ' a S/.' || (numero+9999)) as rango 
+			from generate_series(1,100000, 10000) numero) as numeros
+ 		 on (exp.prestamo_soles&gt;= numeros.ini and exp.prestamo_soles &lt;= numeros.fin)  
+ 		 group by numeros.rango,numeros.ini order by numeros.ini asc;
+    </select>
+    
+    <select id="rptSemaforo" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="expedienteProductoResult" >
+    select  usu.idusuario,(usu.apellido_paterno || ' ' || usu.apellido_materno || ' '|| usu.nombre) as nombre_ejecutivo ,
+			count( case when e.descripcion = 'PENDIENTE' then 1 else null end) as   cant_pendiente,
+			sum (case when e.descripcion = 'PENDIENTE' then ex.prestamo_soles else 0 end) mont_pendiente,
+			count( case when e.descripcion = 'EN PROCESO' then 1 else null end) as   cant_proceso, 
+			sum (case when e.descripcion = 'EN PROCESO' then ex.prestamo_soles else 0 end) mont_proceso,
+			count( case when e.descripcion = 'CONCLUIDO' then 1 else null end) as   cant_concluido ,
+			sum (case when e.descripcion = 'CONCLUIDO' then ex.prestamo_soles else 0 end) mont_concluido,
+			count(ep.id_expediente_producto) as   cant_asignado ,
+			sum (ex.prestamo_soles) as mont_asignado
+	from t_expediente_producto  ep 
+			inner join t_expediente ex 
+			on ep.expediente_id = ex.expediente_id
+			inner join t_usuario usu
+			on usu.idusuario = ep.idusuario
+			inner join t_estado e
+			on e.id_estado = ep.id_estado
+			inner join t_producto p
+			on p.id_producto = ep.id_producto
+	where  ex.periodo = #{fini} 
+		   and p.id_negocio = #{idnegocio}
+		<if  test="idsupervisor!=0">
+		   and usu.id_supervisor = id_supervisor
+		</if>
+		 <if test="idproducto !=0">
+		   and ep.id_producto = #{idproducto}
+		 </if>
+		 <if test="codigo_territorio != 'TODOS'">
+			 and ex.cod_territorio = #{codigo_territorio}
+		 </if>
+		 <if test="sdepartamento !='TODOS'">
+		   and ex.departamento = #{sdepartamento} 
+		 </if>
+		 
+	group by usu.idusuario,usu.apellido_paterno,usu.apellido_materno,usu.nombre 
+	order by
+	
+	<if test="cant_order !=0">
+	<choose>
+			<when test="cant_order == 1">
+			cant_pendiente desc
+			</when>
+			<when test="cant_order == 2">
+			cant_proceso desc
+			</when>
+			<when test="cant_order == 3">
+			cant_concluido desc
+			</when>
+			
+	</choose> 
+		,usu.apellido_paterno,usu.apellido_materno,usu.nombre 
+	</if >
+	<if test="cant_order == 0">
+		usu.apellido_paterno,usu.apellido_materno,usu.nombre 
+	</if >
+    </select>
+	
+	<select id="buscarExpedienteCountPAGINATOR"  resultMap="expedienteProductoResult">
+	
+		select     ee.id_expediente_cuentas_envios as id_expediente_cuentas_envios,
+					e.nombre_empresa as des_empresa,
+				   e.expediente_id as expedienteid,
+				   ee.modalidad_empresa as modalidad_empresa,
+				   ee.moneda_empresa as moneda_empresa,
+				   ee.tipo_empresa as tipo_empresa,
+				   ee.fecha_envio_calidad as fecha_envio_calidad,
+				   ee.fecha_envio_banco as fecha_envio_banco,
+			       ep.periodo,
+			       ee.cod_oficina as cod_oficina,
+			       p.descripcion as des_productos,
+			       (u.apellido_paterno || ' ' || u.apellido_materno || ' ' || u.nombre) as nom_promotor,
+			       e.ruc,
+			       ee.nro_cuentas as cant_pendiente,
+			       (select count(*) from t_expediente_cuentas ec where ec.expediente_id = e.expediente_id and ec.tipo = ee.tipo and nrocuenta != '' ) as cant_aperturado,
+			       ee.tipo as destipo,
+			       ee.estado_envioph ,
+			       ep.idusuario as idusuario,
+			      
+			       ee.nacional as ece_nacional,
+			       ee.nacionalidad as ece_nacionalidad,
+			       ee.pais as ece_pais,
+			       ee.nombres as ece_nombres,
+			       ee.ape_paterno as ece_ape_paterno,
+			       ee.ape_materno as ece_ape_materno,
+			       ee.fec_nacimiento as ece_fec_nacimiento,
+			       ee.carnet_extranjeria as ece_carnet_extranjeria,
+			       ee.direccion as ece_direccion,
+			       ee.fec_caducidad as ece_fec_caducidad
+			       
+			from  
+			      t_expediente_cuentas_envios ee inner join t_expediente_producto ep 
+			      on ee.id_expediente_producto = ep.id_expediente_producto
+			      inner join t_expediente e on ep.expediente_id = e.expediente_id
+			       left join t_usuario u on ep.idusuario = u.idusuario
+			       left join t_producto p on ep.id_producto = p.id_producto
+			       
+			       where ep.periodo = #{periodo} 
+				   and p.id_negocio = #{idnegocio} 
+				   and p.id_producto in (6) 
+				   
+					<if test="filter_fecha != 'TODOS'">
+						<if test="filter_datefecha != null">
+							 <choose>
+							 	<when test="filter_fecha == 'CALIDAD'">
+							 		and cast(ee.fecha_envio_calidad as date) = #{filter_datefecha}
+							 	</when>
+							 	<when test="filter_fecha == 'BANCO'">
+							 		and cast(ee.fecha_envio_banco as date) = #{filter_datefecha}
+							 	</when>
+							 </choose>
+						</if>
+					</if>
+	
+				  <if test="filters.entrySet() != null">
+					 <foreach item="item" collection="filters.entrySet()" >
+				 	 <choose>
+						<when test="item.key == 'nom_promotor'">
+							and ( u.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 u.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		 u.nombre like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+			         		)  
+						</when>
+						<when test="item.key == 'des_empresa'">
+							and  e.nombre_empresa like ('%' || replace( #{item.value}, ' ', '%')  || '%')    
+						</when>
+						<when test="item.key == 'ruc'">
+							and  e.ruc like ('%' || replace( #{item.value}, ' ', '%')  || '%')    
+						</when>
+						
+						<when test="item.key == 'estado_envioph'">
+							and  ee.estado_envioph like ('%' || replace( #{item.value}, ' ', '%')  || '%')    
+						</when>
+						
+						<when test="item.key == 'modalidad_empresa'">
+							and  ee.modalidad_empresa = #{item.value}
+						</when>
+						
+						<when test="item.key == 'destipo'">
+							and   ee.tipo = #{item.value}
+						</when>
+						
+						<otherwise>
+		   					and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+					</choose>
+				  	</foreach> 
+				  </if> 
+				  
+				  
+				<if test="sortField != null">
+					order by ${sortField} ${sortOrder}    
+			    </if>
+			    
+			    <if test="sortField == null">
+					order by e.ruc ASC    
+			    </if>
+			    
+			    
+				 OFFSET #{first} LIMIT #{pageSize} 
+	
+	</select>
+	
+		<select id="contarExpedienteCountPAGINATORPH"  resultType="java.lang.Integer">
+	select     count(*)
+			from  
+			      t_expediente_cuentas_envios ee inner join t_expediente_producto ep 
+			      on ee.id_expediente_producto = ep.id_expediente_producto
+			      inner join t_expediente e on ep.expediente_id = e.expediente_id
+			       left join t_usuario u on ep.idusuario = u.idusuario
+			       left join t_producto p on ep.id_producto = p.id_producto
+			       
+			       where ep.periodo = #{periodo} 
+				   and p.id_negocio = #{idnegocio} 
+				   and p.id_producto in (6) 
+				   
+				   	<if test="filter_fecha != 'TODOS'">
+						<if test="filter_datefecha != null">
+							 <choose>
+							 	<when test="filter_fecha == 'CALIDAD'">
+							 		and cast(ee.fecha_envio_calidad as date) = #{filter_datefecha}
+							 	</when>
+							 	<when test="filter_fecha == 'BANCO'">
+							 		and cast(ee.fecha_envio_banco as date) = #{filter_datefecha}
+							 	</when>
+							 </choose>
+						</if>
+					</if>
+				   
+				   
+				  <if test="filters.entrySet() != null">
+					 <foreach item="item" collection="filters.entrySet()" >
+				 	 <choose>
+						<when test="item.key == 'nom_promotor'">
+							and ( u.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 u.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		 u.nombre like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+			         		)  
+						</when>
+						<when test="item.key == 'des_empresa'">
+							and  e.nombre_empresa like ('%' || replace( #{item.value}, ' ', '%')  || '%')    
+						</when>
+						<when test="item.key == 'ruc'">
+							and  e.ruc like ('%' || replace( #{item.value}, ' ', '%')  || '%')    
+						</when>
+						<when test="item.key == 'estado_envioph'">
+							and  ee.estado_envioph like ('%' || replace( #{item.value}, ' ', '%')  || '%')    
+						</when>
+						
+						<when test="item.key == 'modalidad_empresa'">
+							and  ee.modalidad_empresa = #{item.value}
+						</when>
+						<when test="item.key == 'destipo'">
+							and   ee.tipo = #{item.value}
+						</when>
+						
+						<otherwise>
+		   					and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+					</choose>
+				  	</foreach> 
+				  </if> 
+
+				 
+	</select>
+	
+	
+	<select id="getCountExpedienteCountPAGINATOR"  resultType="java.lang.Integer">
+			select count(*)
+				from ((t_expediente_producto ep inner join t_expediente e on ep.expediente_id = e.expediente_id)
+							        left join t_usuario u on ep.idusuario = u.idusuario)
+							        left join t_producto p on ep.id_producto = p.id_producto 
+				where 1 = 1
+				
+				<if test="filters.entrySet() != null">
+			       <foreach item="item" collection="filters.entrySet()" >
+		   				and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+				   </foreach> 
+		        </if>
+		        
+	</select>
+	
+	<select id="rptGestionLlamada" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="expedienteProductoResult">
+	select  ex.cod_banco, ex.num_doc, ep.id_expediente_producto, (ex.nombre_completo || ' ' || ex.apellido_paterno || ' ' || ex.apellido_materno) as nom_cliente,
+	 ex.territorio_ofc, ex.prestamo_soles, es.descripcion as des_estado,
+			        (usu.apellido_paterno || ' ' || usu.apellido_materno || ', ' || usu.nombre ) as nombre_ejecutivo,
+	 				(sp.apellido_paterno || ' ' || sp.apellido_materno || ', ' || sp.nombre ) as nom_supervisor
+	 		from 
+				t_expediente ex 
+				inner join t_expediente_producto ep
+				on ex.expediente_id = ep.expediente_id
+				inner join t_estado es on
+				es.id_estado = ep.id_estado
+				inner join t_usuario usu
+				on usu.idusuario = ep.idusuario
+				inner join t_usuario sp
+				on sp.idusuario = usu.id_supervisor
+				where  ex.periodo = #{fini}
+				and ex.estado_general=true 
+				and ex.id_producto = #{idproducto}
+				<if test="idusuario !=0 ">
+					and ep.idusuario = #{idusuario}
+				</if>
+				<if test="idsupervisor !=0">
+					and usu.id_supervisor = #{idsupervisor}
+				</if>
+				<if test="sdepartamento!= 'TODOS'">
+					and ex.departamento = #{sdepartamento}
+				</if>
+				<if test="codigo_territorio!= 'TODOS'">
+					and ex.cod_territorio = #{codigo_territorio}
+				</if>
+				<if test="idestado !=0">
+					and  es.id_estado =#{idestado}
+				</if>
+				
+	</select>
+	
+	
+	<select id="rptExportGestionLlamada" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="expedienteProductoResult">
+			select  ex.cod_banco, ex.num_doc, ep.id_expediente_producto, (ex.nombre_completo || ' ' || ex.apellido_paterno || ' ' || ex.apellido_materno) as nom_cliente,
+			 rc.telefono as rc_telefono,rc.fecha as rc_fecha , rc.comentario as rc_comentario,e.descripcion as rc_estado_rescont,
+	 ex.territorio_ofc, ex.prestamo_soles, es.descripcion as des_estado,
+			        (usu.apellido_paterno || ' ' || usu.apellido_materno || ', ' || usu.nombre ) as nombre_ejecutivo,
+	 				(sp.apellido_paterno || ' ' || sp.apellido_materno || ', ' || sp.nombre ) as nom_supervisor
+	 		from 
+				t_expediente ex 
+				inner join t_expediente_producto ep
+				on ex.expediente_id = ep.expediente_id
+				inner join t_resultado_contacto rc
+				on rc.id_expediente_producto = ep.id_expediente_producto
+				inner join t_estado e 
+				on e.id_estado = rc.id_estado
+				inner join t_estado es on
+				es.id_estado = ep.id_estado
+				inner join t_usuario usu
+				on usu.idusuario = ep.idusuario
+				inner join t_usuario sp
+				on sp.idusuario = usu.id_supervisor
+				where  ex.periodo = #{fini}
+				and ex.id_producto = #{idproducto}
+				<if test="idusuario !=0 ">
+					and ep.idusuario = #{idusuario}
+				</if>
+				<if test="idsupervisor !=0">
+					and usu.id_supervisor = #{idsupervisor}
+				</if>
+				<if test="sdepartamento!= 'TODOS'">
+					and ex.departamento = #{sdepartamento}
+				</if>
+				<if test="codigo_territorio!= 'TODOS'">
+					and ex.cod_territorio = #{codigo_territorio}
+				</if>
+				<if test="idestado !=0">
+					and  es.id_estado =#{idestado}
+				</if>
+	</select>
+	
+	    <select id="expAsignadosxEjecutivo" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="expedienteProductoResult" >
+    select  usu.idusuario,(usu.apellido_paterno || ' ' || usu.apellido_materno || ' '|| usu.nombre) as nombre_ejecutivo ,
+			count( case when e.descripcion = 'PENDIENTE' then 1 else null end) as   cant_pendiente,
+			sum (case when e.descripcion = 'PENDIENTE' then ex.prestamo_soles else 0 end) mont_pendiente,
+			count( case when e.descripcion = 'EN PROCESO' then 1 else null end) as   cant_proceso, 
+			sum (case when e.descripcion = 'EN PROCESO' then ex.prestamo_soles else 0 end) mont_proceso,
+			count( case when e.descripcion = 'CONCLUIDO' then 1 else null end) as   cant_concluido ,
+			sum (case when e.descripcion = 'CONCLUIDO' then ex.prestamo_soles else 0 end) mont_concluido,
+			count(ep.id_expediente_producto) as   cant_asignado ,
+			sum (ex.prestamo_soles) as mont_asignado,
+			count(distinct case when ex.estado_expediente then  ex.expediente_id else null end) as cant_presentados
+	from t_expediente_producto  ep 
+			inner join t_expediente ex 
+			on ep.expediente_id = ex.expediente_id
+			inner join t_usuario usu
+			on usu.idusuario = ep.idusuario
+			inner join t_estado e
+			on e.id_estado = ep.id_estado
+			inner join t_producto p
+			on p.id_producto = ep.id_producto
+	where  ex.periodo = #{fini} 
+		   and p.id_negocio = #{idnegocio}
+		 <if test="idproducto !=0">
+		   and ep.id_producto = #{idproducto}
+		 </if>
+		 <if test="codigo_territorio != 'TODOS'">
+			 and ex.cod_territorio = #{codigo_territorio}
+		 </if>
+		 <if test="idsupervisor !=0">
+					and usu.id_supervisor = #{idsupervisor}
+		</if>
+		 <if test="sdepartamento !='TODOS'">
+		   and ex.departamento = #{sdepartamento} 
+		 </if>
+	group by usu.idusuario,usu.apellido_paterno,usu.apellido_materno,usu.nombre 
+	order by usu.apellido_paterno,usu.apellido_materno,usu.nombre 
+    </select>
+    
+    
+   	<select id="rptExportExpPresentadosByEjecutivo" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="expedienteProductoResult" >
+    select   sp.idusuario as id_supervisor,(sp.apellido_paterno || ' ' || sp.apellido_materno || ' '|| sp.nombre) as nom_supervisor ,
+    		usu.idusuario,(usu.apellido_paterno || ' ' || usu.apellido_materno || ' '|| usu.nombre) as nombre_ejecutivo ,
+			count( case when e.descripcion = 'PENDIENTE' then 1 else null end) as   cant_pendiente,
+			sum (case when e.descripcion = 'PENDIENTE' then ex.prestamo_soles else 0 end) mont_pendiente,
+			count( case when e.descripcion = 'EN PROCESO' then 1 else null end) as   cant_proceso, 
+			sum (case when e.descripcion = 'EN PROCESO' then ex.prestamo_soles else 0 end) mont_proceso,
+			count( case when e.descripcion = 'CONCLUIDO' then 1 else null end) as   cant_concluido ,
+			sum (case when e.descripcion = 'CONCLUIDO' then ex.prestamo_soles else 0 end) mont_concluido,
+			count(ep.id_expediente_producto) as   cant_asignado ,
+			sum (ex.prestamo_soles) as mont_asignado,
+			count(distinct case when ex.estado_expediente then  ex.expediente_id else null end) as cant_presentados
+	from t_expediente_producto  ep 
+			inner join t_expediente ex 
+			on ep.expediente_id = ex.expediente_id
+			inner join t_usuario usu
+			on usu.idusuario = ep.idusuario
+			inner join t_estado e
+			on e.id_estado = ep.id_estado
+			inner join t_producto p
+			on p.id_producto = ep.id_producto
+			inner join t_usuario sp
+			on sp.idusuario = usu.id_supervisor
+	where  ex.periodo = #{fini} 
+		   and p.id_negocio = #{idnegocio}
+		 <if test="idproducto !=0">
+		   and ep.id_producto = #{idproducto}
+		 </if>
+		 <if test="codigo_territorio != 'TODOS'">
+			 and ex.cod_territorio = #{codigo_territorio}
+		 </if>
+		 <if test="sdepartamento !='TODOS'">
+		   and ex.departamento = #{sdepartamento} 
+		 </if>
+	group by sp.idusuario,sp.apellido_paterno,sp.apellido_materno,sp.nombre,usu.idusuario,usu.apellido_paterno,usu.apellido_materno,usu.nombre 
+	order by sp.apellido_paterno,sp.apellido_materno,sp.nombre,usu.apellido_paterno,usu.apellido_materno,usu.nombre 
+    </select>
+    
+    
+    <select id="getCountExpedientePorPromotorReferido"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+		where 
+			expediente.periodo=#{e_periodo}  and expediente.tipo_base='REFERIDO'
+		<if test="filters.entrySet() != null">
+	       <foreach item="item" collection="filters.entrySet()" >
+         		<choose>
+					<when test="item.key == 'estadoNuevo'">
+						and  expediente.estado_nuevo = #{item.value} 
+					</when>
+					<otherwise>
+						and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+					</otherwise>
+		  		</choose>
+           </foreach> 
+        </if>
+        
+         <if test="e_idusuario != null">
+		      and expedienteProducto.idusuario = #{e_idusuario}
+         </if>
+         <if test="e_idusuarioC != null">
+      		and usuarioCoordinador.idusuario = #{e_idusuarioC}
+         </if>
+         <if test="e_idusuarioS != null">
+      		 and usuarioSupervisor.idusuario = #{e_idusuarioS}
+         </if>
+	
+	</select>
+	
+	<select id="buscarExpedientePorPromotorPAGINATORReferido"  resultMap="expedienteProductoResult" >
+		select expedienteProducto.id_expediente_producto, expedienteProducto.id_categoria_call as idCategoriaCall, indicadorCall.descripcion as descripcionIndicador, 
+			   expedienteProducto.fecha_asignacion, expediente.expediente_id, expediente.estado_nuevo as estadoNuevo, producto.id_producto,producto.descripcion, negocio.id_negocio, estado.id_estado, usuario.idusuario,
+	           concat(usuarioSupervisor.apellido_paterno, ' ', usuarioSupervisor.apellido_materno, ' ', usuarioSupervisor.nombre) AS nombreSupervisor,  usuarioSupervisor.idusuario as idUsuarioSupervisor, 
+	           concat(usuarioCoordinador.apellido_paterno, ' ', usuarioCoordinador.apellido_materno, ' ', usuarioCoordinador.nombre) AS nombreCoordinador,expediente.estado_expediente as estadoExpediente 
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+		where 
+			expediente.periodo=#{e_periodo} and expediente.tipo_base='REFERIDO'
+			 
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		<choose>
+						<when test="item.key == 'estadoNuevo'">
+							and  expediente.estado_nuevo = #{item.value} 
+						</when>
+						<otherwise>
+							and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+			  		</choose>
+	           </foreach> 
+            </if>
+            
+            <if test="e_idusuario != null">
+		       and expedienteProducto.idusuario = #{e_idusuario}
+            </if>
+            <if test="e_idusuarioC != null">
+		       and usuarioCoordinador.idusuario = #{e_idusuarioC}
+            </if>
+            <if test="e_idusuarioS != null">
+		       and usuarioSupervisor.idusuario = #{e_idusuarioS}
+            </if>
+            
+            <if test="sortField != null">
+				order by ${sortField} ${sortOrder}    
+		    </if>
+		    
+		    <if test="sortField == null">
+				order by expediente.prestamo_soles DESC    
+		    </if>
+		    
+		    
+			 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+	
+	<select id="cantidadxProducto"  resultMap="expedienteProductoResult" >
+		select negocio.descripcion as des_negocio, producto.id_producto, count(producto.id_producto) as cant_exp, producto.descripcion as des_productos 
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+		where 
+			expediente.periodo=#{e_periodo} 
+            <if test="e_idusuario != null">
+		       and expedienteProducto.idusuario = #{e_idusuario}
+            </if>
+            <if test="e_idusuarioC != null">
+            	  <if test="e_idusuarioC=1782  ">
+				  		and negocio.id_negocio = #{idNegocio}  
+				  </if>
+				  <if test="e_idusuarioC!=1782  ">
+				  		  and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+				   </if>	
+            </if>
+            <if test="e_idusuarioS != null">
+		       and usuarioSupervisor.idusuario = #{e_idusuarioS}
+            </if>
+            <if test="e_idusuarioBack != 0">
+            	and negocio.id_negocio = #{idNegocio} 
+		    </if>
+            
+            group by producto.id_producto, negocio.descripcion, producto.descripcion
+            order by negocio.descripcion
+            
+	</select>
+	
+	<select id="rptRankingLLamadas" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="expedienteProductoResult" >
+		    select  usu.idusuario,(usu.apellido_paterno || ' ' || usu.apellido_materno || ' '|| usu.nombre) as nombre_ejecutivo ,
+			count(ep.id_expediente_producto) as   cant_pendiente
+	from t_expediente_producto  ep 
+			inner join t_expediente ex 
+			on ep.expediente_id = ex.expediente_id
+			inner join t_usuario usu
+			on usu.idusuario = ep.idusuario
+			left join t_estado e
+			on e.id_estado = ep.id_estado
+			inner join t_producto p
+			on p.id_producto = ep.id_producto			
+		where  p.id_negocio = #{idnegocio}
+			and ex.periodo = #{fini}
+			 <if test="idproducto != 0">
+		   	and ep.id_producto = #{idproducto}
+		   	</if>
+		   	and exists (select rc.* from t_resultado_contacto rc where rc.id_expediente_producto = ep.id_expediente_producto
+		   	and cast(rc.fecha as date)  &gt;= #{finiLLam}
+		  and cast(rc.fecha as date) &lt;= #{ffinLlam} )  
+	group by usu.idusuario,usu.apellido_paterno,usu.apellido_materno,usu.nombre 
+	order by cant_pendiente desc, usu.apellido_paterno,usu.apellido_materno,usu.nombre ;
+    </select>
+    
+    
+    <select id="rptProduccionEjecutivo"  resultMap="expedienteProductoResult" >
+		select expedienteProducto.id_expediente_producto, expedienteProducto.id_categoria_call as idCategoriaCall, indicadorCall.descripcion as descripcionIndicador, 
+			   expedienteProducto.fecha_asignacion, expediente.expediente_id, expediente.estado_nuevo as estadoNuevo, producto.id_producto, negocio.id_negocio, estado.id_estado, usuario.idusuario,
+	           concat(usuarioSupervisor.apellido_paterno, ' ', usuarioSupervisor.apellido_materno, ' ', usuarioSupervisor.nombre) AS nombreSupervisor,  usuarioSupervisor.idusuario as idUsuarioSupervisor, 
+	           concat(usuarioCoordinador.apellido_paterno, ' ', usuarioCoordinador.apellido_materno, ' ', usuarioCoordinador.nombre) AS nombreCoordinador,expediente.estado_expediente as estadoExpediente
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		inner join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call
+		where 
+			expediente.periodo=#{e_periodo} 
+			
+			<if test="departamento != null and departamento !=''">
+				and expediente.departamento = #{departamento}
+			</if>
+			<if test="provincia != null and provincia != ''">
+				and expediente.provincia = #{provincia} 
+			</if>
+			<if test="distrito !=null and distrito !=''">
+				expediente.distrito = #{distrito} 
+			</if>
+			
+			 and expediente.estado_general=true
+			 and expediente.estado_expediente=true and indicadorCall.generar_expediente = true
+            <if test="e_idusuario != null">
+		       and expedienteProducto.idusuario = #{e_idusuario}
+            </if>
+            <if test="e_idusuarioC != null">
+            	<choose>
+            		<when test="idUsuario == 2071">
+						and negocio.id_negocio = #{idNegocio}
+					</when>
+					<otherwise>
+						and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+					</otherwise>
+				</choose>
+		    </if>
+            <if test="e_idusuarioS != null">
+		       and usuarioSupervisor.idusuario = #{e_idusuarioS}
+            </if>
+            
+            <if test="id_productoS != 0">
+		       and expedienteProducto.id_producto = #{id_productoS}
+            </if>
+            
+            <if test="tipo_baseS != ''">
+		       and expediente.tipo_base = #{tipo_baseS}
+            </if>
+
+            <if test="f_prioridad != 'TODOS'">
+		       and expediente.prioridad_cliente = #{f_prioridad}
+            </if>
+            
+            <if test="idNegocio != 0">
+		       and negocio.id_negocio = #{idNegocio}
+            </if>
+            
+            <if test="sortField != null">
+				order by ${sortField} ${sortOrder}    
+		    </if>
+		    
+		    <if test="sortField == null">
+				order by expediente.prestamo_soles DESC    
+		    </if>
+		    
+			
+	</select>
+	
+	<select id="rptRankingLLamdasxEjecutivoProducto" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="expedienteProductoResult" >
+	select  usu.idusuario,(usu.apellido_paterno || ' ' || usu.apellido_materno || ' '|| usu.nombre) as nombre_ejecutivo ,
+		   p.id_producto, p.descripcion as des_productos,
+			count(ep.id_expediente_producto) as   cant_pendiente
+	from t_expediente_producto  ep 
+			inner join t_expediente ex 
+			on ep.expediente_id = ex.expediente_id
+			inner join t_usuario usu
+			on usu.idusuario = ep.idusuario
+			left join t_estado e
+			on e.id_estado = ep.id_estado
+			inner join t_producto p
+			on p.id_producto = ep.id_producto			
+		where  p.id_negocio = #{idnegocio}
+			and ex.periodo = #{fini}
+			 <if test="idproducto != 0">
+		   	and ep.id_producto = #{idproducto}
+		   	</if>
+		   	and exists (select rc.* from t_resultado_contacto rc where rc.id_expediente_producto = ep.id_expediente_producto
+		   	and cast(rc.fecha as date)  &gt;= #{finiLLam}
+		  and cast(rc.fecha as date) &lt;= #{ffinLlam} )            
+	group by usu.idusuario,usu.apellido_paterno,usu.apellido_materno,usu.nombre,p.id_producto, p.descripcion
+	order by cant_pendiente desc;
+    </select>
+    
+       <select id="expedientesPorSupervisorNoAsignadosxPeriodoxProductoxTerritorioPYMES"  resultMap="expedienteProductoResult" >
+			select expedienteProducto.id_expediente_producto, expediente.*
+		    from 
+			    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto}
+		    	and  expedienteProducto.idusuario IS NULL
+		    	 and expedienteProducto.idusuario_supervisor = #{e_idusuario}
+		    	
+		    	<if test="monto != null">
+				<choose>
+					<when test="tipoComparacion == 0">
+						and expediente.prestamo_soles = #{monto} 
+					</when> 
+					<when test="tipoComparacion == 1">
+						and  expediente.prestamo_soles &lt; #{monto} 
+					</when>
+					<when test="tipoComparacion == 2">
+						and  expediente.prestamo_soles &gt; #{monto} 
+					</when>
+					<when test="tipoComparacion == 3">
+						and  expediente.prestamo_soles &lt;= #{monto} 
+					</when>
+					<when test="tipoComparacion == 4">
+						and  expediente.prestamo_soles &gt;= #{monto} 
+					</when>
+				</choose>
+			</if>
+			
+			<foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach>
+           
+           <foreach item="item" collection="descripcionTerritorios" open=" and (" close=")" separator=" or ">
+        		expediente.territorio_ofc = #{item}
+       		</foreach> 
+       	
+    </select>
+    
+    
+           <select id="sumaExpedientesPorSupervisorNoAsignadosxPeriodoxProductoxTerritorioPYMES"  resultType="BigDecimal" >
+			select sum(expediente.prestamo_soles)
+		    from 
+			    t_expediente_producto expedienteProducto
+			inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+			inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario_supervisor
+			left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+			where 
+				
+				expediente.periodo=#{e_periodo}  and expedienteProducto.id_producto=#{idProducto}
+		    	and  expedienteProducto.idusuario IS NULL
+		    	 and expedienteProducto.idusuario_supervisor = #{e_idusuario}
+		    	
+		    	<if test="monto != null">
+				<choose>
+					<when test="tipoComparacion == 0">
+						and expediente.prestamo_soles = #{monto} 
+					</when> 
+					<when test="tipoComparacion == 1">
+						and  expediente.prestamo_soles &lt; #{monto} 
+					</when>
+					<when test="tipoComparacion == 2">
+						and  expediente.prestamo_soles &gt; #{monto} 
+					</when>
+					<when test="tipoComparacion == 3">
+						and  expediente.prestamo_soles &lt;= #{monto} 
+					</when>
+					<when test="tipoComparacion == 4">
+						and  expediente.prestamo_soles &gt;= #{monto} 
+					</when>
+				</choose>
+			</if>
+			
+			<foreach item="item" collection="oficinas" open=" and (" close=")" separator=" or ">
+         		expediente.nombre_oficina = #{item}
+           </foreach>
+           
+           <foreach item="item" collection="descripcionTerritorios" open=" and (" close=")" separator=" or ">
+        		expediente.territorio_ofc = #{item}
+       		</foreach> 
+       	
+    </select>
+    
+    
+    	<select id="buscarCuentasEnviadasBanco"  resultMap="expedienteProductoResult">
+	
+		select     ee.id_expediente_cuentas_envios as id_expediente_cuentas_envios,
+					e.nombre_empresa as des_empresa,
+				   e.expediente_id as expedienteid,
+				   ee.modalidad_empresa as modalidad_empresa,
+				   ee.moneda_empresa as moneda_empresa,
+				   ee.tipo_empresa as tipo_empresa,
+				   ee.fecha_envio_calidad as fecha_envio_calidad,
+				   ee.fecha_envio_banco as fecha_envio_banco,
+			       ep.periodo,
+			       p.descripcion as des_productos,
+			       (u.apellido_paterno || ' ' || u.apellido_materno || ' ' || u.nombre) as nom_promotor,
+			       e.ruc,
+			       ee.nro_cuentas as cant_pendiente,
+			       (select count(*) from t_expediente_cuentas ec where ec.expediente_id = e.expediente_id and ec.id_expediente_cuentas_envios =  ee.id_expediente_cuentas_envios  and ec.estado_apertura = 'APERTURADO' ) as cant_aperturado,
+			       (select count(*) from t_expediente_cuentas ec where ec.expediente_id = e.expediente_id and ec.id_expediente_cuentas_envios =  ee.id_expediente_cuentas_envios  and ec.estado_apertura = 'RECHAZADO' ) as cant_rechazado,
+			       ee.tipo as destipo,
+			       ee.estado_envioph ,
+			       ep.idusuario as idusuario
+			from  
+			      t_expediente_cuentas_envios ee inner join t_expediente_producto ep 
+			      on ee.id_expediente_producto = ep.id_expediente_producto
+			      inner join t_expediente e on ep.expediente_id = e.expediente_id
+			       left join t_usuario u on ep.idusuario = u.idusuario
+			       left join t_producto p on ep.id_producto = p.id_producto
+			       
+			       where ep.periodo = #{periodo} 
+				   and p.id_negocio = #{idnegocio} 
+				   and p.id_producto in (6) 
+				   
+				   <if test="estado_envioph != null">
+				   		and ee.estado_envioph = #{estado_envioph}
+				   </if>
+	
+	
+				  <if test="filters.entrySet() != null">
+					 <foreach item="item" collection="filters.entrySet()" >
+				 	 <choose>
+						<when test="item.key == 'nom_promotor'">
+							and ( u.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 u.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		 u.nombre like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+			         		)  
+						</when>
+						<when test="item.key == 'des_empresa'">
+							and  e.nombre_empresa like ('%' || replace( #{item.value}, ' ', '%')  || '%')    
+						</when>
+						<when test="item.key == 'ruc'">
+							and  e.ruc like ('%' || replace( #{item.value}, ' ', '%')  || '%')    
+						</when>
+						<when test="item.key == 'modalidad_empresa'">
+							and  ee.modalidad_empresa = #{item.value}
+						</when>
+						
+						<otherwise>
+		   					and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+					</choose>
+				  	</foreach> 
+				  </if> 
+				  
+				  
+				<if test="sortField != null">
+					order by ${sortField} ${sortOrder}    
+			    </if>
+			    
+			    <if test="sortField == null">
+					order by e.ruc ASC    
+			    </if>
+			    
+			    
+				 OFFSET #{first} LIMIT #{pageSize} 
+	
+
+	</select>
+	
+	<select id="contarCuentasEnviadasBanco"  resultType="java.lang.Integer">
+
+	select     count(*)
+			from  
+			      t_expediente_cuentas_envios ee inner join t_expediente_producto ep 
+			      on ee.id_expediente_producto = ep.id_expediente_producto
+			      inner join t_expediente e on ep.expediente_id = e.expediente_id
+			       left join t_usuario u on ep.idusuario = u.idusuario
+			       left join t_producto p on ep.id_producto = p.id_producto
+			       
+			       where ep.periodo = #{periodo} 
+				   and p.id_negocio = #{idnegocio} 
+				   and p.id_producto in (6) 
+				   
+				   <if test="estado_envioph != null">
+				   		and ee.estado_envioph = #{estado_envioph}
+				   </if>
+	
+	
+				  <if test="filters.entrySet() != null">
+					 <foreach item="item" collection="filters.entrySet()" >
+				 	 <choose>
+						<when test="item.key == 'nom_promotor'">
+							and ( u.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 u.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		 u.nombre like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+			         		)  
+						</when>
+						<when test="item.key == 'des_empresa'">
+							and  e.nombre_empresa like ('%' || replace( #{item.value}, ' ', '%')  || '%')    
+						</when>
+						<when test="item.key == 'ruc'">
+							and  e.ruc like ('%' || replace( #{item.value}, ' ', '%')  || '%')    
+						</when>
+						
+						<when test="item.key == 'modalidad_empresa'">
+							and  ee.modalidad_empresa = #{item.value}
+						</when>
+						
+						<otherwise>
+		   					and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+					</choose>
+				  	</foreach> 
+				  </if> 
+
+				 
+	</select>
+	
+	
+	<select id="countCuentasxEstadoEnvioxFiltros"  resultType="java.lang.Integer">
+	select     count(*)
+			from  
+			      t_expediente_cuentas_envios ee inner join t_expediente_producto ep 
+			      on ee.id_expediente_producto = ep.id_expediente_producto
+			      inner join t_expediente e on ep.expediente_id = e.expediente_id
+			       left join t_usuario u on ep.idusuario = u.idusuario
+			       left join t_producto p on ep.id_producto = p.id_producto
+			       
+			       where ep.periodo = #{periodo} 
+				   and p.id_negocio = #{idnegocio} 
+				   and p.id_producto in (6) 
+				   
+				   
+				 	<if test="filter_fecha != 'TODOS'">
+						<if test="filter_datefecha != null">
+							 <choose>
+							 	<when test="estado_envioph == 'ENVIADO CALIDAD'">
+							 		and cast(ee.fecha_envio_calidad as date) = #{filter_datefecha}
+							 	</when>
+							 	<when test="estado_envioph == 'ENVIADO BANCO'">
+							 		and cast(ee.fecha_envio_banco as date) = #{filter_datefecha}
+							 	</when>
+							 </choose>
+						</if>
+					</if>
+					
+				and	ee.estado_envioph =#{estado_envioph}
+				   
+				 
+	</select>
+    
+    
+	<select id="rptEmpresaFiltrar"  resultMap="vGenericReporte"  >
+		select 'CERTICOM' as ffvv,e.ruc,e.nombre_empresa,e.provincia,'PATRICIA MEJIA' as supervisor, u.idusuario, u.nombre, u.apellido_paterno, u.apellido_materno 
+		from t_expediente e
+		inner join t_expediente_producto ep on e.expediente_id = ep.expediente_id 
+		inner join t_usuario u on e.idusuario = u.idusuario
+		where e.periodo = #{e_periodo} and e.condicion_ph= #{condicion_ph}
+	</select>
+	
+	
+	<select id="buscarBasesAsigSupervisorxPeriodoNegocio"  resultMap="expedienteProductoResult" parameterType="com.certicom.certiscan.domain.ExpedienteProducto">
+		select sup.idusuario,(sup.apellido_paterno || ' ' || sup.apellido_materno || ' ' || sup.nombre) as nom_promotor, count(ep.expediente_id)
+	as cant_exp 
+		from t_expediente_producto  ep inner join t_usuario sup on sup.idusuario = ep.idusuario_supervisor 
+		inner join t_expediente e on e.expediente_id = ep.expediente_id
+
+		where 
+		 e.periodo = #{periodo}
+		and ep.id_producto = #{product}
+		and ep.idusuario is null
+		group by sup.idusuario,(sup.apellido_paterno || ' ' || sup.apellido_materno || ' ' || sup.nombre) 
+		order by (sup.apellido_paterno || ' ' || sup.apellido_materno || ' ' || sup.nombre) ;
+	</select>
+	
+	
+		<select id="buscarBasesAsigEjecutivosxSupervisor"  resultMap="expedienteProductoResult" parameterType="com.certicom.certiscan.domain.ExpedienteProducto">
+			select eje.idusuario,(eje.apellido_paterno || ' ' || eje.apellido_materno || ' ' || eje.nombre) as nom_promotor, count(ep.expediente_id)
+	as cant_exp 
+		from t_expediente_producto  ep inner join t_usuario eje on eje.idusuario = ep.idusuario 
+		inner join t_expediente e on e.expediente_id = ep.expediente_id
+		inner join t_producto p on p.id_producto = e.id_producto
+		inner join t_negocio n on n.id_negocio = p.id_negocio 
+		where 
+		 e.periodo = #{periodo}
+		and p.id_producto = #{product}
+		and n.id_negocio = #{negocio}
+		and ep.idusuario_supervisor = #{idUsuarioSupervisor}
+		and ep.id_indicadores_call = #{id_indicadores_call}
+		group by eje.idusuario,(eje.apellido_paterno || ' ' || eje.apellido_materno || ' ' || eje.nombre) 
+		order by (eje.apellido_paterno || ' ' || eje.apellido_materno || ' ' || eje.nombre) ;
+		
+	
+	</select>
+	
+	<select id="validandoOpercionRepet" resultMap="expedienteProductoResult">
+		select p.* from t_expediente_producto p inner join t_expediente e on p.expediente_id = e.expediente_id 
+			where e.nombre_empresa = #{nombre_empresa} 
+			and e.ruc = #{num_doc} 
+			and p.id_producto = #{id_producto} 
+			and e.prestamo_soles = #{prestamo_soles}
+			and e.importe_dolares = #{importe_dolares}
+			and p.idusuario_supervisor = #{id_supervisor} 
+			and p.idusuario = #{idusuario} 
+			and e.periodo = #{periodo}
+	</select>
+	
+	<select id="obtenerExpedientebyProductobyPeriodo" resultMap="expedienteProductoResult">
+		select ep.*, e.expediente_id as expedienteid, ep.id_producto as productoid from (t_expediente e inner join t_expediente_producto ep on e.expediente_id = ep.expediente_id)
+			      inner join t_producto p on p.id_producto = ep.id_producto 
+					where e.periodo = #{periodo} 
+					<if test="id_producto == 6">
+						and e.tipo_ciiu = 'TRABAJABLE'
+					</if>
+					and ep.id_producto = #{id_producto} 
+					and p.id_negocio = #{id_negocio}
+					
+	</select>
+	
+	
+	
+	
+	<resultMap type="java.lang.String" id="rucsResult"> 
+   		<result property="" column="ruc"/> 
+ 	</resultMap> 
+	
+	<select id="buscarExpedientePorPromotorPAGINATORxUBIGEO_rucs"  resultMap="rucsResult" >
+		select expediente.ruc
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call 
+		left join t_sub_producto subproducto on subproducto.id_sub_producto = expediente.id_sub_producto 
+		where 
+			expediente.periodo=#{e_periodo} 
+			
+			<if test="departamento!= null and departamento!= ''">
+				and expediente.departamento = #{departamento} 
+			</if>
+			<if test="provincia!= null and provincia!= ''">
+				and expediente.provincia = #{provincia}  
+			</if>
+			<if test="distrito!= null and distrito!= ''">
+				and expediente.distrito = #{distrito} 
+			</if>
+			
+			 and expediente.estado_general=true
+			 
+			
+            
+            <if test="prioridadAtencion != ''">
+		       and expediente.prioridad = #{prioridadAtencion} 
+            </if>
+            
+            <if test="e_idusuario != null and e_idusuario != 0">
+		       and expedienteProducto.idusuario = #{e_idusuario}
+            </if>
+            <if test="e_idusuarioC != null">
+            	<choose>
+            		<when test="idUsuario == 2071">
+						and negocio.id_negocio = #{idNegocio}
+					</when>
+					<otherwise>
+						and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+					</otherwise>
+				</choose>
+		    </if>
+		    <if test="e_idusuarioBack != 0">
+            	and negocio.id_negocio = 11 
+		    </if>
+		    
+		    
+		    <if test="idUsuario=1782  ">
+				  and negocio.id_negocio = #{idNegocio}  
+			</if>
+				
+				
+            <if test="e_idusuarioS != null and e_idusuarioS != 0">
+		       and usuarioSupervisor.idusuario = #{e_idusuarioS}
+            </if>
+            
+            <if test="id_productoS != 0">
+		       and expedienteProducto.id_producto = #{id_productoS}
+            </if>
+            
+            <if test="tipo_baseS != ''">
+		       and expediente.tipo_base = #{tipo_baseS}
+            </if>
+            
+             <if test="des_estadoS != ''">
+		     and expediente.comentario_contacto like '%'||#{des_estadoS}||'%'
+            </if>
+
+            <if test="f_prioridad != 'TODOS'">
+		       and expediente.prioridad_cliente = #{f_prioridad}
+            </if>
+
+            <if test="f_segmento != null and f_segmento != 'TODOS'">
+		       and expediente.segmento = #{f_segmento}
+            </if>
+            
+          
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<resultMap id="vGenericExclusionPreviaResult" type="src.com.certicom.certiscan.utils.VGeneric">
+		<result column="val01" property="val01" />
+		<result column="val02" property="val02" />
+		<result column="val03" property="val03" />
+		<result column="val04" property="val04" />
+		<result column="int01" property="int01" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+		<result column="int02" property="int02" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+		<result column="int03" property="int03" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+		<result column="int04" property="int04" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+		<result column="int05" property="int05" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	
+	
+	<select id="buscarExpedientePorSupervisorVGeneric"  resultMap="vGenericExclusionPreviaResult" >
+			select 
+expediente.ruc as val01,
+expediente.tipo_ruc as val02,
+expediente.expediente_id as int01,
+producto.descripcion as val03,
+expediente.nombre_empresa as val04,
+producto.id_negocio as int02,
+producto.id_producto as int03,
+expediente.id_estado as int04,
+expediente.id_indicadores_call as int05 
+		  
+	    from 
+	    t_expediente_producto expedienteProducto 
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 		
+		left join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario
+		left join t_producto producto  on producto.id_producto=expediente.id_producto
+		left join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+		left join t_exclusion_ruc exclusionRuc on (exclusionRuc.expediente_id = expediente.expediente_id  and exclusionRuc.estado = true)
+		
+		where 
+			expediente.periodo=#{e_periodo} and negocio.id_negocio= #{idNegocio} and expediente.ruc = #{ruc}
+			 
+	</select>
+	
+		<select id="findByPeriodoByProductoByPeriodoByRUC"  resultMap="expedienteProductoResult" >
+		select expedienteProducto.id_expediente_producto, expediente.provincia as provincia,
+	           expedienteProducto.fecha_asignacion, expediente.expediente_id as expedienteid, usuario.idusuario
+<!-- 	           (coalesce(expediente.nombre_completo,'') || ' '|| coalesce(expediente.apellido_paterno,'') ||' ' || coalesce(expediente.apellido_materno,'')) as nom_cliente  -->
+	    from 
+		    t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id 
+		left join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario
+		where 
+			expediente.periodo=#{periodo} 
+<!-- 			and expediente.expediente_producto=#{idProducto}  -->
+			and expediente.ruc  =#{ruc} 
+			and usuario.idusuario = #{idusuario}
+			limit 1
+	</select>
+	
+	
+	
+		<select id="buscarExpeAsigDepuracionxProductoNegocio"  resultMap="expedienteProductoResult" parameterType="com.certicom.certiscan.domain.ExpedienteProducto">
+		
+		select eje.idusuario,
+		      (eje.apellido_paterno || ' ' || eje.apellido_materno || ' ' || eje.nombre) as nom_promotor, 
+		      count(ex.expediente_id) as cant_exp 
+		from 
+			t_expediente_exclusion_previa eep inner join t_expediente ex on (ex.expediente_id = eep.expediente_id and ex.periodo = eep.periodo)
+	 		inner join t_usuario eje on eje.idusuario = eep.idusuario 
+	 	where 
+	 	    eep.periodo = #{periodo}
+			and ex.id_producto =#{product} 	
+			and tipo_ciiu = 'PEND'
+		group by eje.idusuario
+		order by (eje.apellido_paterno || ' ' || eje.apellido_materno || ' ' || eje.nombre);
+	</select>
+	
+	<select id="findById" resultMap="expedienteProductoResult" >
+		select *,id_producto as productoid,idusuario_supervisor as idUsuarioSupervisor from t_expediente_producto where id_expediente_producto = #{id_expediente_producto}
+	</select>
+	
+	
+	
+	<select id="getListVentasBancaPersona"  resultMap="expedienteProductoResult" >
+		select 
+			   expedienteProducto.id_expediente_producto, 
+			   expedienteProducto.id_categoria_call as idCategoriaCall, 
+			   indicadorCall.descripcion as descripcionIndicador, 
+			   expedienteProducto.fecha_asignacion, 
+			   expediente.expediente_id, 
+			   expediente.estado_nuevo as estadoNuevo, 
+			   producto.id_producto, 
+			   negocio.id_negocio, 
+			   estado.id_estado,
+			   CASE expediente.id_sub_producto WHEN 334 THEN 'LIFE MILE'
+			   ELSE ''
+       		   END AS des_sub_productos,
+       		   expediente.fecha_reg,
+			   expediente.id_sub_producto,
+			   usuario.idusuario,
+<!-- 			   usuario.concesionario as conces, -->
+			   expediente.estado_envioph as estado_envioph , 
+	           concat(usuarioSupervisor.apellido_paterno, ' ', usuarioSupervisor.apellido_materno, ' ', usuarioSupervisor.nombre) AS nombreSupervisor,  
+	           usuarioSupervisor.idusuario as idUsuarioSupervisor, 
+	           concat(usuarioCoordinador.apellido_paterno, ' ', usuarioCoordinador.apellido_materno, ' ', usuarioCoordinador.nombre) AS nombreCoordinador,
+	           expediente.estado_expediente as estadoExpediente,
+	           concat_ws(' - ', NULLIF(expediente.numero_telefono1,''), NULLIF(expediente.numero_telefono2,''), NULLIF(expediente.numero_telefono3,''), NULLIF(expediente.numero_telefono4,''), NULLIF(expediente.numero_telefono5,''), NULLIF(expediente.numero_telefono6,''), NULLIF(expediente.numero_telefono7,''), NULLIF(expediente.numero_telefono8,''), NULLIF(expediente.numero_telefono9,''), NULLIF(expediente.numero_telefono10,''),
+	           					NULLIF(expediente.celular1,''),NULLIF(expediente.celular2,''),NULLIF(expediente.celular3,''),NULLIF(expediente.celular4,''),NULLIF(expediente.celular5,''),NULLIF(expediente.celular6,''),NULLIF(expediente.celular7,''),NULLIF(expediente.celular8,''),NULLIF(expediente.celular9,''),NULLIF(expediente.celular10,'')) as telefonos_contacto,
+	           (select  tcita || ' - ' || c.fecha  ||  ' ' || to_char((c.hora),'HH24:MI PM') from  t_cita_contacto c 
+				 where c.id_expediente_producto =  expedienteProducto.id_expediente_producto  order by c.citacontactoid desc limit 1)  AS ultima_cita,
+				 
+				 expediente.id_sub_producto as id_sub_producto,
+				 subproducto.descripcion as sub_productoDesc
+				
+	    from 
+		    (((((((((t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id) 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto)
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio)
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado = 10)
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario)
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario)
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario)
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call) 
+		left join t_sub_producto subproducto on subproducto.id_sub_producto = expediente.id_sub_producto) 
+		
+		where 
+			expediente.periodo=#{e_periodo}
+			
+			<if test="departamento!= null and departamento!= ''">
+				and expediente.departamento = #{departamento} 
+			</if>
+			<if test="provincia!= null and provincia!= ''">
+				and expediente.provincia = #{provincia}  
+			</if>
+			<if test="distrito!= null and distrito!= ''">
+				and expediente.distrito = #{distrito} 
+			</if>
+			
+			 and expediente.estado_general=true
+			 
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		<choose>
+						<when test="item.key == 'estadoNuevo'">
+							and  expediente.estado_nuevo = #{item.value} 
+						</when>
+						<when test="item.key == 'nombre_completo'">
+							and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+			         		) 
+						</when>
+						<when test="item.key == 'num_doc'">
+							and expediente.num_doc = #{item.value}
+						</when>
+
+						<when test="item.key == 'telefonos_contacto'">
+							and ( expediente.numero_telefono1 like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		      expediente.numero_telefono2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.numero_telefono3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular1 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+			         		) 
+						</when>
+						
+						<when test="item.key == 'id_sub_producto'">
+							 <if test="id_sub_producto != ''">
+						       and expediente.id_sub_producto = 334
+					         </if>
+						</when>
+						
+						
+						<otherwise>
+							and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+			  		</choose>
+	           </foreach> 
+            </if>
+            
+            <if test="prioridadAtencion != ''">
+		       and expediente.prioridad = #{prioridadAtencion} 
+            </if>
+            
+            <if test="e_idusuario != null and e_idusuario != 0">
+		       and expedienteProducto.idusuario = #{e_idusuario}
+            </if>
+				
+				
+            <if test="e_idusuarioS != null and e_idusuarioS != 0">
+		       and usuarioSupervisor.idusuario = #{e_idusuarioS}
+            </if>
+            
+            <if test="id_productoS != 0">
+		       and expedienteProducto.id_producto = #{id_productoS}
+		       
+            </if>
+            
+            <if test="tipo_baseS != ''">
+		       and expediente.tipo_base = #{tipo_baseS}
+            </if>
+            
+
+
+            <if test="f_prioridad != 'TODOS'">
+		       and expediente.prioridad_cliente = #{f_prioridad}
+            </if>
+
+            <if test="f_segmento != null and f_segmento != 'TODOS'">
+		       and expediente.segmento = #{f_segmento}
+            </if>
+            
+            <if test="f_buro != null and f_buro != 'TODOS'">
+				and expediente.buro = #{f_buro}
+         	</if>
+            
+             <if test="des_tipoplanilla != ''">
+	         and expediente.tipo_planilla = #{des_tipoplanilla}
+         </if> 
+            
+            <if test="sortField != null">
+				order by ${sortField} ${sortOrder}    
+		    </if>
+		    
+		    <if test="sortField == null">
+					order by expediente.prestamo_soles DESC    
+		    </if>
+		    
+		    
+			 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+	
+	
+	<select id="getCountVentasBancaPersona"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    (((((((((t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id) 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto)
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio)
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado = 10)
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario)
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario)
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario)
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call)
+		left join t_sub_producto subproducto on subproducto.id_sub_producto = expediente.id_sub_producto) 
+		 
+		where 
+			expediente.periodo=#{e_periodo} 
+			
+			<if test="departamento!= null and departamento!= ''">
+				and expediente.departamento = #{departamento} 
+			</if>
+			<if test="provincia!= null and provincia!= ''">
+				and expediente.provincia = #{provincia}  
+			</if>
+			<if test="distrito!= null and distrito!= ''">
+				and expediente.distrito = #{distrito} 
+			</if> 
+			
+			and expediente.estado_general=true
+		
+		
+		<if test="filters.entrySet() != null">
+	       <foreach item="item" collection="filters.entrySet()" >
+         		<choose>
+					<when test="item.key == 'estadoNuevo'">
+						and  expediente.estado_nuevo = #{item.value} 
+					</when>
+					<when test="item.key == 'nombre_completo'">
+						and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+		         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+		         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+		         		) 
+					</when>
+					<when test="item.key == 'num_doc'">
+						and expediente.num_doc = #{item.value}
+					</when>
+
+						<when test="item.key == 'telefonos_contacto'">
+							and ( expediente.numero_telefono1 like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		      expediente.numero_telefono2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.numero_telefono3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular1 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+			         		) 
+						</when>
+						<when test="item.key == 'id_sub_producto'">
+							 <if test="id_sub_producto != ''">
+						       and expediente.id_sub_producto = 334
+					         </if>
+						</when>
+						
+					<otherwise>
+						and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+					</otherwise>
+		  		</choose>
+           </foreach> 
+        </if>
+        
+        <if test="prioridadAtencion != ''">
+	       and expediente.prioridad = #{prioridadAtencion} 
+        </if>
+            
+         <if test="e_idusuario != null and e_idusuario != 0">
+		      and expedienteProducto.idusuario = #{e_idusuario}
+         </if>
+	     
+         <if test="e_idusuarioS != null and e_idusuarioS != 0">
+      		 and usuarioSupervisor.idusuario = #{e_idusuarioS}
+         </if>
+          <if test="id_productoS != 0">
+      		 and expedienteProducto.id_producto = #{id_productoS}
+      		   
+         </if>
+         
+         <if test="tipo_baseS != ''">
+	         and expediente.tipo_base = #{tipo_baseS}
+         </if>
+         <if test="f_prioridad != 'TODOS'">
+	         and expediente.prioridad_cliente = #{f_prioridad}
+         </if>
+         <if test="f_segmento != null and f_segmento != 'TODOS'">
+	         and expediente.segmento = #{f_segmento}
+         </if>
+         
+           <if test="f_buro != null and f_buro != 'TODOS'">
+	         and expediente.buro = #{f_buro}
+         </if>
+         
+            
+           <if test="des_tipoplanilla != ''">
+	         and expediente.tipo_planilla = #{des_tipoplanilla}
+         </if> 
+	
+	</select>
+	
+	<!-- CONSULTA VENTAS CONCESIONARIO -->
+	
+	<select id="getListVentasConcesionario"  resultMap="expedienteProductoResult" >
+		select 
+				(select descripcion || ' / ' ||  to_char(fec_hora, 'DD-MM-YYYY HH12:MI:SS')  from t_comentario where expediente_id = expediente.expediente_id order by fec_hora limit 1) as descomentario,
+			    expedienteProducto.id_expediente_producto, 
+			   expedienteProducto.id_categoria_call as idCategoriaCall, 
+			   indicadorCall.descripcion as descripcionIndicador, 
+			   expedienteProducto.fecha_asignacion, 
+			   expediente.expediente_id, 
+			   expediente.estado_nuevo as estadoNuevo, 
+			   producto.id_producto, 
+			   negocio.id_negocio, 
+			   estado.id_estado,
+			 
+       		   expediente.fecha_reg,
+			   expediente.id_sub_producto,
+			   usuario.idusuario,
+<!--- 			   usuario.concesionario as conces, --> 
+			   expediente.estado_envioph as estado_envioph , 
+	           concat(usuarioSupervisor.apellido_paterno, ' ', usuarioSupervisor.apellido_materno, ' ', usuarioSupervisor.nombre) AS nombreSupervisor,  
+	           usuarioSupervisor.idusuario as idUsuarioSupervisor,
+	           expediente.estado_expediente as estadoExpediente,
+	           concat_ws(' - ', NULLIF(expediente.numero_telefono1,''), NULLIF(expediente.numero_telefono2,''), NULLIF(expediente.numero_telefono3,''), NULLIF(expediente.numero_telefono4,''), NULLIF(expediente.numero_telefono5,''), NULLIF(expediente.numero_telefono6,''), NULLIF(expediente.numero_telefono7,''), NULLIF(expediente.numero_telefono8,''), NULLIF(expediente.numero_telefono9,''), NULLIF(expediente.numero_telefono10,''),
+	           					NULLIF(expediente.celular1,''),NULLIF(expediente.celular2,''),NULLIF(expediente.celular3,''),NULLIF(expediente.celular4,''),NULLIF(expediente.celular5,''),NULLIF(expediente.celular6,''),NULLIF(expediente.celular7,''),NULLIF(expediente.celular8,''),NULLIF(expediente.celular9,''),NULLIF(expediente.celular10,'')) as telefonos_contacto,
+	           		 
+				 expediente.id_sub_producto as id_sub_producto,
+	
+				vend.concesionario as concesionariotoDesc,
+				vend.concesionario as concesionario,
+				vend.idusuario as id_vendedor
+				<if test="tipo_baseS == 'BANCO'">
+					,(select comentario from t_resultado_contacto   where id_expediente_producto  = expedienteProducto.id_expediente_producto and telefono = expediente.numero_telefono1 order by resultadocontactoid desc limit 1) as com_t1,
+			 		(select comentario from t_resultado_contacto   where id_expediente_producto  = expedienteProducto.id_expediente_producto and telefono = expediente.numero_telefono2 order by resultadocontactoid desc limit 1) as com_t2
+				</if>
+				
+	    from 
+		    (((((((t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id) 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto)
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio)
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado = 10)
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario)
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario)
+
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call) 
+		left join t_usuario vend on vend.idusuario = expediente.idusuario_referente
+		where 
+			expediente.periodo=#{e_periodo}
+			
+			<if test="departamento!= null and departamento!= ''">
+				and expediente.departamento = #{departamento} 
+			</if>
+			<if test="provincia!= null and provincia!= ''">
+				and expediente.provincia = #{provincia}  
+			</if>
+			<if test="distrito!= null and distrito!= ''">
+				and expediente.distrito = #{distrito} 
+			</if>
+			
+			 and expediente.estado_general=true
+			 
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		<choose>
+						<when test="item.key == 'estadoNuevo'">
+							and  expediente.estado_nuevo = #{item.value} 
+						</when>
+						<when test="item.key == 'nombre_completo'">
+							and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+			         		) 
+						</when>
+						<when test="item.key == 'nombreSupervisor'">
+							and ( usuarioSupervisor.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioSupervisor.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioSupervisor.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'nombreCoordinador'">
+							and ( usuarioCoordinador.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioCoordinador.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioCoordinador.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'telefonos_contacto'">
+							and ( expediente.numero_telefono1 like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		      expediente.numero_telefono2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.numero_telefono3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular1 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+			         		) 
+						</when>
+						
+						<when test="item.key == 'id_sub_producto'">
+							 <if test="id_sub_producto != ''">
+						       and expediente.id_sub_producto = 334
+					         </if>
+						</when>
+						
+						<when test="item.key == 'conces'">
+						and  vend.concesionario = #{item.value} 
+						</when>
+						<when test="item.key == 'id_vendedor'">
+						and  vend.idusuario = cast(#{item.value} as integer) 
+						</when>
+						
+						<otherwise>
+							and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+			  		</choose>
+	           </foreach> 
+            </if>
+            
+            
+            <if test="e_idusuario != null and e_idusuario != 0">
+		       and expedienteProducto.idusuario = #{e_idusuario}
+            </if>
+            
+            <if test="cod_perfil != null">
+            	and expediente.idusuario_referente = #{cod_perfil}
+            </if>
+            
+            <if test="tipo_baseS != ''">
+		       and expediente.tipo_base = #{tipo_baseS}
+            </if>
+	
+		    	order by expediente.fecha_reg DESC
+		    
+			 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+	
+	
+	<select id="getCountVentasConcesionario"  resultType="java.lang.Integer" >
+				select 
+			   count(*)
+	    from 
+		    (((((((t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id) 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto)
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio)
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado = 10)
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario)
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario)
+
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call) 
+		left join t_usuario vend on vend.idusuario = expediente.idusuario_referente
+		where 
+			expediente.periodo=#{e_periodo}
+			
+			<if test="departamento!= null and departamento!= ''">
+				and expediente.departamento = #{departamento} 
+			</if>
+			<if test="provincia!= null and provincia!= ''">
+				and expediente.provincia = #{provincia}  
+			</if>
+			<if test="distrito!= null and distrito!= ''">
+				and expediente.distrito = #{distrito} 
+			</if>
+			
+			 and expediente.estado_general=true
+			 
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		<choose>
+						<when test="item.key == 'estadoNuevo'">
+							and  expediente.estado_nuevo = #{item.value} 
+						</when>
+						<when test="item.key == 'nombre_completo'">
+							and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+			         		) 
+						</when>
+						<when test="item.key == 'nombreSupervisor'">
+							and ( usuarioSupervisor.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioSupervisor.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioSupervisor.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'nombreCoordinador'">
+							and ( usuarioCoordinador.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioCoordinador.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioCoordinador.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'telefonos_contacto'">
+							and ( expediente.numero_telefono1 like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		      expediente.numero_telefono2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.numero_telefono3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular1 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+			         		) 
+						</when>
+						
+						<when test="item.key == 'id_sub_producto'">
+							 <if test="id_sub_producto != ''">
+						       and expediente.id_sub_producto = 334
+					         </if>
+						</when>
+						
+						<when test="item.key == 'conces'">
+						and  vend.concesionario = #{item.value} 
+						</when>
+						<when test="item.key == 'id_vendedor'">
+						and  vend.idusuario = cast(#{item.value} as integer) 
+						</when>
+						
+						<otherwise>
+							and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+			  		</choose>
+	           </foreach> 
+            </if>
+            
+            <if test="e_idusuario != null and e_idusuario != 0">
+		       and expedienteProducto.idusuario = #{e_idusuario}
+            </if>
+            
+            <if test="cod_perfil != null">
+            	and expediente.idusuario_referente = #{cod_perfil}
+            </if>
+            
+            <if test="tipo_baseS != ''">
+		       and expediente.tipo_base = #{tipo_baseS}
+            </if>
+	
+	
+	</select>
+	
+	<!-- Consulta Ventas PYMES -->
+	<select id="getListVentasPYMES"  resultMap="expedienteProductoResult" >
+		select 
+			
+			   expedienteProducto.id_expediente_producto, 
+			   expedienteProducto.id_categoria_call as idCategoriaCall, 
+			   indicadorCall.descripcion as descripcionIndicador, 
+			   expedienteProducto.fecha_asignacion, 
+			   expediente.expediente_id, 
+			   expediente.estado_nuevo as estadoNuevo, 
+			   producto.id_producto, 
+			   negocio.id_negocio, 
+			   estado.id_estado,
+       		   expediente.fecha_reg,
+			   expediente.id_sub_producto,
+			   usuario.idusuario,
+<!-- 			   usuario.concesionario as conces, -->
+			   expediente.estado_envioph as estado_envioph , 
+	           concat(usuarioSupervisor.apellido_paterno, ' ', usuarioSupervisor.apellido_materno, ' ', usuarioSupervisor.nombre) AS nombreSupervisor,  
+	           usuarioSupervisor.idusuario as idUsuarioSupervisor, 
+	           concat(usuarioCoordinador.apellido_paterno, ' ', usuarioCoordinador.apellido_materno, ' ', usuarioCoordinador.nombre) AS nombreCoordinador,
+	           expediente.estado_expediente as estadoExpediente,
+	           concat_ws(' - ', NULLIF(expediente.numero_telefono1,''), NULLIF(expediente.numero_telefono2,''), NULLIF(expediente.numero_telefono3,''), NULLIF(expediente.numero_telefono4,''), NULLIF(expediente.numero_telefono5,''), NULLIF(expediente.numero_telefono6,''), NULLIF(expediente.numero_telefono7,''), NULLIF(expediente.numero_telefono8,''), NULLIF(expediente.numero_telefono9,''), NULLIF(expediente.numero_telefono10,''),
+	           					NULLIF(expediente.celular1,''),NULLIF(expediente.celular2,''),NULLIF(expediente.celular3,''),NULLIF(expediente.celular4,''),NULLIF(expediente.celular5,''),NULLIF(expediente.celular6,''),NULLIF(expediente.celular7,''),NULLIF(expediente.celular8,''),NULLIF(expediente.celular9,''),NULLIF(expediente.celular10,'')) as telefonos_contacto,
+				 
+				 expediente.id_sub_producto as id_sub_producto
+				
+	    from 
+		    ((((((((t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id) 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto)
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio)
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado = 10)
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario)
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario)
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario)
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call) 
+	 
+
+		where 
+			expediente.periodo=#{e_periodo}
+			
+			<if test="departamento!= null and departamento!= ''">
+				and expediente.departamento = #{departamento} 
+			</if>
+			<if test="provincia!= null and provincia!= ''">
+				and expediente.provincia = #{provincia}  
+			</if>
+			<if test="distrito!= null and distrito!= ''">
+				and expediente.distrito = #{distrito} 
+			</if>
+			
+			 and expediente.estado_general=true
+			 
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		<choose>
+						<when test="item.key == 'estadoNuevo'">
+							and  expediente.estado_nuevo = #{item.value} 
+						</when>
+						<when test="item.key == 'nombre_completo'">
+							and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+			         		) 
+						</when>
+						<when test="item.key == 'nombreSupervisor'">
+							and ( usuarioSupervisor.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioSupervisor.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioSupervisor.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'nombreCoordinador'">
+							and ( usuarioCoordinador.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioCoordinador.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioCoordinador.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'telefonos_contacto'">
+							and ( expediente.numero_telefono1 like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		      expediente.numero_telefono2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.numero_telefono3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular1 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+			         		) 
+						</when>
+						
+						<when test="item.key == 'id_sub_producto'">
+							 <if test="id_sub_producto != ''">
+						       and expediente.id_sub_producto = 334
+					         </if>
+						</when>
+						
+						<when test="item.key == 'conces'">
+							<if test="item.value !=0">
+								and  vend.concesionario = #{item.value} 
+							</if>
+						</when>
+						
+						<otherwise>
+							and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+						</otherwise>
+			  		</choose>
+	           </foreach> 
+            </if>
+            
+            <if test="prioridadAtencion != ''">
+		       and expediente.prioridad = #{prioridadAtencion} 
+            </if>
+            
+            <if test="e_idusuario != null and e_idusuario != 0">
+		       and expedienteProducto.idusuario = #{e_idusuario}
+            </if>
+            
+            <if test="cod_perfil != null">
+            	and expediente.idusuario_referente = #{cod_perfil}
+            </if>
+            
+            <if test="e_idusuarioC != null">
+            	<choose>
+            		<when test="idUsuario == 2071">
+						and negocio.id_negocio = #{idNegocio}
+					</when>
+					<when test="id_productoS == 6">
+						and negocio.id_negocio = #{idNegocio}
+					</when>
+					<otherwise>
+						and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+					</otherwise>
+				</choose>
+		    </if>
+		    <if test="e_idusuarioBack != 0">
+            	and negocio.id_negocio = 11 
+		    </if>
+		    
+		    
+		    <if test="idUsuario=1782  ">
+				  and negocio.id_negocio = #{idNegocio}  
+			</if>
+				
+				
+            <if test="e_idusuarioS != null and e_idusuarioS != 0">
+		       and usuarioSupervisor.idusuario = #{e_idusuarioS}
+            </if>
+            
+            <if test="id_productoS != 0">
+		       and expedienteProducto.id_producto = #{id_productoS}
+		     
+            </if>
+            
+            <if test="tipo_baseS != ''">
+		       and expediente.tipo_base = #{tipo_baseS}
+            </if>
+            
+             <if test="des_estadoS != ''">
+		     and expediente.comentario_contacto like '%'||#{des_estadoS}||'%'
+            </if>
+
+            <if test="f_prioridad != 'TODOS'">
+		       and expediente.prioridad_cliente = #{f_prioridad}
+            </if>
+
+            <if test="f_segmento != null and f_segmento != 'TODOS'">
+		       and expediente.segmento = #{f_segmento}
+            </if>
+            
+            <if test="f_buro != null and f_buro != 'TODOS'">
+				and expediente.buro = #{f_buro}
+         	</if>
+            
+             <if test="des_tipoplanilla != ''">
+	         	and expediente.tipo_planilla = #{des_tipoplanilla}
+         		</if> 
+            
+            <if test="sortField != null">
+				order by ${sortField} ${sortOrder}    
+		    </if>
+		    
+		    <if test="sortField == null">
+		    	
+					order by expediente.prestamo_soles DESC    
+		    </if>
+		    
+		    
+			 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+	
+	
+		<select id="getCountVentasPYMES"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    ((((((((t_expediente_producto expedienteProducto
+		inner join t_expediente expediente on expedienteProducto.expediente_id=expediente.expediente_id) 
+		inner join t_producto producto  on producto.id_producto=expedienteProducto.id_producto)
+		inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio)
+		inner join t_estado estado on expedienteProducto.id_estado = estado.id_estado and estado.id_categoria_estado = 10)
+		inner join t_usuario usuario on usuario.idusuario = expedienteProducto.idusuario)
+		left join t_usuario usuarioSupervisor on usuario.id_supervisor = usuarioSupervisor.idusuario)
+		left join t_usuario usuarioCoordinador on usuario.id_coordinador = usuarioCoordinador.idusuario)
+		left join t_indicadores_call indicadorCall on indicadorCall.id_indicadores_call = expedienteProducto.id_indicadores_call)
+		where 
+			expediente.periodo=#{e_periodo} 
+			
+			<if test="departamento!= null and departamento!= ''">
+				and expediente.departamento = #{departamento} 
+			</if>
+			<if test="provincia!= null and provincia!= ''">
+				and expediente.provincia = #{provincia}  
+			</if>
+			<if test="distrito!= null and distrito!= ''">
+				and expediente.distrito = #{distrito} 
+			</if> 
+			
+			and expediente.estado_general=true
+		
+		
+		<if test="filters.entrySet() != null">
+	       <foreach item="item" collection="filters.entrySet()" >
+         		<choose>
+					<when test="item.key == 'estadoNuevo'">
+						and  expediente.estado_nuevo = #{item.value} 
+					</when>
+					<when test="item.key == 'nombre_completo'">
+						and ( expediente.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+		         		 expediente.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+		         		 expediente.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%')
+		         		) 
+					</when>
+					<when test="item.key == 'nombreSupervisor'">
+							and ( usuarioSupervisor.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioSupervisor.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioSupervisor.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'nombreCoordinador'">
+							and ( usuarioCoordinador.apellido_paterno like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		 usuarioCoordinador.apellido_materno  like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+<!-- 			         		 usuarioCoordinador.nombre_completo like ('%' || replace( #{item.value}, ' ', '%')  || '%') -->
+			         		) 
+						</when>
+						<when test="item.key == 'telefonos_contacto'">
+							and ( expediente.numero_telefono1 like ('%' || replace( #{item.value}, ' ', '%')  || '%')  or
+			         		      expediente.numero_telefono2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.numero_telefono3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular1 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular2 like ('%' || replace( #{item.value}, ' ', '%')  || '%') or
+			         		      expediente.celular3 like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+			         		) 
+						</when>
+						<when test="item.key == 'id_sub_producto'">
+							 <if test="id_sub_producto != ''">
+						       and expediente.id_sub_producto = 334
+					         </if>
+						</when>
+						<when test="item.key == 'conces'">
+							<if test="item.value !=0">
+								and  vend.concesionario = #{item.value} 
+							</if> 
+						</when>
+						
+					<otherwise>
+						and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+					</otherwise>
+		  		</choose>
+           </foreach> 
+        </if>
+        
+        <if test="prioridadAtencion != ''">
+	       and expediente.prioridad = #{prioridadAtencion} 
+        </if>
+            
+         <if test="e_idusuario != null and e_idusuario != 0">
+		      and expedienteProducto.idusuario = #{e_idusuario}
+         </if>
+         <if test="cod_perfil != null">
+          	and expediente.idusuario_referente = #{cod_perfil}
+ 		</if>
+         
+         <if test="e_idusuarioC != null">
+           	<choose>
+           		<when test="idUsuario == 2071">
+					and negocio.id_negocio = #{idNegocio}
+				</when>
+				<when test="id_productoS == 6">
+					and negocio.id_negocio = #{idNegocio}
+				</when>
+				<otherwise>
+					and usuarioCoordinador.idusuario = #{e_idusuarioC} 
+				</otherwise>
+			</choose>
+	     </if>
+	     <if test="e_idusuarioBack != 0">
+            	and negocio.id_negocio = 11 
+		  </if>
+	     
+	         <if test="idUsuario=1782  ">
+				  and negocio.id_negocio = #{idNegocio}  
+			</if>
+	     
+         <if test="e_idusuarioS != null and e_idusuarioS != 0">
+      		 and usuarioSupervisor.idusuario = #{e_idusuarioS}
+         </if>
+           <if test="id_productoS != 0">
+      		 and expedienteProducto.id_producto = #{id_productoS}
+      		 
+         </if>
+         
+         <if test="tipo_baseS != ''">
+	         and expediente.tipo_base = #{tipo_baseS}
+         </if>
+         <if test="f_prioridad != 'TODOS'">
+	         and expediente.prioridad_cliente = #{f_prioridad}
+         </if>
+         <if test="f_segmento != null and f_segmento != 'TODOS'">
+	         and expediente.segmento = #{f_segmento}
+         </if>
+         
+           <if test="f_buro != null and f_buro != 'TODOS'">
+	         and expediente.buro = #{f_buro}
+         </if>
+         
+          <if test="des_estadoS != ''">
+		       and expediente.comentario_contacto like '%'||#{des_estadoS}||'%'  
+            </if>
+            
+           <if test="des_tipoplanilla != ''">
+	         and expediente.tipo_planilla = #{des_tipoplanilla}
+         </if> 
+	
+	</select>
+	
+</mapper>	

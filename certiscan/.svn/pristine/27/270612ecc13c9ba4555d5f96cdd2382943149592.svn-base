@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+		<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: 0px">  
+    			<p:menuitem value="Home" url="#" />  
+    			<p:menuitem value="Negocio" url="#" />
+    			<p:menuitem value="Proyecto" url="#" />   
+		</p:breadCrumb>	
+		
+		<p:messages showDetail="false" showSummary="true" id="grlGeneral" />
+		<!-- listado de clientes -->
+			<h:form id="frmLista" style="margin-top: 5px;">
+				<p:commandButton value="Nuevo Proyecto" icon="icon-add"  actionListener="#{centro_atencionMB.iniciaNuevoCentro_Atencion}"  
+					update=":dlgDetNuevo" oncomplete="PF('dlgNuevo').show();" >
+					<p:resetInput target=":dlgDetNuevo" /> 
+				</p:commandButton>
+				<br/>
+				<br/>
+				<p:dataTable widgetVar="dtAgencia" var="c" value="#{centro_atencionMB.listaCentro_Atencion}" filteredValue="#{centro_atencionMB.listaCentro_AtencionFilter}"  
+					emptyMessage="No hay Perfiles Disponibles." rowIndexVar="nro" 
+					paginator="true"
+					rows="10" paginatorPosition="bottom" 
+					style="FONT-SIZE: 10px; width:70%">
+    				
+    				<f:facet name="header">Lista de Proyecto</f:facet>
+    				<p:column headerText="Ord." style="width: 3%">
+    					#{nro+1}
+    				</p:column>
+					
+					
+    				<p:column headerText="Nombre" filterStyle="width:100px;" filterBy="#{c.nombre}" filterMatchMode="contains" >
+						#{c.nombre}
+					</p:column>
+    				
+    				<p:column headerText="Descripción" >
+						#{c.descripcion}
+					</p:column>
+    				
+    				<p:column headerText="Responsales" >
+						#{c.responsable}
+					</p:column>
+					
+    				<p:column headerText="Razon Social" >
+						#{c.des_razon_social}
+					</p:column>					
+    				
+    				<p:column headerText="Acciones" >
+
+    					<p:commandButton
+							oncomplete="PF('dlgNuevo').show();" actionListener="#{centro_atencionMB.iniciaEditarCentro_Atencion(c)}"  update=":dlgDetNuevo" title="Editar"
+							icon="icon-edit">
+						</p:commandButton>
+    					
+    					<p:commandButton
+							oncomplete="PF('dlgEliminar').show();" title="Eliminar"
+							icon="icon-delete">
+							<f:setPropertyActionListener target="#{centro_atencionMB.centro_atencion}" value="#{c}"/>
+						</p:commandButton>
+    				
+    				</p:column>
+    			
+    		</p:dataTable>
+			</h:form>
+			
+			<!-- Dialogo nuevo -->
+			<p:dialog header="Proyecto" widgetVar="dlgNuevo"
+					resizable="false" id="dlgDetNuevo" appendTo="@(body)"  modal="true">
+					
+				<h:form>
+					<p:messages showDetail="false" showSummary="true" id="msgCliente" />
+					<h:panelGrid columns="2" >
+					
+						#{"Nombre:"}
+						<p:inputText value="#{centro_atencionMB.centro_atencion.nombre}" style="width:150px"/>
+						
+						#{"Empresa:"}
+						<p:selectOneMenu style="width:160px" value="#{centro_atencionMB.centro_atencion.id_empresa}" required="true" requiredMessage="Seleccione una Empresa">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+							<f:selectItems value="#{centro_atencionMB.listaEmpresas}" var="p" itemLabel="#{p.razon_social}" itemValue="#{p.id_empresa}"/> 
+						</p:selectOneMenu>								
+					
+						#{"Descripción:"}
+						<p:inputText value="#{centro_atencionMB.centro_atencion.descripcion}" style="width:150px"/>
+					
+						#{"Responsable:"}
+						<p:inputText value="#{centro_atencionMB.centro_atencion.responsable}" style="width:150px"/>
+		
+						<p:commandButton value="Guardar" actionListener="#{centro_atencionMB.guardarCentroAtencion()}"  update="msgCliente :frmLista" 
+						 	oncomplete="validar(xhr, status, args)" icon="icon-disk" />
+						
+						<p:commandButton value="Cancelar"  onclick="PF('dlgNuevo').hide()"
+							icon="icon-cancel" />
+							
+						
+					</h:panelGrid>
+				
+				</h:form>				
+
+			</p:dialog>
+			
+
+			<!-- Dialogo Eliminar -->
+		
+			<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)"
+				message="¿Desea eliminar este proyecto?"
+				header="Eliminar Proyecto" severity="alert"
+				widgetVar="dlgEliminar">
+				<h:form >
+						<p:commandButton value="Eliminar"
+							actionListener="#{centro_atencionMB.eliminarCentroAtencion()}"
+							update=":frmLista :grlGeneral"
+							oncomplete="PF('dlgEliminar').hide()"   
+							icon="icon-delete" />
+						
+						<p:commandButton value="Cancelar" onclick="PF('dlgEliminar').hide()"
+							icon="icon-cancel" />
+				</h:form>
+			</p:confirmDialog>
+		
+		
+		
+		<!-- js de validacion -->
+		<script>
+			function validar(xhr, status, args) {
+				if(args.validationFailed) {
+					
+				} else { 
+					PF('dlgNuevo').hide();
+				}
+			}
+			
+		</script>
+		
+		
+		
+
+
+
+	</ui:define>
+</ui:composition>
+</html>

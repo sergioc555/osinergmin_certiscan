@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+	
+		<p:panel>
+			
+			<h:form>
+				<p:breadCrumb>  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Configuracion" url="#" />
+    				<p:menuitem value="Gestion de Estado" url="estado" />   
+				</p:breadCrumb>	
+			</h:form>
+			
+			
+			<br/>
+			<!-- growl general -->			
+			<p:messages  id="msgGeneral" showDetail="false" showSummary="true" closable="true" />		
+			
+			<!-- tootlbar -->
+			<h:form style="margin-bottom: 8px">
+				<p:toolbarGroup align="top">
+					<p:commandButton value="Nuevo Estado" icon="icon-add" update=":dlgDetNuevo" oncomplete="dlgNuevo.show();"
+						actionListener="#{estadoMB.nuevoEstado()}"/>
+				</p:toolbarGroup>
+			</h:form>
+			
+				<!-- listado de Estado -->
+			<h:form id="formLista">
+				<p:dataTable id="dataTable" var="p" value="#{estadoMB.listaEstados}" widgetVar="dtEstado" 
+					emptyMessage="No hay Estado Disponibles." rowIndexVar="nro" 
+					 style="FONT-SIZE: 10px; ">
+					<f:facet name="header">Lista Estados</f:facet>
+					
+					<p:column headerText="Orden" width="25" style="width:3%" >
+						#{nro+1}
+					</p:column>
+					
+					<p:column style="width:30%" headerText="Descripción">
+						<h:outputText value="#{p.descripcion}" />
+					</p:column>
+					
+					
+					<p:column style="width:2%" headerText="Estado">
+						<p:commandLink update="@form :msgGeneral" actionListener="#{estadoMB.cambiarEstado(p)}"  > 
+							<h:graphicImage value="#{p.estado?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}" 
+							title="#{p.estado?'Activo':'Bloqueado'}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="Editar/Elim." style="width:10%;text-align: center">
+						<p:commandButton 
+							actionListener="#{estadoMB.editarEstado(p)}" update=":dlgDetNuevo"
+							oncomplete="dlgNuevo.show();" title="Editar" icon="icon-edit" />
+
+						<p:commandButton
+							actionListener="#{estadoMB.eliminarEstado(p)}"
+							oncomplete="dlgEliminar.show();" title="Eliminar"
+							icon="icon-delete" />
+							
+						</p:column>
+
+				</p:dataTable>
+			</h:form>
+			
+			<!-- #############    Dialogos      ################ -->
+			
+			<!-- dialogo nuevo/editar perfil -->
+			
+			<p:dialog header="Registrar Estado" widgetVar="dlgNuevo" appendToBody="true"
+					resizable="false" id="dlgDetNuevo" modal="true">
+					
+					<h:form>
+					<p:messages showDetail="false" showSummary="true" id="msgNuevo" closable="true"/>
+					
+					<h:panelGrid columns="2">
+
+						#{"Descripción:"}
+						<p:inputText value="#{estadoMB.estadoSelec.descripcion}" id="nombre"
+							required="true" maxlength="50" label="nombre" requiredMessage="Se necesita un nombre"
+							style="width:200px;" />
+
+					</h:panelGrid>
+					<br/>
+					<p:commandButton value="Guardar" actionListener="#{estadoMB.guardarEstado()}"
+						update=":formLista msgNuevo" oncomplete="validar(xhr, status, args)" icon="icon-disk" />
+					
+					<p:commandButton value="Cancelar" type="button" onclick="dlgNuevo.hide()" icon="icon-cancel" />
+					</h:form>	
+			</p:dialog>
+			
+
+			<!-- dialogo eliminar -->	
+			<p:confirmDialog id="dlgDetEliminar" appendToBody="true"
+					message="¿Desea eliminar este Estado" header="Eliminar Estado"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					<p:commandButton value="Eliminar"
+						update=":formLista :msgGeneral"
+						actionListener="#{estadoMB.confirmaEliminar}"
+						oncomplete="dlgEliminar.hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="dlgEliminar.hide()" icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>
+		
+		
+		</p:panel>
+		
+		<script>
+			
+		function validar(xhr, status, args) {
+			if (!args.esValido) {
+				jQuery('#dlgDetNuevo').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				//limpiando
+				dlgNuevo.hide();
+				console.log("cerro")
+			}
+		}
+
+
+		</script>
+		
+	</ui:define>
+</ui:composition>
+</html>

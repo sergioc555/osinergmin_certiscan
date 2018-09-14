@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+	    <h:panelGroup rendered="#{loginMB.usuario.es_nuevo}">
+	    
+	    <p:panel header="Cambiar contraseña"  style="width:420px;" >
+	    
+	    	<script>
+				jQuery(function(){
+					jQuery("#formMenu :input").log("deshabilitabdo todo").attr("disabled", true);
+					jQuery("#formMenu").stop().log("opacando").animate({"opacity": "0.2"}, "fast");
+				});
+   			 </script>
+	    
+	    
+	    	<h3>Por favor cambie su contraseña</h3>
+	    	<h:form>
+	    		<h:panelGrid columns="2">
+	    			#{"Nueva Contraseña:"}
+	    			<h:inputSecret value="#{loginMB.nuevoPass}" required="true" requiredMessage="Escriba una contraseña" />
+	    			
+	    			#{"Repita nueva contraseña"}
+	    			<h:inputSecret value="#{loginMB.nuevoPassRe}" required="true" requiredMessage="Repita la contraseña" />
+	    		</h:panelGrid>
+	    		<p:commandButton value="Cambiar contraseña"  update=":smsPass :formMenu" action="#{loginMB.cambiarPassword()}" />
+
+	    	</h:form>
+	    	<p:messages id="smsPass"  showDetail="false" showSummary="true" />
+	    </p:panel>
+	    
+	    </h:panelGroup>
+	    
+	    
+	    
+	    
+	    
+	    <h:panelGroup rendered="#{!loginMB.usuario.es_nuevo}">
+	    	<div id="welcomeLogo" >
+<!--  		    	<div id="txtLogo">certiscan</div>  -->
+<!--  		    	<div id="txtSlogan">SISTEMA DE DIGITALIZACION DE EXPEDIENTES</div> -->
+		    </div>
+	    </h:panelGroup>
+	    
+	   
+	    <!-- ## dialogos ## -->
+	     <p:dialog header="Mensaje Importante" widgetVar="dlgMensaje" appendTo="@(body)"
+					resizable="false" id="dlgDetMensaje" modal="true" style="text-align:center;"
+					visible="#{loginMB.parametro.ind_activo and 
+						loginMB.perfilUsuario.cod_perfil eq 46 or 
+						loginMB.perfilUsuario.cod_perfil eq 44 or
+						loginMB.perfilUsuario.cod_perfil eq 42 or 
+						loginMB.perfilUsuario.cod_perfil eq 51 or
+						loginMB.perfilUsuario.cod_perfil eq 1}" >			
+			<h:panelGrid columns="2">
+				<h:graphicImage  library="img" name="siExcl.png" />
+				<h:outputText value="#{loginMB.parametro.descripcion}" 
+					style="font-weight:bold;font-size:14px;" />
+			</h:panelGrid>
+			<p:commandButton value="Continuar" type="button" onclick="PF('dlgMensaje').hide()" />
+		</p:dialog>
+	   
+		<p:dialog   header="Importante" widgetVar="dlgLavadoActivos" appendTo="@(body)" closable="false"
+					resizable="false" id="dlgDetLavadoActivos" modal="true" style="text-align:center;"
+					visible="#{loginMB.parametro_lavado_activo}" position="top" >
+				
+				<h:outputText style="font-weight:bold;font-size:1.4em;color:blue;" value="Estimado Colaborador,Por favor tomarse un tiempo en revisar la lectura"/>	
+						
+				<h:panelGrid columns="1">		
+					<object type="application/pdf" data="#{loginMB.path_pdf}" height="500px" width="980px">
+            Your browser can't display pdf, <a href="#{loginMB.path_pdf}">click</a> to download pdf instead.
+        			</object>
+					<h:form>
+        			<h:panelGrid columns="2">
+					<p:commandButton value="Lectura Comprendida" disabled="#{!loginMB.primeraLectura }"  actionListener="#{loginMB.registrarLecturaComprendida()}" oncomplete="PF('dlgLavadoActivos').hide()"/>
+					<p:commandButton value="Siguiente" disabled="#{loginMB.primeraLectura}" type="button" onclick="PF('dlgLavadoActivos').hide()" />
+					</h:panelGrid>
+					</h:form>	
+				</h:panelGrid>		
+		</p:dialog>	    
+	    
+	    
+	</ui:define>
+</ui:composition>
+</html>

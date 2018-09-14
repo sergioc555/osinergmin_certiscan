@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+		
+		<style>
+			.ui-picklist-list 
+			{height:400px!important;}
+			.ui-tabs-nav
+			{width:160px!important;}
+			.ui-tabs-selected
+			{background-color:#E6E6E6!important;}
+			.ui-tabs-panels{
+				float:left!important;
+			}
+		</style>
+		
+		
+		<p:ajaxStatus onstart="statusDialog.show()" oncomplete="statusDialog.hide()">
+		</p:ajaxStatus>
+ 
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+		    <p:graphicImage value="resources/img/procesando.gif" width="30" height="30" />
+		</p:dialog>
+		
+		<pe:blockUI  target="pnContainer" widgetVar="BlockUIWidget">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Buscando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+		
+		<p:panel id="pnContainer" >
+			<h:form>
+				<p:breadCrumb>  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Bases" url="#" />
+    				<p:menuitem value="Carga de Bases" url="cargaBanco" />   
+				</p:breadCrumb>	
+			</h:form>
+			<br/>
+			
+			<p:tabView id="tbWizard" orientation="left" activeIndex="#{facturaBancoMB.indiceTab}" dynamic="true" >
+			
+				<p:tab title="CARGA BASE BANCO">
+						
+						<h:panelGroup>
+						<h:form id="frmCarga">
+							<p:messages showDetail="false" showSummary="true" id="msgNuevo" style="font-size:10px;" closable="true" />
+							<h:panelGrid columns="1">
+								<h:panelGrid columns="7">
+									<h:outputLabel value="Periodo:" style="font-weight:  bold;"/>
+									<h:panelGroup>
+										<h:selectOneMenu value="#{facturaBancoMB.mes}">
+											<f:selectItem  itemLabel="Enero" itemValue="01" />
+											<f:selectItem  itemLabel="Febrero" itemValue="02" />
+											<f:selectItem  itemLabel="Marzo" itemValue="03" />
+											<f:selectItem  itemLabel="Abril" itemValue="04" />
+											<f:selectItem  itemLabel="Mayo" itemValue="05" />
+											<f:selectItem  itemLabel="Junio" itemValue="06" />
+											<f:selectItem  itemLabel="Julio" itemValue="07" />
+											<f:selectItem  itemLabel="Agosto" itemValue="08" />
+											<f:selectItem  itemLabel="Setiembre" itemValue="09" />
+											<f:selectItem  itemLabel="Octubre" itemValue="10" />
+											<f:selectItem  itemLabel="Noviembre" itemValue="11" />
+											<f:selectItem  itemLabel="Diciembre" itemValue="12" />
+										</h:selectOneMenu>
+										<h:selectOneMenu value="#{facturaBancoMB.anio}">
+											<f:selectItem  itemLabel="2014" itemValue="2014" />
+											<f:selectItem  itemLabel="2015" itemValue="2015" />
+											<f:selectItem  itemLabel="2016" itemValue="2016" />
+											<f:selectItem  itemLabel="2017" itemValue="2017" />
+											<f:selectItem  itemLabel="2018" itemValue="2018" />
+											<f:selectItem  itemLabel="2019" itemValue="2019" />
+											<f:selectItem  itemLabel="2020" itemValue="2020" />
+										</h:selectOneMenu>
+									</h:panelGroup>
+									<h:outputLabel value="Negocio:" style="font-weight:  bold;"/>
+									<h:selectOneMenu value="#{facturaBancoMB.negocio.id_negocio}">
+										<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" noSelectionOption="true" />
+										<f:selectItems itemLabel="#{neg.descripcion}" itemValue="#{neg.id_negocio}" value="#{facturaBancoMB.listaNegocios}" var="neg" />
+										<f:ajax  event="valueChange" listener="#{facturaBancoMB.buscarProductosXNegocio()}" execute="@this" render=":tbWizard:frmCarga:cmbProd :tbWizard:frmCarga:uploadFile :tbWizard:frmTabla :tbWizard:frmTabla2 :tbWizard:sms :tbWizard:frmListaPrev" />
+									</h:selectOneMenu>
+									<h:outputLabel value="Producto:" style="font-weight:  bold;"/>
+									<h:selectOneMenu id="cmbProd" value="#{facturaBancoMB.producto.id_producto}">
+										<f:selectItems itemLabel="#{prod.descripcion}" itemValue="#{prod.id_producto}" value="#{facturaBancoMB.listaProductos}" var="prod" />
+										<f:ajax  event="valueChange" listener="#{facturaBancoMB.limpiarExpedientes()}" execute="@this" render=":tbWizard:frmListaPrev :tbWizard:sms" />
+									</h:selectOneMenu>
+									<p:commandButton value="Explorar" actionListener="#{facturaBancoMB.generar()}" update="frmCarga:msgNuevo :tbWizard:frmTabla :tbWizard:frmTabla2 :tbWizard:frmListaPrev" />
+								</h:panelGrid>
+								<h:outputLabel value="Cargar Excel:" style="font-weight:  bold;"/>
+								<p:fileUpload fileUploadListener="#{facturaBancoMB.cargaArchivoBanco}"  disabled="#{facturaBancoMB.mostrarUpload}"
+									allowTypes="/(\.|\/)(xls)$/" description="selecione archivo hoja de calculo .xls"
+									label="Seleccionar" id="uploadFile" process="@this :tbWizard:frmCarga :tbWizard:frmTabla :tbWizard:frmTabla2 :tbWizard:frmListaPrev"
+									uploadLabel="Subir" 
+									cancelLabel="Cancelar"
+									update="frmCarga:msgNuevo" style="font-size:11px;" />
+							</h:panelGrid>
+							
+						</h:form>
+			
+			
+						<h:form id="frmTabla">
+							
+							<h:panelGrid id="columnas" rendered="#{facturaBancoMB.archivoCargado and !facturaBancoMB.mostrarUpload}" columns="4">
+							
+								<p:dataTable var="cc" value="#{facturaBancoMB.columnasSourceObject}"  
+									selectionMode="single" selection="#{facturaBancoMB.columnaCartera}" rowKey="#{cc.orden}" style="FONT-SIZE: 9px; ">
+									
+									<p:column headerText="Orden">
+										#{cc.orden+1}
+									</p:column>	
+				    				<p:column headerText="Columna Banco (xls)" width="120" >
+										#{cc.descripcion}
+									</p:column>				
+			    			
+			    				</p:dataTable>
+			    				<p:dataTable var="cl" value="#{facturaBancoMB.columnasValidas}"
+								    style="FONT-SIZE: 8px;" rendered="false" >
+								
+				    				<p:column headerText="Columnas Disponibles (Formato)" style="color:red;" >
+										<h:outputText value="#{cl}" style="color:blue;" />
+									</p:column>				
+			    				</p:dataTable>
+			    				
+								<p:dataTable var="fd" value="#{facturaBancoMB.listFormatoDetalle}"
+								    style="FONT-SIZE: 9px;" rowKey="#{fd.idFormatoDetalle}" >
+									<p:column headerText="Orden" style="color:red;" >
+										<h:outputText value="#{fd.orden}" style="color:blue;" />
+									</p:column>
+				    				<p:column headerText="Columnas Disponibles (Formato)" style="color:red;" >
+										<h:outputText value="#{fd.cabecera.descripcion}" style="color:blue;" />
+									</p:column>
+								</p:dataTable>
+								
+							</h:panelGrid>
+						</h:form>
+							<br/>
+							<p:messages showDetail="false" showSummary="true" id="sms" style="font-size:10px;" closable="true" />
+							<br/>
+						<h:form id="frmTabla2">
+							<h:panelGrid id="opciones" columns="4" rendered="#{facturaBancoMB.archivoCargado and !facturaBancoMB.mostrarUpload}">
+								<p:commandButton rendered="false" value="Extraer" actionListener="#{facturaBancoMB.extraerData()}" update=":tbWizard:frmListaPrev" icon="icon-extraer"/>
+							
+								<p:commandButton value="1 Guardar" id="cmdGuardar"  oncomplete="confirmation.show();"  icon="icon-persistir" disabled="#{facturaBancoMB.disabledGuardar}" />
+								
+								
+								<p:commandButton value="2 Siguiente" actionListener="#{facturaBancoMB.siguienteCambiarTab()}" update=":pnContainer" icon="icon-next"/>
+								
+								
+							</h:panelGrid>
+		
+						</h:form>
+					
+						
+						<h:form id="frmListaPrev" >
+			
+							<p:dataTable  var="exp" rows="10" value="#{facturaBancoMB.listaExpedientes}" 
+								emptyMessage="No hay Datos Disponibles." rowIndexVar="nro" 
+								style="FONT-SIZE: 10px;width:850px;">
+								<f:facet name="header">Vista Previa de Data Cargada</f:facet>
+								
+								<p:columns var="cl" value="#{facturaBancoMB.columnasDy}" columnIndexVar="colIndex" >
+									<f:facet name="header">
+						                <h:outputText value="#{cl.header}" />
+						            </f:facet>
+						            <h:outputText value="#{exp[cl.property]}" />
+								</p:columns>
+			
+							</p:dataTable>
+
+						</h:form>
+					</h:panelGroup>
+						
+				</p:tab>
+				
+				<p:tab title="CARGA Y VALIDACIÓN INDECOPI">
+					<h3>VALIDAR DATOS DE LA BASE DE DATOS DEL BANCO VS INDECOPI</h3>
+					<h:form>
+					<h:panelGrid columns="3">
+						<h:outputLabel value="Periodo de Última Carga Indecopi:" style="font-size: 14px; color: #26A599; font-weight: bold;"
+										/>
+						
+						<h:outputLabel value="ADVERTENCIA: No se ha Detectado Ninguna Carga Indecopi. " style="font-size: 14px; color: red; font-weight: bold;"
+										/>
+						
+						<p:commandButton value="VALIDAR DATOS" actionListener="#{facturaBancoMB.validarExpedientes()}" update=":pnContainer" icon="icon-validate" 
+							/>
+						<p:ajaxStatus style="width:14px;height:14px;" >  
+				    			<f:facet name="start">  
+				        			<h:graphicImage value="resources/img/active.gif" />  
+				    			</f:facet>  
+				    			<f:facet name="complete">  
+				        			<h:outputText value="" />  
+				    			</f:facet>  
+						</p:ajaxStatus>
+					</h:panelGrid>
+					
+					<br/><br/>
+					        <p:dataTable  var="exp" rows="15" value="#{facturaBancoMB.listaExpedientes}" 
+								emptyMessage="No hay Datos Disponibles." rowIndexVar="nro" 
+								style="FONT-SIZE: 10px;width:850px;">
+								<f:facet name="header">Data en Base de Datos</f:facet>
+								
+								<p:columns var="cl" value="#{facturaBancoMB.columnasDy}" columnIndexVar="colIndex" >
+									<f:facet name="header">
+						                <h:outputText value="#{cl.header}" />
+						            </f:facet>
+						            <h:outputText value="#{exp[cl.property]}" />
+								</p:columns>
+			
+							</p:dataTable>
+							<p:commandButton value="Siguiente" style="visibility:hidden" actionListener="#{facturaBancoMB.siguienteCambiarTab()}" update=":pnContainer" disabled="true"/>
+					</h:form>
+				</p:tab>
+				
+				<p:tab title="EXPEDIENTES EXCLUIDOS">
+					<h3>Expedientes Excluidos</h3>
+
+					<h:form>
+					<h:panelGrid columns="2" >
+						<p:commandButton value="Registrar Expedientes Excluidos" actionListener="#{facturaBancoMB.registrarExpedientesExcluidos()}" update=":pnContainer" icon="icon-persistir" />
+					
+						<p:ajaxStatus style="width:14px;height:14px;" >  
+			    			<f:facet name="start">  
+			        			<h:graphicImage value="resources/img/active.gif" />
+			    			</f:facet>  
+			    			<f:facet name="complete">  
+			        			<h:outputText value="" />  
+			    			</f:facet>  
+						</p:ajaxStatus>
+					</h:panelGrid>
+					
+					
+					<br/>
+							<p:dataTable  var="exp" rows="10" value="#{facturaBancoMB.listaExpedientesBloqueados}" 
+								emptyMessage="No hay Datos Disponibles." rowIndexVar="nro" 
+								style="FONT-SIZE: 10px;width:850px;">
+								<f:facet name="header">Expedientes Bloqueados</f:facet>
+								
+								<p:columns var="cl" value="#{facturaBancoMB.columnasDy}" columnIndexVar="colIndex" >
+									<f:facet name="header">
+						                <h:outputText value="#{cl.header}" />
+						            </f:facet>
+						            <h:outputText value="#{exp[cl.property]}" />
+								</p:columns>
+			
+							</p:dataTable>
+							<p:commandButton style="visibility:hidden" value="Siguiente" actionListener="#{facturaBancoMB.siguienteCambiarTab()}" update=":pnContainer" disabled="true"/>
+					</h:form>
+				</p:tab>
+				
+			</p:tabView>
+
+		
+		</p:panel>
+		
+		
+		<p:confirmDialog  appendToBody="true" id="confirmBaseDialog" message="Esta seguro de registrar la base en el sistema?"  
+                    header="CONFIRMACIÓN" severity="alert" widgetVar="confirmation">  
+	       <h:form>
+	            <p:commandButton id="confirm" value="SI" actionListener="#{facturaBancoMB.persistir()}" update=":tbWizard:sms :tbWizard:frmTabla2" 
+	            				oncomplete="confirmation.hide()"  />  
+	            <p:commandButton id="decline" value="NO" onclick="confirmation.hide();" type="button" />   
+	         </h:form>   
+	   </p:confirmDialog> 
+		
+		
+	</ui:define>
+	
+	
+    <script type="text/javascript">  
+            function mostrarAsignarEjecutivo(xhr, status, args) {  
+                if(args.noEsValido) {  
+                     alert('SI');
+                } else {
+                	alert('NO');
+                	dlgEjecutivo.show();
+                }  
+            }
+            
+
+            function hacerClick(elementName) {  
+                 element = document.getElementById(elementName);
+                 element.click();
+            }  
+    </script> 
+	
+</ui:composition>
+</html>

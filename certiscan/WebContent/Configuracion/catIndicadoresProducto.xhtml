@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+			<h:form>
+				<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: 0px">  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Indicadores" url="#" />
+    				<p:menuitem value="Gestión de Indicadores" url="catIndicadoresProducto" />   
+				</p:breadCrumb>	
+			</h:form>
+			
+			
+			<br/>
+			<!-- sms general -->			
+			<p:messages  id="sms" showDetail="false" showSummary="true"  closable="true"/>		
+			
+			<!-- listado de documen -->
+			<h:form id="formListaCategoriaIndicadoresProducto">
+				<p:commandButton value="Nueva Categoría para Indicadores de Producto" icon="icon-add" update=":dlgDetNuevo" oncomplete="PF('dlgNuevo').show();" actionListener="#{categoriaIndicadoresProductoMB.nuevoCategoriaIndicadoresProducto()}" />
+				<br>
+				</br>
+				<p:dataTable widgetVar="dtCategoriaIndicadoresProducto" var="p" value="#{categoriaIndicadoresProductoMB.listaCategoriaIndicadoresProducto}"  filteredValue="#{categoriaIndicadoresProductoMB.listaFiltroCategoriaIndicadoresProducto}" 
+					emptyMessage="No hay Tipo Indicadores Disponibles." rowIndexVar="nro" 
+					paginator="true"
+					rows="10" paginatorPosition="bottom" 
+					style="FONT-SIZE: 10px; width:60%">
+					<f:facet name="header">Lista de Tipo Indicadores</f:facet>
+					
+					<p:column headerText="Ord." style="width:3%" >
+						#{nro+1}
+					</p:column>
+					<p:column  headerText="Descripción" filterBy="#{p.descripcion}" filterMatchMode="contains" filterStyle="width:95%;" >
+						<h:outputText value="#{p.descripcion}" />
+					</p:column>
+					
+					<p:column style="width:6%" headerText="Estado">
+						<p:commandLink update="@form :sms" actionListener="#{categoriaIndicadoresProductoMB.cambiarEstado(p)}" > 
+							<h:graphicImage value="#{p.estado?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}" 
+							title="#{p.estado?'Activo':'Bloqueado'}" />
+						</p:commandLink>
+					</p:column>
+					
+					
+					<p:column headerText="Opciones" style="width:14%;text-align: center">
+					
+						<p:commandButton title="Editar"  update=":dlgDetNuevo" actionListener="#{categoriaIndicadoresProductoMB.editarCategoriaIndicadoresProducto(p)}"
+										 oncomplete="PF('dlgNuevo').show();" icon="icon-edit">
+						</p:commandButton>
+
+						<p:commandButton title="Eliminar" oncomplete="PF('dlgEliminar').show()" actionListener= "#{categoriaIndicadoresProductoMB.eliminarCategoriaIndicadoresProducto(p)}" update=":dlgDetEliminar" icon="icon-delete">
+							 
+						</p:commandButton>
+								
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+			
+			<!-- #############    Dialogos      ################ -->
+			
+			<!-- dialogo nuevo/editar Indicadores -->
+			
+			<p:dialog header="Datos para tipología de Indicadores" widgetVar="dlgNuevo" appendTo="@(body)"
+					  resizable="false" id="dlgDetNuevo" modal="true">
+					
+					<h:form>
+						<p:messages showDetail="false" showSummary="true" id="msgNuevo" closable="true"/>
+						
+						<h:panelGrid columns="2">
+
+							#{"Descripción:"}
+							<p:inputText style="width:200px" value="#{categoriaIndicadoresProductoMB.categoriaIndicadoresProductoSelec.descripcion}" required="true" maxlength="50" requiredMessage="Se necesita una descripcion" />
+		
+							#{"Estado:"}
+							<p:selectOneMenu style="width:210px" value="#{categoriaIndicadoresProductoMB.categoriaIndicadoresProductoSelec.estado}" required="true" requiredMessage="Seleccione un Estado">
+								<f:selectItem itemLabel="Seleccione..." itemValue="" />
+								<f:selectItem itemLabel="ACTIVO" itemValue="TRUE" />
+								<f:selectItem itemLabel="DESACTIVO" itemValue="FALSE" />
+							</p:selectOneMenu>
+						
+						</h:panelGrid>
+						<br/>
+						<p:commandButton value="Guardar" actionListener="#{categoriaIndicadoresProductoMB.guardarCategoriaIndicadoresProducto()}"
+									 update=":formListaCategoriaIndicadoresProducto msgNuevo"
+									 oncomplete="validar(xhr, status, args)" icon="icon-disk" />
+									 
+						<p:commandButton value="Cancelar" type="button"	 onclick="PF('dlgNuevo').hide();"  icon="icon-cancel" />
+					</h:form>	
+			</p:dialog>
+			
+
+			<!-- dialogo eliminar -->	
+			<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)"
+					message="¿Desea eliminar este Tipo de Indicador?" header="Eliminar Tipo Indicadores"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					Tipo Indicador a eliminar: <h:outputText value="#{categoriaIndicadoresProductoMB.categoriaIndicadoresProducto.descripcion}" style="font-size:12px;font-weight: bold;" /> 
+					<br/>
+					<p:commandButton value="Eliminar"
+						update=":formListaCategoriaIndicadoresProducto :sms"
+						actionListener="#{categoriaIndicadoresProductoMB.confirmaEliminar()}"
+						oncomplete="dlgEliminar.hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar"  type="button" 
+						onclick="PF('dlgEliminar').hide()" icon="icon-cancel"/>
+
+				</h:form>
+			</p:confirmDialog>
+		<script>
+			
+		function validar(xhr, status, args) {
+			if (!args.esValido) {
+				jQuery('#dlgDetNuevo').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				//limpiando
+				PF('dlgNuevo').hide();
+			}
+		}
+
+		</script>
+		
+	</ui:define>
+</ui:composition>
+</html>

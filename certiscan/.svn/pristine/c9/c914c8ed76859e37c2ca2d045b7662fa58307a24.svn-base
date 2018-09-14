@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+
+		<p:panel>
+			<h:form>
+				<p:breadCrumb>
+					<p:menuitem value="Home" url="#" />
+					<p:menuitem value="Digitalización" url="#" />
+					<p:menuitem value="Generación de Medios" url="generaMedios" />
+				</p:breadCrumb>
+			</h:form>
+			<br />
+
+			<p:messages id="sms" showDetail="false" showSummary="true"
+				closable="true" />
+				
+				<h:panelGrid>
+					<h:form id="form">
+						<p:panel id="panel">
+							
+							
+							
+								<h:panelGrid columns="8" id="pBusqueda">
+									
+									#{"Filtro Por : "}
+							 		<p:selectOneMenu style="width:150px"
+										value="#{generaMediosMB.expedienteDocumentoFilter.filtradopor}">
+										<f:selectItem itemLabel="Código de Lote" itemValue="1" />
+										<f:selectItem itemLabel="Fecha de Registro" itemValue="2" />
+										<p:ajax event="change" update=":form" listener="#{generaMediosMB.cambiarCombo()}"/>
+									</p:selectOneMenu>
+									
+									<h:outputText value="Fecha Inicio" rendered="#{generaMediosMB.bfecha}"/>
+									<p:calendar style="width:200px"  readonlyInput="true" rendered="#{generaMediosMB.bfecha}" value="#{generaMediosMB.expedienteDocumentoFilter.fec_ini}" pattern="dd/MM/yyyy" locale="es" maxdate="#{generaMediosMB.fechaActual}"
+										  navigator="true"  required="true" requiredMessage="Seleccione una fecha de inicio">
+										  <p:ajax event="dateSelect" update="form:calFfin" listener="#{generaMediosMB.cambiarFecha()}"/>
+									</p:calendar>
+									
+									<h:outputText value="Fecha Fin" rendered="#{generaMediosMB.bfecha}"/>
+									<p:calendar id="calFfin" readonlyInput="true" rendered="#{generaMediosMB.bfecha}"  style="width:200px" value="#{generaMediosMB.expedienteDocumentoFilter.fec_fin}" mindate="#{generaMediosMB.fechaLimite}" pattern="dd/MM/yyyy" locale="es"
+										  navigator="true"  required="true" requiredMessage="Seleccione una fecha de fin" maxdate="#{generaMediosMB.fechaActual}">
+									</p:calendar>
+									
+									<h:panelGrid id="pBusqueda2" rendered="#{generaMediosMB.bexpediente}" >
+										<p:focus context="pBusqueda2" />
+										<h:inputText
+											value="#{generaMediosMB.expedienteDocumentoFilter.vfiltradopor}"
+											style="width:150px;height:25px;background-color:#FAFFBD;font-size: 1.5em;font-weight: bold;font-family: Arial"
+											required="true"
+											requiredMessage="Debe escribir el filtro seleccionado">
+											</h:inputText>
+									</h:panelGrid>
+			
+									<p:commandButton value="Generar" icon="icon-search"
+										update=":formListaLotes :sms" 
+										actionListener="#{generaMediosMB.buscarExpedientes()}"
+										 />
+									
+								</h:panelGrid>
+								
+								<h:panelGrid columns="4">
+								
+									#{"Tipo: "}
+									<p:selectOneMenu style="width:150px"
+										value="#{generaMediosMB.formato}">
+										<f:selectItem itemLabel="--TODOS--" itemValue=""/>
+										<f:selectItem itemLabel="PDF" itemValue="PDF" />
+										<f:selectItem itemLabel="COMPRIMIDO" itemValue="ZIPRAR" />
+										<p:ajax event="change"/>
+									</p:selectOneMenu>
+									
+									#{'Estado:'}
+							
+									<p:selectOneMenu  value="#{generaMediosMB.id_indicador}">	
+										<f:selectItem itemLabel="--TODOS--" itemValue="0"/>
+										<f:selectItems value="#{generaMediosMB.listIndicadorCalls}" var="o" itemLabel="#{o.descripcion}" itemValue="#{o.id_indicadores_call}" />
+										<p:ajax event="change"/>
+									</p:selectOneMenu>
+									
+								</h:panelGrid>
+								
+							</p:panel>
+			
+						</h:form>
+			
+			
+			
+						<!-- listado de agencias -->
+						<h:form id="formListaLotes">
+								<p:dataTable widgetVar="dtMedios" var="p"
+									value="#{generaMediosMB.listMedios}"
+									emptyMessage="No hay Expediente Disponibles." rowIndexVar="nro"
+									paginator="true" rows="10" paginatorPosition="bottom"
+									paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="10,100,200,500,1000" style="FONT-SIZE: 10px; ">
+									<f:facet name="header">Lista de Lotes</f:facet>						
+									
+									<p:column headerText="Orden" width="25" style="width:10px">
+										#{nro+1}
+									</p:column>
+									
+									<p:column style="width:70px" headerText="Medio">
+										<h:outputText value="#{p.descripcion}" />
+									</p:column>
+									
+									<p:column style="width:70px" headerText="Total Archivos">
+										<h:outputText value="#{p.total_archivos}" />
+									</p:column>
+																								
+									<p:column style="width:70px" headerText="Peso">
+										<h:outputText value="#{p.descripcion_peso}" />
+									</p:column>
+									
+									<p:column style="width:40px" headerText="Archivo">
+									
+										<p:commandButton title="Ver Archivos" update=":frmVerArchivo"
+											oncomplete="PF('dlgVerArchivo').show()" 
+											actionListener="#{generaMediosMB.visualizarExpediente(p)}"
+											icon="icon-search">
+										
+										</p:commandButton>
+									
+									</p:column>	
+									
+								</p:dataTable>
+							
+							
+					</h:form>
+				</h:panelGrid>
+			<!-- #############    Dialogos      ################ -->
+
+			<!-- dialogo nuevo/editar perfil -->
+			
+			<p:dialog header="Operación Exitosa" widgetVar="dlgSuccessGroup" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetSuccesGroup" modal="true" >
+					<h:form id="fmSucces">
+					
+					<h:panelGrid columns="2">
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Ya se agrego la incidencia"/>
+					</h:panelGrid>
+					
+					<p:commandButton value="Aceptar" type="button" onclick="PF('dlgSuccessGroup').hide()"  />
+					</h:form>
+			</p:dialog>
+			
+			<p:dialog header="Selección" widgetVar="dlgSeleccion" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetSeleccion" modal="true" >
+					<h:form id="fmSeleccion">
+					
+					<h:panelGrid columns="2">
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Seleccione un expediente para agrupar"/>
+					</h:panelGrid>
+					
+					<p:commandButton value="Aceptar" type="button" onclick="PF('dlgSeleccion').hide()"  />
+					</h:form>
+			</p:dialog>
+			
+			<p:dialog header="Ver Archivo" widgetVar="dlgVerArchivo" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetVerArchivo" modal="true" >
+					
+					<h:form id="frmVerArchivo">
+						<p:panel menuTitle="Datos del Medio" header="Datos del Medio">
+						<h:panelGrid columns="4">
+							
+							#{'Medio:'}
+							<h:outputLabel style="font-weight:bold;color:blue;" value="#{generaMediosMB.medioSelected.descripcion}"></h:outputLabel>
+							
+							#{'Total Archivos:'}
+							<h:outputLabel style="font-weight:bold;color:blue;" value="#{generaMediosMB.medioSelected.total_archivos}"></h:outputLabel>
+							
+							#{'Peso:'}
+							<h:outputLabel style="font-weight:bold;color:blue;" value="#{generaMediosMB.medioSelected.descripcion_peso}"></h:outputLabel>
+						
+						</h:panelGrid>
+						</p:panel>
+						<h:panelGrid columns="2">
+						
+							<p:dataTable widgetVar="dtMedios" var="p"
+									value="#{generaMediosMB.listaExpedienteDocumentosVista}"
+									emptyMessage="No hay Expediente Disponibles." rowIndexVar="nro"
+									paginator="true" rows="10" paginatorPosition="bottom"
+									paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="10,100,200,500,1000" style="FONT-SIZE: 10px; ">
+									<f:facet name="header">Lista de Archivos</f:facet>						
+									
+									<p:column headerText="Orden" width="25" style="width:10px">
+										#{nro+1}
+									</p:column>
+									
+									<p:column style="width:70px" headerText="Nombre Archivo">
+										<h:outputText value="#{p.nombre_archivo}" />
+									</p:column>
+									
+									<p:column style="width:70px" headerText="Nro Páginas" rendered="#{p.grupo_formato == 'PDF'}">
+										<h:outputText value="#{p.nro_paginas}" rendered="#{p.grupo_formato == 'PDF'}"/>
+									</p:column>
+									
+									<p:column style="width:70px" headerText="Peso">
+										<h:outputText value="#{p.descripcion_peso}" />
+									</p:column>
+									
+									<p:column style="width:70px" headerText="Tipo Archivo">
+										<h:outputText value="#{p.tipo_archivo}" />
+									</p:column>
+							</p:dataTable>
+						</h:panelGrid>
+						<h:panelGrid columns="2">
+							
+							<p:commandButton value="Cancelar"  oncomplete="PF('dlgVerArchivo').hide()"
+								>							
+							</p:commandButton>
+						
+						</h:panelGrid>
+					</h:form>
+					
+			</p:dialog>
+					
+					
+			
+		</p:panel>
+
+		<script>
+			function validar(xhr, status, args) {
+				if (!args.esValido) {
+					jQuery('#dlgDetNuevo').effect("shake", {
+						times : 1
+					}, 100);
+				} else {
+					PF('dlgNuevo').hide();
+				}
+			}
+
+			function validarMasivo(xhr, status, args) {
+				if (!args.esValido) {
+					jQuery('#dlgDetMasivo').effect("shake", {
+						times : 1
+					}, 100);
+				} else {
+					PF('dlgMasivo').hide();
+				}
+			}
+
+			function levanarAlerta() {
+				PF('dlgCargando').show();
+			}
+			
+		</script>
+
+	</ui:define>
+</ui:composition>
+</html>

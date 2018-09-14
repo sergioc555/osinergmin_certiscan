@@ -1,0 +1,423 @@
+package com.certicom.certiscan.commons;
+
+import java.math.BigDecimal;
+
+public class Constante {
+
+	public static final String SESSION_USER = "usuarioEnSesion";
+	public static final String SESSION_CONF = "configuracionEnSesion";
+	public static final String SESSION_TIPODOC = "tipoDocumentoEnSesion";
+	public static final String SESSION_IMAGEN = "imagenEnSesion";
+	public static final String SESSION_LOTECLIENTEBD = "loteClienteBDEnSesion";
+	public static final String SESSION_PERIODO = "periodoEnSesion";
+	public static final String SESSION_INDICE = "indiceEnSesion";
+	public static final String SESSION_UR = "urEnSesion";
+	public static final String SESSION_LOG = "logEnSesion";
+
+	// SEPARADOR PARA ARCHIVOS DE TIPO TXT
+	public static final String TXT_SEPARATOR = "/";
+
+	/***************** Estados ****************/
+	public static final int ESTADO_ANTES_RECIBIDO = 0;
+	public static final int ESTADO_RECIBIDO = 1;
+	public static final int ESTADO_CARGOENTREGA = 11;
+	public static final int ESTADO_CARGORECIBO = 12; // De aqui sales mi stock
+														// de los que estan por
+														// preparar
+	public static final int ESTADO_PREPARADO = 2;
+	public static final int ESTADO_PREP_DIGITALIZAR = 31;
+	public static final int ESTADO_DIGITALIZADO = 32;
+	public static final int ESTADO_PREP_CONTROL_DE_CALIDAD = 41;
+	public static final int ESTADO__CONTROL_DE_CALIDAD = 42;
+	public static final int ESTADO_PREP_1ERA_DIGITACION = 51;
+	public static final int ESTADO_1RA_DIGITACION = 52;
+	public static final int ESTADO_PREP_2DA_DIGITACION = 61;
+	public static final int ESTADO_2DA_DIGITACION = 62;
+	public static final int ESTADO_3RA_DIGITACION = 72;
+
+	/*************** Indicadores ************/
+	public static final String IND_DESEMPASTAR = "1";
+	public static final boolean IND_ACTUAL = true;
+	public static final boolean IND_ACTUAL_FALSE = false;
+	public static final boolean IND_PROCESADO = true;
+	public static final boolean IND_PROCESADO_FALSE = false;
+	public static final int INCID_PREPARACION = 2;
+	public static final boolean IND_DIGITADO = true;
+	public static final boolean IND_DIGITADO_FALSE = false;
+	public static final boolean IND_CULMINADO = true;
+	public static final boolean IND_CULMINADO_FALSE = false;
+
+	/****************** Rutas *******************/
+	public static final String RUTA_SERVER_IMG_BUSQ = "/imagenesSDD/";
+	public static final String RUTA_SERVER_IMG_TD = "/tipoDocumental/";
+	public static final String RUTA_SERVER_IMG = "/var/www/html/imagenesSDD/";
+	public static final String RUTA_LOCAL_IMG = "/Digitalizacion/";
+
+	/****************** Conexiones Serv. Imagenes *******************/
+	public static final String HOST_SERVER_IMG = "10.162.170.103";// "172.17.100.108";//"172.17.100.74";//
+	public static final String USER_SERVER_IMG = "admin";// "root";
+	public static final String PASS_SERVER_IMG = "fedora";// "123456";//"s0p0rt32013";
+
+	/****************** Conexiones Serv. App. *******************/
+	public static final String HOST_SERVER_APP = "10.162.170.103";// "172.17.100.108";//"172.17.100.74";//
+	public static final String USER_SERVER_APP = "admin";
+	public static final String PASS_SERVER_APP = "fedora";// "123456";//"s0p0rt32013";
+
+	/****************** Conexion BD y HTTP *******************/
+	public static final String RUTAURL = "http://10.162.170.103/html/tipoDocumental/";// "http://172.17.100.108/html/tipoDocumental/";//"http://172.17.100.74/html/tipoDocumental/";//
+	public static final String URLBD = "jdbc:postgresql://10.162.170.103:5432/Digitalizacion_ONP";// "jdbc:postgresql://172.17.100.108:5432/Digitalizacion";//"jdbc:postgresql://172.17.100.74:5432/Digitalizacion";//
+	public static final String USSERBD = "postgres";//
+	public static final String PASSBD = "postgres";// "135abc246";
+
+	/****************** Para Configuracion Scanner *******************/
+	public static final String PREFIJO_IMG = "Page-";
+
+	public static final String EXTENSION_IMG = ".jpg";
+	public static final String EXTENSION_ZIPEADO = ".zip";
+	public static final int NRO_DIG_NUMERACION_SCANNER = 3;
+
+	/************ Para Tipos de Imagenes ********/
+	public static final int TIPO_IMG_ULTIMA_SUBLOTE = 5;
+	public static final int TIPO_IMG_DOCUMENTO = 4;
+
+	/*************** Para perfiles ****************/
+	public static final int ADMINISTRADOR = 1;
+	public static final int DIGITALIZADOR = 2;
+	public static final int PREPARADOR = 29;
+	public static final int DIGITADOR = 8;
+	public static final int OPERADOR_CC = 10;
+	public static final int MONITOR_PREPARACION = 5;
+	public static final int MONITOR_DIGITALIZACION = 6;
+	public static final int MONITOR_DIGITACION = 7;
+	public static final int MONITOR_CC = 9;
+
+	/************* para tpos de mensaje: will *******/
+	public static final Integer ERROR = 1;
+	public static final Integer FATAL = 2;
+	public static final Integer INFORMACION = 3;
+	public static final Integer ADVERTENCIA = 4;
+	public static final String PROCESO_PREPARACION = "PREPARACION";
+	public static final String PROCESO_DIGITALIZACION = "DIGITALIZACION";
+
+	/* INDICES */
+	public static final Integer COD_TD_INDICE = 1;
+	public static final Integer COD_INDICE_APELLIDO_PATERNO = 4;
+	public static final Integer COD_INDICE_APELLIDO_MATERNO = 5;
+	public static final Integer COD_INDICE_NOMBRE = 6;
+
+	public static final String TIPOCARGA_MASIVO = "MASIVO";
+	public static final String TIPOCARGA_INDIVIDUAL = "INDIVIDUAL";
+
+	public static final Integer ESTADO_REASIGNADO = 31;
+
+	/* ESTADOS BASES */
+	public static final Integer CAT_ESTADOS_BASE = 10;
+
+	/* CTS Y PAGO DE HABERES */
+	public static final String TIPO_PAGO_HABERES = "PAGO DE HABERES";
+	public static final String TIPO_PAGO_CTS = "CTS";
+
+	/* CODIGOS DE PERFIL */
+	public static final Integer PERFIL_COD_GERENTE_PROYECTO_BBVA = 66;
+	public static final Integer PERFIL_COD_GERENTE_PROYECTO = 52;
+	public static final Integer PERFIL_COD_SUPERVISOR = 44;
+	public static final Integer PERFIL_COD_COORDINADOR = 42;
+	public static final Integer PERFIL_COD_SUPERVISOR_PYME = 55;
+	public static final Integer PERFIL_COD_COORDINADOR_PYME = 56;
+	public static final Integer PERFIL_COD_EJECUTIVO = 46;
+	public static final Integer PERFIL_COD_BACKOFFICE = 45;
+	public static final Integer PERFIL_COD_GERENTE_PROYECTO_VIP = 51;
+	public static final Integer PERFIL_COD_GERENTE_PROYECTO_BNPERSON = 1;
+	public static final Integer PERFIL_COD_SUPERVISOR_PH = 54;
+	public static final Integer PERFIL_COD_COORDINADOR_PH = 42;
+	public static final Integer PERFIL_COD_BACKOFFICE_PYME = 57;
+	public static final Integer PERFIL_COD_RRHH = 53;
+	public static final Integer PERFIL_COD_VENDEDOR = 68;
+	public static final Integer PERFIL_COD_SUPERVISOR_CONSESIONARIO = 69;
+	
+	public static final Integer PERFIL_COD_EJECUTIVO_BANCA_PERSONA = 73;
+	public static final Integer PERFIL_COD_EJECUTIVO_PYME = 74;
+	
+	
+
+	public static final Integer PERFIL_COD_SUPERVISOR_HIPOTECARIO = 59;
+	public static final Integer PERFIL_COD_EJECUTIVO_HIPOTECARIO = 60;
+
+	/* CODIGOS DE PERFIL */
+	public static final Integer CARGO_COD_SUPERVISOR = 1;
+	public static final Integer CARGO_COD_EJECUTIVO = 4;
+	public static final Integer CARGO_COD_COORDINADOR = 2;
+	public static final Integer CARGO_COD_BACKOFFICE = 9;
+	public static final Integer CARGO_COD_ASIST_COORD = 12;
+
+	/* EL ID DE LOS NEGOCIOS */
+	public static final Integer NEGOCIO_COD_VEHICULAR = 12;
+	public static final Integer NEGOCIO_COD_PYME = 11;
+	public static final Integer NEGOCIO_COD_VIP = 1;
+	public static final Integer NEGOCIO_COD_BANCA_PERSONA = 13;
+	
+	public static final Integer NEGOCIO_COD_CENTRO_CONSUMO = 21;
+
+	// ESTADOS
+
+	public static final String PENDIENTE = "PENDIENTE";
+	public static final String CONCLUIDO = "CONCLUIDO";
+	public static final String ENPROCESO = "EN PROCESO";
+
+	// ZONAS TERRITORISO
+	public static final String LIMA = "LIMA";
+	public static final String PROVINCIA = "PROVINCIA";
+
+	/*--------PARAMETROS-------*/
+
+	public static final String ALERTA_SUPERVISOR = "ALERTA_SUPERVISOR";
+	public static final String ALERTA_EJECUTIVO = "ALERTA_EJECUTIVO";
+
+	public static final String ORIGEN_FAC_FACTURA = "FACTURA";
+	public static final String ORIGEN_FAC_COMPLEMENTO = "COMPLEMENTO";
+	public static final String ORIGEN_FAC_DESCUENTO = "DESCUENTO";
+
+	/**
+	 * VARIABLES DE PRODUCTOS A COMISIONAR -- OPC MENU : CONSOLIDADO DE
+	 * COMISIONES
+	 */
+	public static final String PROD_HIPOTECARIO = "HIPOTECARIO";
+	public static final String PROD_PRESTAMO = "PRESTAMO";
+	public static final String PROD_TARJETA = "TARJETA";
+	public static final String PROD_VEHICULAR = "VEHICULAR";
+
+	public static final String EST_ENVIO_PORENVIAR_PH = "POR ENVIAR";
+	public static final String EST_ENVIO_ENVIADO_CALIDAD_PH = "ENVIADO CALIDAD";
+	public static final String EST_ENVIO_ENVIADO_PH = "ENVIADO BANCO";
+	
+	public static final String HOST_certiscan = "10.162.172.240";// "172.17.100.74";//
+	public static final Integer PUERTO_certiscan = 22;
+	public static final String USUARIO_certiscan = "root";
+	public static final String PASSWORD_certiscan = "s0p0rt32017certiscan";
+
+	// VARIABLES PARA METODIZADO
+
+	// ESTADOS FINANCIEROS
+	public static final String TIPO_PASIVO = "PASIVO";
+	public static final String TIPO_ACTIVO = "ACTIVO";
+	public static final String TIPO_PATRIMONIO = "PATRIMONIO";
+
+	public static final String TIPO_PERDIDAS_GANANCIAS = "PERDIDAS_GANANCIAS";
+	public static final String TIPO_RATIOS = "RATIOS";
+	public static final double TIPO_CAMBIO = 2.8;
+	public static final String LAVADO_ACTIVO = "LAVADO_ACTIVO";
+
+	/* EL ID DE LOS PRODUCTO BANCA PERSONA */
+	public static final Integer BP_COD_PAGOHABERES_CTS = 6;
+	public static final Integer IDPROD_PAGOHABERES = 6;
+	public static final Integer IDPROD_CTS = 61;
+	
+	// VALORESP OR DEFECTO
+	public static final Integer DF_VAL_PRODUCTO = 37;
+	public static final Integer PROD_DEFAULT_PYMES = 37;
+
+	// INDICADORES DE GESTION
+	public static final Integer ESTADOS_DE_GESTION = 193; // t_indicadores_call
+	public static final Integer ESTADOS_DE_GESTION_HIPOTECARIO = 172; // t_indicadores_call
+	public static final Integer RESULTADO_PYMES_BOLSA = 1065;
+
+	// INDICADORES DE ESTADOS DE CUENTA
+	public static final String ESTADO_APERTURA_APERTURADO = "APERTURADO";
+	public static final String ESTADO_APERTURA_RECHAZADO = "RECHAZADO";
+
+	public static final String PYMES_ORIGEN_CAMPO = "CAMPO";
+	public static final String PYMES_ORIGEN_BANCO = "BANCO";
+	
+	public static final String ORIGEN_CAMPO = "CAMPO";
+	public static final String ORIGEN_BANCO = "BANCO";
+
+	// INDICADORES PARA GESTOR DE EXCEL
+	public static final Integer EXCEL_COLUMN_HEADER = 1;
+	public static final Integer EXCEL_COLUMN_BODY = 2;
+	public static final Integer EXCEL_COLUMN_ALL = 3;
+
+	// ESTADO DE PRODUCTO
+	public static final String ESTADO_DE_PRODUCTO_GESTIONABLE = "GESTIONABLE";
+	public static final String ESTADO_DE_PRODUCTO_NO_GESTIONABLE = "NO GESTIONABLE";
+
+	// ESTADO DE COBERTURA
+	public static final String ESTADO_EXCL_SIN_COBERTURA = "SIN COBERTURA";
+
+	// INDICADORES CALL
+	public static final Integer ID_INDICADOR_CALL_ASIGNADO_SUPERVISOR = 1066;
+	public static final Integer ID_INDICADOR_CALL_BOLSA = 1065;
+	public static final Integer ID_INDICADOR_CALL_BOLSA_HIPOTECARIO = 1075;
+	public static final Integer ID_INDICADOR_CALL_POR_FILTRAR = 2165;
+	public static final Integer ID_INDICADOR_CALL_VALIDACION_POSITIVA = 2166;
+	public static final Integer ID_INDICADOR_CALL_VALIDACION_NEGATIVA = 2177;
+	public static final Integer ID_INDICADOR_CALL_SIN_HISTORIAL_CREDITICIO = 2294;
+	public static final Integer ID_INDICADOR_CALL_APROBADO = 1060;
+	public static final Integer ID_INDICADOR_CALL_APROBADO_MES_ANTERIOR = 1816;
+	
+
+	// SUB PRODUCTO
+	public static final int SUB_PRODUCTO_LIFE_MILE = 334;
+
+	// PRODUCTO
+	public static final int COD_PRODUCTO_HIPOTECARIO = 5;
+	public static final int COD_PRODUCTO_TARJETA_BP = 46;
+	public static final int COD_PRODUCTO_PRESTAMO_BP = 17;
+	public static final int COD_PRODUCTO_PLDWEB = 75;
+
+	public static final int COD_PROD_TARJETAWEB_APRO = 73;
+	public static final int COD_PROD_TARJETAWEB_REG = 74;
+	
+	
+	
+	//PATRON PARA EL ALMACENAMIENTO DE CONTACTO DINAMICO EN HIPOTECARIO
+	public static final String[] ITEMS_HIPOTECARIO_TELEFONO_CONTACTO = {"CONTACTO","TELEFONO"};
+	
+	// CATEGORIAS DE ESTADOS
+	public static final int CATEGORIA_ESTADOS_FEED_BACK = 33;
+	
+	
+	// TIPOS DE PLANILLAS
+	public static final int QUINTA_TOTAL = 4;
+	public static final int CUARTA = 5;
+	public static final int QUINTA_PARCIAL = 6;
+	
+	// MODALIDADES DE VENTAS -- VIENEN DEL BANCO EN EL ARCHIVO EXCEL(FACTURA)
+	public static final String MODV_APROBADOS = "APROBADOS";
+	public static final String MODV_COLECTIVOS_ESPECIALES = "COLECT ESPECIALES";				
+	public static final String MODV_REGULAR = "REGULAR";
+	
+	// NOMBRE DE MODALIDADES REGISTRADO EN TABLERO DE COMISIONES
+	public static final String TBCO_COLECTIVOS_ESPECIALES = "COLECTIVOS ESPECIALES";
+	public static final String TBCO_APROBADO_REGULARES = "APROBADO REGULAR";
+	
+	// NOMBRE DE UBICACIONES DE LOS CLIENTES LIMA / PROVINCIA
+	public static final String TBCO_UBIC_LIMA = "LIMA";
+	public static final String TBCO_UBIC_PROVINCIA = "PROVINCIA";
+
+	
+	public static final Integer COD_PROD_PYME_TKT = 21;
+	public static final Integer COD_PROD_PYME_LEASING = 18;
+	
+	// PORCENTAJE DE COMISION DE LOS CARGOS
+	public static final double POR_COMISION_PYME_BACK = 0.0023;
+	public static final double POR_COMISION_PYME_COORD = 0.03;
+	public static final double POR_COMISION_BP_ASIS_COORD = 0.002;
+	
+	public static final String GPS_UBICACION_LIMA = "-12.046374,-77.0427934";
+	
+	
+	/*****************Bonos****************/
+	public static final int BONO_COMISIONES_POR_REGULARIZAR =1;
+	public static final int BONO_BONO_POR_CUMPLIMIENTO =2;
+	public static final int BONO_PENALIDAD_POR_MALA_REVISION =3;
+	public static final int BONO_PENALIDAD_POR_FUERA_DE_PLAZO =4;
+	public static final int BONO_PENALIDAD_POR_CARPETA_PERDIDA =5;
+	public static final int BONO_DETECCION_ERROR =6;
+	public static final int BONO_PENALIDAD_POR_MALA_DETECCION_FRAUDE =7;
+	public static final int BONO_DESCUENTO =8;
+	public static final int BONO_POR_CAPACITACION =9;
+	//public static final int BONO_SIMPLE =10;
+	public static final int BONO_POSIBLE_FRAUDE =10;
+	public static final int BONO_1 =11;
+	public static final int BONO_2 =12;
+	public static final int BONO_3 =13;
+	
+	/*******************       IP URL DESPLIEGUE                ***************************/
+	//public static final String IP_certiscan = "10.162.172.86"; // Desarrollo
+	//public static final String IP_certiscan = "10.162.172.250"; // Produccion **
+	//public static final String IP_certiscan = "209.45.75.234"; // Produccion **
+	public static final String IP_certiscan = "209.45.75.249"; // Produccion 03072017**
+	//public static final String IP_certiscan = "localhost"; // Local
+	//public static final String IP_certiscan = "209.45.75.230"; // OROPENDOLAS LOCAL
+	//public static final String IP_certiscan = "10.162.172.235"; // OROPENDOLAS LOCAL
+	//public static final String IP_certiscan = "209.45.75.230";  // OROPENDOLAS EXTERNO
+	//public static final String IP_certiscan = "172.17.100.78";  // CAP
+	
+	/*******************       IP SERVIDOR DE ARCHIVOS                 ***************************/
+	/*public static final String HOST_SCPF = "10.162.172.249"; // oropendolas
+	//public static final String HOST_SCPF = "172.17.100.78"; // cap
+	public static final Integer PUERTO_SCPF = 22;
+	public static final String USUARIO_SCPF = "root";
+	public static final String PASSWORD_SCPF = "s0p0rt32015";       
+	public static final String RUTA_ARCHIVO = "/opt/digitalizacion/";*/
+	
+	/*******************       IP SERVIDOR DE ARCHIVOS (Desarrollo)     ***************************/
+	//public static final String HOST_SCPF = "10.162.172.235"; // publica oropendolas
+	//public static final String HOST_SCPF = "10.162.172.86"; // oropendolas
+	//public static final String HOST_SCPF = "172.17.100.78"; // cap
+	public static final String HOST_SCPF = "10.162.172.240"; // produccion
+	public static final Integer PUERTO_SCPF = 22;
+	public static final String USUARIO_SCPF = "root";
+	//public static final String PASSWORD_SCPF = "oropendolas2015";       
+	
+	//public static final String PASSWORD_SCPF = "s0p0rt32015oro"; //produccion oropendolas
+	
+	//public static final String PASSWORD_SCPF = "s0p0rt32015"; //cap     
+	public static final String PASSWORD_SCPF = "s0p0rt32017certiscan"; //produccion
+	//public static final String RUTA_ARCHIVO = "/opt/digitalizacion/";
+	public static final String RUTA_ARCHIVO = "/var/www/html/osinergmin/";
+	
+	//public static String RUTA_DIGITILZACION = "/opt/digitalizacion/";
+	public static String RUTA_DIGITILZACION = "/var/www/html/osinergmin/";
+	public static String RUTA_DIGITILZACION2 = "/var/www/html/osinergminprueba/";
+	public static String RUTA_MEDIOS = "/var/www/html/medios/";
+	public static String RUTA_MEDIOS_SUBIDOS = "/var/www/html/medios_subidos/";
+	//public static  String RUTA_ARCHIVO_ELIMINADO = "/opt/digitalizacion_eliminados/";
+	public static  String RUTA_ARCHIVO_ELIMINADO = "/var/www/html/osinergmin_eliminados/";
+	
+	
+	public static final String  HOST_RENIEC = "10.162.172.249";//"172.17.100.74";//
+	//public static final 
+	public static final Integer PUERTO_RENIEC = 22;
+	public static final String  USUARIO_RENIEC = "root";
+	public static final String  PASSWORD_RENIEC = "s0p0rt32015";       
+	public static final String  RUTA_ARCHIVO_RENIEC = "/opt/tipodocumental/";
+	
+	// Estados para digitalizacion SCACAP
+	public static final Integer EST_RECEPCIONADO = 1;
+	public static final Integer EST_PREPARADO_PARA_DIG = 3;
+	public static final Integer EST_PREPARADO_PARA_SUBIR_ARCHIVOS = 2;
+	public static final Integer EST_PREPARADO_PARA_CC = 4;
+	public static final Integer EST_SUBIO_ARCHIVOS = 5;
+	public static final Integer EST_PREPARADO_PARA_GENERAR_MEDIO_LOGICO = 6;
+	public static final Integer EST_PREPARADO_PARA_PREPARAR = 7;
+	public static final Integer EST_PREPARADO = 8;
+	public static final Integer EST_DIGITALIZADO = 9;
+	public static final Integer EST_PREPARADO_PARA_CC_ASISTENTE_FEDATARIO = 10;
+	public static final Integer EST_CONTROL_CALIDAD_INTERNO = 11;
+	public static final Integer EST_ASISTENTE_FEDATARIO = 12;
+	public static final Integer EST_REPROCESO = 13;
+	public static final Integer EST_PREPARADO_PARA_REAGRUPADO = 14;
+	public static final Integer EST_REAGRUPADO = 15;
+	public static final Integer EST_PREPARADO_PARA_ENTREGAR_A_MENSAJERIA = 16;
+	public static final Integer EST_ENTREGADO_A_MENSAJERIA = 17;
+	public static final Integer EST_GENERO_MEDIO_LOGICO = 18;
+	public static final Integer EST_SUBSANADO_ENVIADO_A_ASISTENTE_DE_FEDATARIO = 20;
+	public static final Integer EST_PREPARADO_PARA_DESCARGA_DE_FEDATARIO = 21;
+	
+	/* indicadores call */
+	
+	public static final Integer IND_DVD = 2549;
+	public static final Integer IND_CD = 2550;
+	
+	public static final Integer IND_PROCESO = 306;
+	public static final Integer IND_RECEP = 307;
+	public static final Integer IND_INCIDENCIA = 301;
+	
+	/* indicadores */
+	
+	public static final Integer IND_CC_INTERNO = 301;
+	public static final Integer IND_ASISTENTE_FEDATARIO = 296;
+	public static final Integer IND_MEDIOS = 298;
+	
+	// Estados Accion para los archivos
+	
+	public static String EST_ACC_DIGITALIZADO = "D";
+	public static String EST_ACC_ELIMINADO = "E";
+	public static String EST_ACC_AGRUPADO = "AG";
+	
+	public static final String PROCESO_CI = "CI";
+	public static final String PROCESO_CIF = "CIF";
+	
+
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.OficinaMapper">
+
+<resultMap id="oficinaResult" type="com.certicom.certiscan.domain.Oficina">
+	<id column="id_oficina" property="id_oficina" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="nombre" property="nombre" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="direccion" property="direccion" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="encargado" property="encargado" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="departamento" property="departamento" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result column="provincia" property="provincia" javaType="java.lang.String" jdbcType="VARCHAR"/>	
+    <result column="distrito" property="distrito" javaType="java.lang.String" jdbcType="VARCHAR"/>	
+	<result column="estado" property="estado" javaType="java.lang.Boolean" jdbcType="BOOLEAN"/>
+	<result column="id_territorio" property="id_territorio" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="gerente" property="gerente" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="cargo_gerente" property="cargo_gerente" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="fecha_cumpleanos" property="fecha_cumpleanos" javaType="java.util.Date" jdbcType="DATE"/>
+	<result column="codigo_oficina" property="codigo_oficina" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="id_negocio" property="id_negocio" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	
+
+</resultMap>
+
+
+<select id="findByIdTerritorios"  resultMap="oficinaResult" >
+	SELECT distinct t_oficina.departamento
+	FROM t_oficina  inner join  
+	 t_territorio on t_territorio.id_territorio= t_oficina.id_territorio
+	WHERE 1=1 
+       <foreach item="item" collection="descripcionTerritorios" open=" and (" close=")" separator=" or ">
+        	t_territorio.descripcion = #{item}
+       </foreach> 
+      order by t_oficina.departamento
+  </select>
+  
+  
+ <select id="listOficinaxNegocioORTodos" resultMap="oficinaResult">
+   SELECT o.id_oficina, o.codigo_oficina, o.id_negocio, o.id_territorio, o.nombre, o.direccion, o.encargado, o.departamento, o.provincia, o.distrito,
+ o.estado, o.gerente, o.cargo_gerente, o.fecha_cumpleanos, o.codigo_oficina, n.descripcion as desNegocio
+			  FROM t_oficina o INNER JOIN t_negocio n on n.id_negocio= o.id_negocio
+		 <where>
+		 	<if test=" id_negocio != 0">
+		 	 o.id_negocio=#{id_negocio}
+		 	</if>
+		 </where>
+		 order by n.descripcion
+</select>
+
+
+
+</mapper>

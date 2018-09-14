@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="srptBasePrioridadExcluido" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="993c9328-2723-4771-926a-b5b445667931">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<field name="tipo_planilla" class="java.lang.String"/>
+	<field name="estadoTrabajo" class="java.lang.Boolean"/>
+	<field name="cantNeta" class="java.lang.Integer"/>
+	<field name="cod_territorio" class="java.lang.String"/>
+	<field name="territorio_ofc" class="java.lang.String"/>
+	<field name="desc_prioridad" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="77" splitType="Stretch">
+			<crosstab>
+				<reportElement uuid="2682edc5-91fd-4261-84f5-53a60f4d1dae" x="0" y="0" width="555" height="50"/>
+				<rowGroup name="tipo_planilla" width="300">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{tipo_planilla}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="cffd50b4-2cb7-463b-9b5e-66fdac40324a" style="Crosstab Data Text" x="0" y="0" width="300" height="25"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$V{tipo_planilla}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="desc_prioridad" height="30" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{desc_prioridad}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="1d44fad8-5818-415e-8672-b8383b21dcfc" style="Crosstab Data Text" x="0" y="0" width="77" height="30"/>
+								<textElement>
+									<font size="14" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{desc_prioridad}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="77464cdc-3320-4e3b-ab0e-6264306b4151" x="0" y="0" width="50" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="cantNetaMeasure" class="java.lang.Integer" calculation="Sum">
+					<measureExpression><![CDATA[$F{cantNeta}]]></measureExpression>
+				</measure>
+				<crosstabCell width="77" height="25">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="1cd0f14b-4a9e-439f-8488-cd62f7c01776" style="Crosstab Data Text" x="0" y="0" width="77" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{cantNetaMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="tipo_planilla">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="210d3252-1425-4d1e-bd0e-d21b93869bf7" style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{cantNetaMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="desc_prioridad">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="cbc1c7ce-4686-4ace-a4b2-755b7fd34c74" style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{cantNetaMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="tipo_planilla" columnTotalGroup="desc_prioridad">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="967bf5a1-a25d-4225-be99-34bc757bf770" style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{cantNetaMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

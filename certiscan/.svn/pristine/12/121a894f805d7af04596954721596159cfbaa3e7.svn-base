@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- Realizamos la conexion a la base de datos -->
+	<bean 
+	   class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	   <property name="location">
+		<value>classpath:src/com/certicom/certiscan/propiedades/database.properties</value>
+	   </property>
+	 
+	</bean>
+<!-- 	original -->
+<!-- 	<bean id="dataSource" -->
+<!-- 		class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
+<!-- 		<property name="driverClassName" value="org.postgresql.Driver" /> -->
+<!-- 		<property name="url" value="${jdbc.url}" />  -->
+<!-- 		<property name="username" value="${jdbc.username}" />  -->
+<!-- 		<property name="password" value="${jdbc.password}" />  -->
+<!-- 	</bean> -->
+
+<!-- 	opcional (possible solution by Broken pipe) -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	  <property name="driverClassName" value="org.postgresql.Driver" />
+	  <property name="url" value="${jdbc.url}" />
+	  <property name="username" value="${jdbc.username}" />
+	  <property name="password" value="${jdbc.password}" />
+	  <property name="validationQuery" value="select 42" />
+	  <property name="minEvictableIdleTimeMillis" value="1800000" />
+	  <property name="timeBetweenEvictionRunsMillis" value="1800000" />
+	  <property name="numTestsPerEvictionRun" value="10" />
+	  <property name="testWhileIdle" value="true" />
+	  <property name="testOnBorrow" value="true" />
+	  <property name="testOnReturn" value="false" />
+	</bean>	
+
+	<!-- Definimos las transacciones -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- Creamos la sessionfactory para que poder acceder a los metodos -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="mapperLocations"
+			value="classpath:com/certicom/certiscan/mapper/**/*.xml" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="genericController" class="com.pe.certicom.certiscan.commons.GenericBeans" scope="request">
+	</bean>
+	
+	<!-- Mapeamos las interfaces que tiene los metodos y sus implementacion -->
+	<bean id="usuarioMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.certicom.certiscan.mapper.UsuarioMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="login" name="login" 
+	 	class="com.certicom.certiscan.managedBeans.LoginMB" scope="session"/>				
+	
+
+	<bean id="usuarioEnSesion" name="usuarioEnSesion"
+		class="com.certicom.certiscan.domain.Usuario" scope="session" />
+		
+	<bean id="logEnSesion" name="logEnSesion"
+		class="com.certicom.certiscan.domain.Log" scope="session" />
+
+	<bean id="sistemaMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.certicom.certiscan.mapper.SistemaMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="perfilMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.certicom.certiscan.mapper.PerfilMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="parametroMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.certicom.certiscan.mapper.ParametroMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="menuMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.certicom.certiscan.mapper.MenuMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<!-- agregados ww -->
+	<bean id="menuPerfilMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.MenuPerfilMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="usuarioPerfilMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.UsuarioPerfilMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="clienteMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.ClienteMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+
+	<bean id="centro_atencionMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.Centro_AtencionMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	 	
+	 	
+	<!-- Para auditoria -->
+	
+	<bean id="logMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.certicom.certiscan.mapper.LogMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	
+	<!-- Solo para nextel -->
+	
+	
+
+	<bean id="expedienteMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.ExpedienteMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="expedienteProductoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.ExpedienteProductoMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+
+	<bean id="testMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.TestMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>	
+
+
+	<bean id="expedienteTrackingMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.ExpedienteTrackingMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	
+	<!-- certiscan -->
+	
+	<bean id="negocioMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.NegocioMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>		
+	
+	<bean id="oficinaMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.OficinaMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	
+	<bean id="categoriaEstadosMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.CategoriaEstadosMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>		
+	
+	<bean id="estadosMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.EstadosMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>		
+	
+	<bean id="categoriaIndicadoresCallMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.CategoriaIndicadoresCallMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>		
+	
+	<bean id="indicadorCallMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.IndicadorCallMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>	
+	
+	<bean id="subindicadorCallMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.SubIndicadorCallMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>	
+	
+	<bean id="empresaMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.EmpresaMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>		
+	
+	
+	<bean id="subProductoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.SubProductoMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>			
+	
+	<bean id="categoriaIndicadoresProductoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.CategoriaIndicadoresProductoMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>	
+
+	<bean id="negocioResponsablesMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.NegocioResponsablesMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>	
+	
+	<bean id="planillaPersonalMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.PlanillaPersonalMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>		
+	
+
+	<bean id="citaContactoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.CitaContactoMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<!-- JHON -->
+	<bean id="cabeceraMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.CabeceraMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	
+	
+	<bean id="cabeceraNombreMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.CabeceraNombreMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="cabeceraBaseIndecopyMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.CabeceraBaseIndecopyMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+
+	<bean id="expedienteCabeceraMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.ExpedienteCabeceraMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	
+	<bean id="telefonoExpedienteTemporalMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.TelefonoExpedienteTemporalMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+
+	
+	<bean id="cabeceraFacturacionMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.CabeceraFacturacionMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="cabeceraFacturacionNombreMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.CabeceraFacturacionNombreMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="facturacionMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.FacturacionMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="facturacionCabeceraMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.FacturacionCabeceraMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	
+	
+	
+	
+	<bean id="bonoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.BonoMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+
+	
+	
+	
+		<bean id="contactoEmpresaMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.ContactoEmpresaMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	
+	
+	<bean id="proyeccionMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.ProyeccionMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+   <bean id="comprensionLecturaMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.ComprensionLecturaMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="proyeccionVentasMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.ProyeccionVentasMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="expedienteDocumentoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.ExpedienteDocumentoMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="checkListImagenMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.CheckListImagenMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="logSBSMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.LogSBSMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="comentarioMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.ComentarioMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="documentoPaginaMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.DocumentoPaginaMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="tipoCicloMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.TipoCicloMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="cicloMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.CicloMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="tarifaMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.TarifaMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="facturacionPlanillaCabeceraMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.FacturacionPlanillaCabeceraMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="facturacionPlanillaDetalleMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.FacturacionPlanillaDetalleMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="cargoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.CargoMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="estadoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.EstadoMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="categoriaIndicadorMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.CategoriaIndicadorMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="expedienteincidenciaMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.ExpedienteIncidenciaMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="tipoBonoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.TipoBonoMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="loteMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.LoteMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="mediosMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.certicom.certiscan.mapper.MediosMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+</beans>

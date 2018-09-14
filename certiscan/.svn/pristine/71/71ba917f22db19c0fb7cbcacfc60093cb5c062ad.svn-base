@@ -1,0 +1,616 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+	<style>
+			.foo td {
+		    vertical-align: top;
+		}
+		
+		.pintar{
+			background-color:red;
+		}
+	</style>
+		<p:panel>
+			<h:form>
+				<p:breadCrumb>  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Consultas y Reportes" url="#" />
+    				<p:menuitem value="Reporte de Facturacion y Planillas" url="facturacion" />   
+				</p:breadCrumb>	
+			</h:form>
+			<br/>
+			
+			
+			
+			<p:messages  id="msgGeneral" showDetail="false" showSummary="true"  closable="true"/>		
+			
+			<h:form id="formGeneral">
+				<p:tabView id="tabGeneral">
+					<p:ajax event="tabChange" listener="#{facturacionComisionesMB.onTabChange}" update=":formGeneral"/> 
+					<p:tab title="Facturación" titleStyleClass="#{facturacionComisionesMB.tabPla}" id="tabConsolidado">
+						<p:blockUI block=":formGeneral:tabGeneral:tabConsolidado" trigger="btnProcesarFacturacion"  >
+							<h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif" style="margin-right: 12px; vertical-align: middle;" />
+							<h:outputText value="Procesando Facturación, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab" />
+						</p:blockUI>
+						<p:blockUI block=":formGeneral:tabGeneral:tabConsolidado" trigger="cerrarFacturacion"  >
+							<h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif" style="margin-right: 12px; vertical-align: middle;" />
+							<h:outputText value="Cerrando Facturación, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab" />
+						</p:blockUI>
+						<p:panel id="gActionFac">
+						<h:panelGrid columns="4">
+							<h:panelGrid columns="2" >
+								<p:selectOneMenu style="width:300px" value="#{facturacionComisionesMB.cod_ciclo_fac}" required="true" requiredMessage="Seleccione un ciclo" >
+											<f:selectItem itemValue="0" itemLabel="--Seleccione--"></f:selectItem>
+											<f:selectItems value="#{facturacionComisionesMB.listaCiclosFacturacion}" var="p" itemLabel="#{p.nmes} - #{p.anio} - #{p.nfecini} - #{p.nfecfin}" itemValue="#{p.cod_ciclo}" />
+											<p:ajax event="change" update="gActionFac gInfoFacturacion tabGeneral:gTableFacCon tabGeneral:gTableFacDet" listener="#{facturacionComisionesMB.cambiaCicloFacturacion()}"/>
+								</p:selectOneMenu>
+								<p:commandButton value="Procesar" actionListener="#{facturacionComisionesMB.ejecutarFacturacion()}" icon="icon-add" id="btnProcesarFacturacion" 
+													update="gActionFac gInfoFacturacion tabGeneral:gTableFacCon tabGeneral:gTableFacDet"/>
+							</h:panelGrid>
+							<p:commandButton id="cerrarFacturacion" value="Cerrar Facturacion" update="@form" disabled="#{facturacionComisionesMB.btnCerrarFacturacion}" actionListener="#{facturacionComisionesMB.cerrarFacturacion()}" icon="icon-add"
+													/>
+													
+							<p:commandButton id="eliminarFacturacion" value="Eliminar Facturacion" update="@form" disabled="#{facturacionComisionesMB.btnEliminarFacturacion}" actionListener="#{facturacionComisionesMB.eliminarFacturacion()}" icon="icon-add"
+													/>
+							<h:commandLink id="imprimirFac1" value="Imprimir" rendered="#{facturacionComisionesMB.btnImprimirFacCon}" actionListener="#{facturacionComisionesMB.imprimirFacturacionConsolidadoXLS}"  style="padding: 3px 30px;background: #C0C0C0; text-decoration: none; border: solid 1px #624B1E; font-weight: bold; color: #1C190A">
+	        						
+    							</h:commandLink>
+    						<h:commandLink id="imprimirFac2" value="Imprimir" rendered="#{facturacionComisionesMB.btnImprimirFacDet}" actionListener="#{facturacionComisionesMB.imprimirFacturacionDetalleXLS}"  style="padding: 3px 30px;background: #C0C0C0; text-decoration: none; border: solid 1px #624B1E; font-weight: bold; color: #1C190A">
+	        						
+    							</h:commandLink>
+						</h:panelGrid>
+						</p:panel>
+						<p:panel id="gInfoFacturacion">					
+								<h:panelGrid columns="8"> 
+									<h:outputLabel value="Total Expedientes: " style="color: blue; font-weight:bold;font-size: 1em;"/>
+									<h:outputLabel value="#{facturacionComisionesMB.totalExpedientesFac}" style="color: green; font-weight:bold;font-size: 1em;"/>
+									<p:spacer></p:spacer>
+									<h:outputLabel value="Total de Páginas: " style="color: blue; font-weight:bold;font-size: 1em;"/>
+									<h:outputLabel value="#{facturacionComisionesMB.totalPaginasfac}" style="color: green; font-weight:bold;font-size: 1em;"/>
+									<p:spacer></p:spacer>
+									<p:spacer></p:spacer>
+									<p:selectOneRadio style="align-content: center;" id="tipoConsulta"
+										value="#{facturacionComisionesMB.vradiofac}">
+										<f:selectItem itemLabel="Consolidado" itemValue="0" />
+										<f:selectItem itemLabel="Detallado" itemValue="1" />
+										<p:ajax update="@form"
+											listener="#{facturacionComisionesMB.cambiarCriterioFac()}" />
+									</p:selectOneRadio>
+								</h:panelGrid>
+								
+						</p:panel>
+						
+				
+					<p:panel id="gTableFacCon" rendered="#{facturacionComisionesMB.mostrarConsolidadoFac}">
+						<h:panelGrid styleClass="foo">
+							
+						<p:dataTable id="dataTableFacturacionCon" var="pe" value="#{facturacionComisionesMB.listOficinaCon}" widgetVar="dtFacturacionFacCon" 
+							emptyMessage="Tabla vacia" rowIndexVar="nro" paginator="true" rows="10" paginatorPosition="bottom"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,100,200,500,1000" draggableColumns="true" 
+							 style="FONT-SIZE: 10px; ">
+						
+							<f:facet name="header">Consolidado</f:facet>
+							
+							<p:column headerText="Orden" style="width:3%" >
+								#{nro+1}
+							</p:column>
+							<p:column style="width:9%" headerText="Solicitudes">
+								<p:commandLink oncomplete="PF('dlgDetalleExpediente').show()" value="#{pe.totalSolicitudes}" update=":formDetExp" actionListener="#{facturacionComisionesMB.mostrarDetalleSolicitudes(pe)}"></p:commandLink>
+							</p:column>
+							<p:column style="width:9%" headerText="Total Páginas Solicitudes">
+								<h:outputText value="#{pe.totalPaginasSolicitudes}" />
+							</p:column>
+							<p:column style="width:9%" headerText="Expedientes">
+								<p:commandLink oncomplete="PF('dlgDetalleExpediente').show()" value="#{pe.totalExpedientes}" update=":formDetExp" actionListener="#{facturacionComisionesMB.mostrarDetalleExpedientes(pe)}"></p:commandLink>
+							</p:column>
+							<p:column style="width:9%" headerText="Total Páginas Expedientes">
+								<h:outputText value="#{pe.totalPaginasExpedientes}" />
+							</p:column>
+							<p:column style="width:9%" headerText="Total Expedientes" sortBy="#{pe.totalExpediente}">
+								<h:outputText value="#{pe.totalExpediente}" />
+							</p:column>							
+							<p:column style="width:30%" headerText="Total de Páginas (Expedientes + Solicitudes)">
+								<h:outputText value="#{pe.cantidadHojas}" />
+							</p:column>
+							<p:column style="width:12%" headerText="Costo por Hoja incluido IGV">
+								<h:outputText value="#{pe.costo}" converter="montoDefaultConverter2Decimal"/>
+							</p:column>
+							<p:column style="width:25%; background-color:yellow;font-size: 1.2em" headerText="Total a Facturar" sortBy="#{pe.totalFacturar} ">
+								<h:outputText value="#{pe.totalFacturar}" converter="montoDefaultConverter2Decimal" />							
+							</p:column>
+							
+						</p:dataTable>
+						</h:panelGrid>
+					</p:panel>
+					<p:panel id="gTableFacDet" rendered="#{facturacionComisionesMB.mostrarDetalleFac}">
+						<h:panelGrid styleClass="foo">
+					<ui:remove>	
+					<p:dataTable id="dataTableFacturacionDet2" var="p" value="#{facturacionComisionesMB.listOficinaDet}" widgetVar="dtFacturacionFacDet2" 
+							emptyMessage="Tabla vacia" rowIndexVar="nro" paginator="true" rows="10" paginatorPosition="bottom"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,100,200,500,1000" draggableColumns="true" 
+							 style="FONT-SIZE: 10px; ">
+						
+							<f:facet name="header">Detallado</f:facet>
+							
+							<p:column headerText="Orden" style="width:3%">
+								<h:outputLabel value="#{nro+1}"/>								
+							</p:column>
+							<p:column style="width:9%" headerText="Oficina">
+								<h:outputText value="#{p.nombre}" />
+							</p:column>
+							<p:column style="width:9%" headerText="Solicitudes">
+								<p:commandLink oncomplete="PF('dlgDetalleExpediente').show()" value="#{p.totalSolicitudes}" update=":formDetExp" actionListener="#{facturacionComisionesMB.mostrarDetalleSolicitudes(p)}"></p:commandLink>
+							</p:column>
+							<p:column style="width:9%" headerText="Total Páginas Solicitudes">
+								<h:outputText value="#{p.totalPaginasSolicitudes}" />
+							</p:column>
+							<p:column style="width:9%" headerText="Expedientes">
+								<p:commandLink oncomplete="PF('dlgDetalleExpediente').show()" value="#{p.totalExpedientes}" update=":formDetExp" actionListener="#{facturacionComisionesMB.mostrarDetalleExpedientes(p)}"></p:commandLink>
+							</p:column>
+							<p:column style="width:9%" headerText="Total Páginas Solicitudes">
+								<h:outputText value="#{p.totalPaginasExpedientes}" />
+							</p:column>
+							<p:column style="width:9%" headerText="Total Expedientes" sortBy="#{p.totalExpediente}">
+								<h:outputText value="#{p.totalExpediente}" />
+							</p:column>							
+							<p:column style="width:30%" headerText="Total de Páginas (Expedientes + Solicitudes)">
+								<h:outputText value="#{p.cantidadHojas}" />
+							</p:column>
+							<p:column style="width:12%" headerText="Costo por Hoja incluido IGV">
+								<h:outputText value="#{p.costo}" converter="montoDefaultConverter2Decimal"/>
+							</p:column>
+							<p:column style="width:25%; background-color:yellow; font-size: 1.2em" headerText="Total a Facturar" sortBy="#{p.totalFacturar}">
+								<h:outputText value="#{p.totalFacturar}" converter="montoDefaultConverter2Decimal"/>							
+							</p:column>
+							
+						</p:dataTable>
+						</ui:remove>
+						<p:dataTable id="dataTableFacturacionDet" var="p" value="#{facturacionComisionesMB.listaExpedientesFacturablesDet}" widgetVar="dtFacturacionFacDet" 
+							emptyMessage="Tabla vacia" rowIndexVar="nro" paginator="true" rows="10" paginatorPosition="bottom"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,100,200,500,1000" draggableColumns="true" 
+							 style="FONT-SIZE: 10px; ">
+						
+							<f:facet name="header">Detallado</f:facet>
+							
+							<p:column headerText="Orden" style="width:3%" >
+								<h:outputLabel value="#{nro+1}"/>
+							</p:column>										
+							<p:column style="width:10%" headerText="Nro Expediente">
+								<h:outputText value="#{p.nro_expediente}" />
+							</p:column>
+							<p:column style="width:10%" headerText="Nro Solicitud">
+								<h:outputText value="#{p.nro_solicitud}" />
+							</p:column>		
+							<p:column style="width:10%" headerText="TIPO DOCUMENTO">
+								<h:outputText value="#{p.tipo_doc}" />
+							</p:column>			
+							<p:column style="width:10%" headerText="DNI">
+								<h:outputText value="#{p.num_doc}" />
+							</p:column>		
+							<p:column style="width:30%" headerText="Usuario" filterBy="#{p.usuarioAsignado}" filterStyle="width:95%;" filterMatchMode="contains">
+								<h:outputText value="#{p.usuarioAsignado}"/>
+							</p:column>
+							<p:column style="width:9%" headerText="Oficina">
+								<h:outputText value="#{p.desOficina}" />
+							</p:column>
+							<p:column style="width:9%" headerText="Cargo">
+								<h:outputText value="#{p.desCargo}" />
+							</p:column>
+							<p:column style="width:9%" headerText="Total de Páginas" sortBy="#{p.totFacturar}">
+								<h:outputText value="#{p.cantidadHojas}" />
+							</p:column>
+							<p:column style="width:12%" headerText="Costo por Hoja">
+								<h:outputText value="#{p.costo}" converter="montoDefaultConverter2Decimal"/>
+							</p:column>
+							<p:column style="width:25%; background-color:yellow; font-size: 1.2em" headerText="Total Variable a Pagar" sortBy="#{p.totFacturar}">
+								<h:outputText value="#{p.totFacturar}" converter="montoDefaultConverter2Decimal"/>							
+							</p:column>	
+							
+						</p:dataTable>
+						</h:panelGrid>
+						</p:panel>
+				</p:tab>
+				<p:tab title="Planilla" titleStyleClass="#{facturacionComisionesMB.tabPla}" id="tabPlanilla">
+					<p:blockUI block=":formGeneral:tabGeneral:tabPlanilla" trigger="btnProcesarPlanilla"  >
+							<h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif" style="margin-right: 12px; vertical-align: middle;" />
+							<h:outputText value="Procesando Planilla, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab" />
+						</p:blockUI>
+						<p:blockUI block=":formGeneral:tabGeneral:tabPlanilla" trigger="cerrarPlanilla"  >
+							<h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif" style="margin-right: 12px; vertical-align: middle;" />
+							<h:outputText value="Cerrando Planilla, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab" />
+					</p:blockUI>
+					<p:panel id="gActionPla">
+						<h:panelGrid columns="4">
+							<h:panelGrid columns="2" >
+								<p:selectOneMenu style="width:300px" value="#{facturacionComisionesMB.cod_ciclo_pla}" required="true" requiredMessage="Seleccione un ciclo" >
+											<f:selectItem itemValue="0" itemLabel="--Seleccione--"></f:selectItem>
+											<f:selectItems value="#{facturacionComisionesMB.listaCiclosPlanilla}" var="p" itemLabel="#{p.nmes} - #{p.anio} - #{p.nfecini} - #{p.nfecfin}" itemValue="#{p.cod_ciclo}" />
+											<p:ajax event="change" update="gActionPla gInfoPlanilla tabGeneral:gTablePlaCon tabGeneral:gTablePlaDet" listener="#{facturacionComisionesMB.cambiaCicloPlanilla()}"/>
+								</p:selectOneMenu>
+								<p:commandButton value="Procesar" actionListener="#{facturacionComisionesMB.ejecutarPlanilla()}" icon="icon-add" id="btnProcesarPlanilla"
+													update="gActionPla gInfoPlanilla tabGeneral:gTablePlaCon tabGeneral:gTablePlaDet"/>
+							</h:panelGrid>
+							<p:commandButton id="cerrarPlanilla" value="Cerrar Planilla" update="@form" disabled="#{facturacionComisionesMB.btnCerrarPlanilla}" actionListener="#{facturacionComisionesMB.cerrarPlanilla()}" icon="icon-add"
+													/>
+							<p:commandButton id="eliminarPlanilla" value="Eliminar Planilla" update="@form" disabled="#{facturacionComisionesMB.btnEliminarPlanilla}" actionListener="#{facturacionComisionesMB.eliminarPlanilla()}" icon="icon-add"
+													/>
+							<h:commandLink id="imprimirPlanilla1" value="Imprimir" rendered="#{facturacionComisionesMB.btnImprimirPlaCon}" actionListener="#{facturacionComisionesMB.imprimirPlanillaConsolidadoXLS}"  style="padding: 3px 30px;background: #C0C0C0; text-decoration: none; border: solid 1px #624B1E; font-weight: bold; color: #1C190A">
+	        						
+    							</h:commandLink>
+    						<h:commandLink id="imprimirPlanilla2" value="Imprimir" rendered="#{facturacionComisionesMB.btnImprimirPlaDet}" actionListener="#{facturacionComisionesMB.imprimirPlanillaDetalleXLS}"  style="padding: 3px 30px;background: #C0C0C0; text-decoration: none; border: solid 1px #624B1E; font-weight: bold; color: #1C190A">
+	        						
+    							</h:commandLink>
+						</h:panelGrid>
+						</p:panel>
+						<p:panel id="gInfoPlanilla">					
+								<h:panelGrid columns="8"> 
+									<h:outputLabel value="Total Expedientes: " style="color: blue; font-weight:bold;font-size: 1em;"/>
+									<h:outputLabel value="#{facturacionComisionesMB.totalExpedientesPla}" style="color: green; font-weight:bold;font-size: 1em;"/>
+									<p:spacer></p:spacer>
+									<h:outputLabel value="Total de Páginas: " style="color: blue; font-weight:bold;font-size: 1em;"/>
+									<h:outputLabel value="#{facturacionComisionesMB.totalPaginaspla}" style="color: green; font-weight:bold;font-size: 1em;"/>
+									<p:spacer></p:spacer>
+									<p:spacer></p:spacer>
+									<p:selectOneRadio id="tipoConsultaPla"
+										value="#{facturacionComisionesMB.vradiopla}">
+										<f:selectItem itemLabel="Consolidado" itemValue="0" />
+										<f:selectItem itemLabel="Detallado" itemValue="1" />
+										<p:ajax update="@form"
+											listener="#{facturacionComisionesMB.cambiarCriterioPla()}" />
+									</p:selectOneRadio>
+								</h:panelGrid>
+						</p:panel>
+						
+						<p:panel id="gTablePlaCon" rendered="#{facturacionComisionesMB.mostrarConsolidadoPla}">
+						<h:panelGrid styleClass="foo">
+							
+						<p:dataTable id="dataTablePlanillaCon" var="p" value="#{facturacionComisionesMB.listaUsuarioCon}" widgetVar="dtFacturacionPlaCon" 
+							emptyMessage="Tabla vacia" rowIndexVar="nro" paginator="true" rows="10" paginatorPosition="bottom"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,100,200,500,1000" draggableColumns="true" 
+							 style="FONT-SIZE: 10px; ">
+						
+							<f:facet name="header">Consolidado</f:facet>							
+							<p:column headerText="Orden" style="width:3%" >
+								#{nro+1}
+							</p:column>
+							<p:column style="width:10%" headerText="DNI">
+								<h:outputText value="#{p.dni}" />
+							</p:column>
+							<p:column style="width:30%" headerText="Usuario" filterBy="#{p.usuarioAsignado}" filterStyle="width:95%;" filterMatchMode="contains">
+								<h:outputText value="#{p.usuarioAsignado}" />
+							</p:column>
+							<p:column style="width:9%" headerText="Oficina">
+								<h:outputText value="#{p.desOficina}" />
+							</p:column>
+							<p:column style="width:9%" headerText="Cargo">
+								<h:outputText value="#{p.desCargo}" />
+							</p:column>							
+							<p:column style="width:9%;background-color:#98fb98" headerText="Nª de Solicitudes Trabajadas">
+								<p:commandLink oncomplete="PF('dlgDetalleExpediente').show()" value="#{p.totalSolicitudes}" update=":formDetExp" actionListener="#{facturacionComisionesMB.mostrarDetalleUsuSolicitudes(p)}"></p:commandLink>
+							</p:column>
+							<p:column style="width:9%" headerText="Total Páginas Solicitudes">
+								<h:outputText value="#{p.totalPaginasSolicitudes}" />
+							</p:column>
+							<p:column style="width:9%;background-color:#98fb98" headerText="Nª de Expedientes Trabajados">
+								<p:commandLink oncomplete="PF('dlgDetalleExpediente').show()" value="#{p.totalExpedientes}" update=":formDetExp" actionListener="#{facturacionComisionesMB.mostrarDetalleUsuExpedientes(p)}"></p:commandLink>
+							</p:column>
+							<p:column style="width:9%" headerText="Total Páginas Expedientes">
+								<h:outputText value="#{p.totalPaginasExpedientes}" />
+							</p:column>
+							<p:column style="width:9%; background-color:#DBA901" headerText="Total Expedientes" sortBy="#{p.cantidadExpedientes}">
+								<h:outputText value="#{p.cantidadExpedientes}" />
+							</p:column>
+							<p:column style="width:9%" headerText="Total de Página">
+								<h:outputText value="#{p.nroPaginas}" />
+							</p:column>
+							<p:column style="width:12%" headerText="Costo por Hoja">
+								<h:outputText value="#{p.costo}" converter="montoDefaultConverter2Decimal"/>
+							</p:column>
+							<p:column style="width:25%; background-color:yellow; font-size: 1.2em" headerText="Total Variable a Pagar" sortBy="#{p.totalFacturar}">
+								<h:outputText value="#{p.totalFacturar}" converter="montoDefaultConverter2Decimal"/>							
+							</p:column>							
+						</p:dataTable>
+						</h:panelGrid>
+					</p:panel>
+					<p:panel id="gTablePlaDet" rendered="#{facturacionComisionesMB.mostrarDetallePla}">
+						<h:panelGrid  styleClass="foo">
+							
+						<p:dataTable id="dataTablePlanillaDet" var="p" value="#{facturacionComisionesMB.listaExpedientesPlanillablesDet}" widgetVar="dtFacturacionPlaDet" 
+							emptyMessage="Tabla vacia" rowIndexVar="nro" paginator="true" rows="10" paginatorPosition="bottom"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,100,200,500,1000" draggableColumns="true" 
+							 style="FONT-SIZE: 10px; ">
+						
+							<f:facet name="header">Detallado</f:facet>							
+							<p:column headerText="Orden" style="width:3%" >
+								<h:outputLabel value="#{nro+1}"/>
+							</p:column>										
+							<p:column style="width:10%" headerText="Nro Expediente">
+								<h:outputText value="#{p.nro_expediente}" />
+							</p:column>
+							<p:column style="width:10%" headerText="Nro Solicitud">
+								<h:outputText value="#{p.nro_solicitud}" />
+							</p:column>		
+							<p:column style="width:10%" headerText="TIPO DOCUMENTO">
+								<h:outputText value="#{p.tipo_doc}" />
+							</p:column>			
+							<p:column style="width:10%" headerText="DNI">
+								<h:outputText value="#{p.num_doc}" />
+							</p:column>		
+							<p:column style="width:30%" headerText="Usuario" filterBy="#{p.usuarioAsignado}" filterStyle="width:95%;" filterMatchMode="contains">
+								<h:outputText value="#{p.usuarioAsignado}"/>
+							</p:column>
+							<p:column style="width:9%" headerText="Oficina">
+								<h:outputText value="#{p.desOficina}" />
+							</p:column>
+							<p:column style="width:9%" headerText="Cargo">
+								<h:outputText value="#{p.desCargo}" />
+							</p:column>
+							<p:column style="width:9%" headerText="Total de Páginas" sortBy="#{p.totFacturar}">
+								<h:outputText value="#{p.cantidadHojas}" />
+							</p:column>
+							<p:column style="width:12%" headerText="Costo por Hoja">
+								<h:outputText value="#{p.costo}" converter="montoDefaultConverter2Decimal"/>
+							</p:column>
+							<p:column style="width:25%; background-color:yellow; font-size: 1.2em" headerText="Total Variable a Pagar" sortBy="#{p.totFacturar}">
+								<h:outputText value="#{p.totFacturar}" converter="montoDefaultConverter2Decimal"/>							
+							</p:column>							
+						</p:dataTable>
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+			</p:tabView>
+			</h:form>
+						
+		</p:panel>
+		
+		<p:dialog header="Detalle de Producción" widgetVar="dlgDetalleExpediente" appendTo="@(body)"
+					resizable="false" id="dlgDetDetalleExpediente" modal="true" style="width:800px">
+					
+					<h:form id="formDetExp">
+					<p:messages showDetail="false" showSummary="true" id="msgNuevoRep" closable="true"/>
+					
+					<h:panelGrid>
+						
+						<h:panelGrid columns="4" rendered="#{facturacionComisionesMB.bDetExpPlaExpedientes}">
+							<h:outputLabel value="Usuario: " style="font-weight: bold; color:black;"/>
+							<h:outputLabel value="#{facturacionComisionesMB.usuG.usuarioAsignado}" style="font-weight: bold; color:blue;"/>
+							<h:outputLabel value="Expedientes Trabajados: " style="font-weight: bold; color:black;"/>
+							<h:outputLabel value="#{facturacionComisionesMB.usuG.listaExpedientes.size()}" style="font-weight: bold; color:blue;"/>
+						</h:panelGrid>
+						
+						<h:panelGrid columns="4" rendered="#{facturacionComisionesMB.bDetExpPlaSolicitudes}">
+							<h:outputLabel value="Usuario: " style="font-weight: bold; color:black;"/>
+							<h:outputLabel value="#{facturacionComisionesMB.usuG.usuarioAsignado}" style="font-weight: bold; color:blue;"/>
+							<h:outputLabel value="Solicitudes Trabajadas: " style="font-weight: bold; color:black;"/>
+							<h:outputLabel value="#{facturacionComisionesMB.usuG.listaSolicitudes.size()}" style="font-weight: bold; color:blue;"/>
+						</h:panelGrid>
+						
+						<h:panelGrid columns="4" rendered="#{facturacionComisionesMB.bDetExpFacExpedientes}">
+							<h:outputLabel value="Oficina: " style="font-weight: bold; color:black;"/>
+							<h:outputLabel value="#{facturacionComisionesMB.ofiG.nombre}" style="font-weight: bold; color:blue;"/>
+							<h:outputLabel value="Expedientes Trabajados: " style="font-weight: bold; color:black;"/>
+							<h:outputLabel value="#{facturacionComisionesMB.ofiG.listExpedientes.size()}" style="font-weight: bold; color:blue;"/>
+						</h:panelGrid>
+						
+						<h:panelGrid columns="4" rendered="#{facturacionComisionesMB.bDetExpFacSolicitudes}">
+							<h:outputLabel value="Oficina: " style="font-weight: bold; color:black;"/>
+							<h:outputLabel value="#{facturacionComisionesMB.ofiG.nombre}" style="font-weight: bold; color:blue;"/>
+							<h:outputLabel value="Solicitudes Trabajadas: " style="font-weight: bold; color:black;"/>
+							<h:outputLabel value="#{facturacionComisionesMB.ofiG.listSolicitudes.size()}" style="font-weight: bold; color:blue;"/>
+						</h:panelGrid>
+						
+						<p:dataTable id="dtPlanilla" var="tc" value="#{facturacionComisionesMB.listaExpedienteDetalle}" widgetVar="dtDetalleExped" 
+							emptyMessage="Tabla vacia" rowIndexVar="nro" paginator="true" rows="10" paginatorPosition="bottom"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,100,200,500,1000" draggableColumns="true" 
+							 style="FONT-SIZE: 10px;width:1000px ">
+							 
+							<p:column headerText="Orden" style="width:15px" >
+								<h:outputLabel value="#{nro+1}"/>
+							</p:column>	
+							 
+							<p:column style="width:60px" headerText="Nro Expediente">
+								<h:outputText value="#{tc.nro_expediente}" />
+							</p:column>
+
+							<p:column style="width:60px" headerText="Tipo de Documento">
+								<h:outputText value="#{tc.tipo_doc}" />
+							</p:column>
+					
+							<p:column style="width:60px" headerText="Fecha de Recepción" sortBy="#{tc.fecha_recepcion}">
+								<h:outputText value="#{tc.fecha_recepcion}">
+									<f:convertDateTime type="date" pattern="dd/MM/yyyy" dateStyle="short"></f:convertDateTime>
+								</h:outputText>
+							</p:column>
+							
+							<p:column style="width:100px" headerText="Fecha de Registro" sortBy="#{tc.fecha_reg}">
+								<h:outputText value="#{tc.fecha_reg}">
+									<f:convertDateTime type="date" pattern="dd/MM/yyyy hh:mm:ss" dateStyle="short"></f:convertDateTime>
+								</h:outputText>
+							</p:column>		
+							
+
+							<p:column style="width:200px" headerText="Ejecutivo">
+								<h:outputText value="#{tc.usuarioAsignado}" />
+							</p:column>
+
+							<p:column style="width:60px" headerText="Oficina">
+								<h:outputText value="#{tc.desOficina}" />
+							</p:column>	
+
+							<p:column style="width:60px" headerText="Total de Páginas" sortBy="#{tc.cantidadHojas}">
+								<h:outputText value="#{tc.cantidadHojas}" />
+							</p:column>			
+										
+							<p:column style="width:100px" headerText="Ver Detalle">
+							
+								<p:commandButton value="Visualizar Paginas" oncomplete="PF('dlgDetalleExpedienteDoc').show()" update=":formDetExpDoc" actionListener="#{facturacionComisionesMB.verPaginas(tc)}"></p:commandButton>
+							
+							</p:column>
+							
+							
+						</p:dataTable>
+						
+						
+					
+					</h:panelGrid>
+					
+						
+					
+					</h:form>	
+		</p:dialog>
+		
+		<p:dialog header="Detalle de Expedientes" widgetVar="dlgDetalleExpedienteDoc" appendTo="@(body)"
+					resizable="false" id="dlgDetDetalleExpedienteDoc" modal="true" style="width:800px">
+					
+					<h:form id="formDetExpDoc">
+					<p:messages showDetail="false" showSummary="true" id="msgNuevoRep" closable="true"/>
+					
+					<h:panelGrid columns="2">
+					
+						<p:dataTable id="dtExpDoc" var="ex" value="#{facturacionComisionesMB.listaDocumentosRegistrados}" widgetVar="dtDetalleExpedDoc" 
+							emptyMessage="Tabla vacia" rowIndexVar="nro" selection="#{facturacionComisionesMB.expDocSelected}" selectionMode="single" rowKey="#{ex.id_expediente_documento}"
+							 style="FONT-SIZE: 10px;width:300px" position="top" paginator="true" rows="10" paginatorPosition="bottom"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,100,200,500,1000" draggableColumns="true" >
+							 
+							 <p:ajax event="rowSelect" update=":formDetExpDoc:pnlFrame" listener="#{facturacionComisionesMB.visualizarPagina}" />
+							<p:column headerText="Orden" style="width:15px" >
+								<h:outputLabel value="#{nro+1}"/>
+							</p:column>	
+							<p:column style="width:150px" headerText="Nombre Archivo">
+								<h:outputText value="#{ex.nombre_archivo}" />
+							</p:column>
+							<p:column style="width:40px" headerText="Nro Páginas">
+								<h:outputText value="#{ex.nro_paginas}" />
+							</p:column>
+							
+						</p:dataTable>
+						
+						<h:panelGroup id="pnlFrame">
+							<h:panelGrid rendered="#{facturacionComisionesMB.renderedFrame}" style="width:520px">
+							<iframe  id="pdfiframe"  name="pdfiframe" height="560px" width="500px" frameborder="0" scrolling="auto" src="http://#{controlCalidad.ipcertiscan}:8080/PDF/web/visor.html?var1=certiscan$#{facturacionComisionesMB.expDocSelected.id_expediente_documento}"/>
+							</h:panelGrid>
+						</h:panelGroup>
+					
+					</h:panelGrid>
+					
+						
+					
+					</h:form>	
+		</p:dialog>
+		
+		<script type="text/javascript">  
+	    
+	    var gValor;
+	    
+	    function inicia(){
+	    	gValor=1;
+	    }
+	    
+	    function desagrupado(){
+	    	gValor=2;
+	    }
+	    
+	    function agrupado(){
+	    	gValor=3;
+	    }
+	    
+	    
+	    $(document).keydown(function(e) {
+	        switch(e.which) {
+	            case 37: // left
+	            	console.log('37: '+gValor);
+	            	if(gValor==1){
+	            		callRemoteAnterior();	
+	            	}
+	            	if(gValor==2){
+	            		callRemoteAnteriorDesAgr();	
+	            	}
+	            	if(gValor==3){
+	            		callRemoteAnteriorAgr();	
+	            	}
+	            	//callRemoteAnterior();
+	            break;
+
+	            case 38: // up
+	            break;
+
+	            case 39: // right
+	            	console.log('39: '+gValor);
+	            	if(gValor==1){
+	            		callRemoteSiguiente();
+	            	}
+	            	if(gValor==2){
+	            		callRemoteSiguienteDesAgr();	
+	            	}
+	            	if(gValor==3){
+	            		callRemoteSiguienteAgr();	
+	            	}
+	            break;
+
+	            case 40: // down
+	            break;
+
+	            default: return; // exit this handler for other keys
+	        }
+	        e.preventDefault(); // prevent the default action (scroll / move caret)
+	    });
+	    
+	    
+	function handleComplete(xhr, status, args) {  
+	    if(args.validationFailed) {  
+	        alert("Validation Failed");  
+	    } else {  
+	        alert("Save:" + args.saved);  
+	         
+	    }  
+	}  
+	
+	function justNumbers(e) {
+		var keynum = window.event ? window.event.keyCode : e.which;
+		if ( keynum == 8 ) return true;
+		return /\d/.test(String.fromCharCode(keynum));
+		}
+	
+	function mostrar(ndoc){
+		//if(valida=='0'){
+		//alert("codigo imagen:"+imgId);
+		console.log('ndoc ', ndoc);
+		var cadena = 'DisplayImage?codigo='+ndoc;
+		//alert('imagen cadena:'+cadena);
+		
+		//jQuery('#img01').show();
+		jQuery('#img01').attr('data',cadena);
+		var abc = jQuery('#img01').attr('data');
+		//alert('imagen cadena:'+abc);
+		//jQuery('#img01').attr('data',cadena);
+		//}				
+	}
+</script>
+		<style>
+			.rojo{
+					background-color: rgb(255,160,122) !important;
+				}
+			.blanco{
+					background-color: rgb(255,255,255) !important;
+				}
+		</style>
+		
+	</ui:define>
+</ui:composition>
+</html>

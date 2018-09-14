@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.LoteMapper">
+
+<resultMap id="testResult" type="com.certicom.certiscan.domain.Lote">
+	<id column="id_lote" property="id_lote"/>
+	<result column="cod_lote" property="cod_lote"/>
+	<result column="fecha_registro" property="fecha_registro"/>
+	<result column="cantidad_expedientes" property="cantidad_expedientes"/>
+	<result column="estado" property="estado"/>
+	<result column="entregado_a" property="entregado_a"/>
+</resultMap>
+
+<select id="consultaLote" resultMap="testResult"
+		parameterType="com.certicom.certiscan.domain.Lote">
+		select l.cod_lote, l.fecha_registro, l.cantidad_expedientes, l.estado, l.id_lote from t_lote l
+		where 
+				
+		<if test="filtradopor==2">
+		cast(l.fecha_registro as Date) &gt;= #{fec_ini} and cast(l.fecha_registro as Date) &lt;= #{fec_fin}
+		</if>
+		<if test="filtradopor==1">
+		l.cod_lote = #{vfiltradopor}
+		</if>
+		order by l.fecha_registro asc;
+	</select>
+
+</mapper>	

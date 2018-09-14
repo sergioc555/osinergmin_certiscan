@@ -1,0 +1,21 @@
+Mantenimiento: columnas Disponibles nuevo negocio
+1 crear el negocio con su respectivo codigo
+2 en el metodo listaColumnasXProducto(String codigoProducto), de la clase ProductoServices agregar el case  con el nuevo codigo de producto y crear un metodo con el nombre del codigo para asociarlo a el.
+3 en el metodo creado crear una lista de String de acuerdo a la configuracion de las nuevas columnas  requeridas, estas deben estar en un orden estricto establecido pro el usuario
+
+haciendo el matching
+4 en el metodo listarExpedientes(this.producto, this.archivo, this.columnasTargetObject) de la clase ExpedienteService, crear un nuevo if-else con el codigo del nuevo producto:
+
+if(producto.getCodigoProducto().equals("NUEVO-CODIGO"))
+
+lo que esta dentro del bloke if se copia tal como esta.
+5 hacer modificaciones al bloke:
+	- crear una clase con el nombre del producto y referenciarla en la lista:
+List<NuevaClaseProducto> listaExpP1 = new ArrayList<>();
+reemplazar las ocurrencias de las clase de ejemplo con el Nombre d ela nueva clase.
+
+6 setear las columnas correspondientes de la clase Expediente de acuerdo co las columnas del nuevo producto.
+
+
+
+

@@ -1,0 +1,951 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+	
+		<style>
+			.seleccion
+			{background-color: #6CE26C;}
+		
+			.ui-datatable tr.ui-datatable-even:hover, .ui-datatable tr.ui-datatable-odd:hover {
+	    		background: #78BCFF;
+			}
+		</style>
+		<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: -5px">  
+  				<p:menuitem value="Home" url="#" />  
+  				<p:menuitem value="Gestion de Ventas" url="#" />
+  				<p:menuitem value="Control Calidad Persona" url="ccBancaPersona" />   
+		</p:breadCrumb>	
+		<p:messages id="sms" showDetail="false" showSummary="true"
+				closable="true" />
+		
+		<pe:blockUI   widgetVar="BlockUIWidget">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Buscando, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    <pe:blockUI  widgetVar="BlockUIWidgetRetorno">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Retornando, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	   
+	    <pe:blockUI  widgetVar="BlockUIWidgetExp">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Explorando, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+		
+		<pe:blockUI  widgetVar="BlockUIWidgetAct">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Actualizando expediente, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    <pe:blockUI  widgetVar="BlockUIWidgetGenExp">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Consultando datos, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    <pe:blockUI  widgetVar="BlockUIWidgetDesh">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Dehaciendo los cambios de la base, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    		    
+		<h:panelGrid id="pngContainer">
+			<!-- Formulario Principal -->
+			<h:panelGrid id="pnContainer" rendered="#{ccBancaPersonaMB.renderedPrincipal}">
+				<h:form id="frmFiltro">
+					
+						
+					<p:blockUI block=":frmTabla:lisExp" trigger=":frmTabla:lisExp">
+				        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+			        	<h:outputText value="Buscando, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/>
+				    </p:blockUI>
+				    
+				    <p:panel >
+				    	<h:panelGrid columns="2">
+					        <h:panelGrid columns="4">
+					        <p:spacer></p:spacer>
+					        	<p:spacer></p:spacer>
+					        	<p:outputLabel value="Filtrar por: "></p:outputLabel>
+					        	<p:spacer></p:spacer>
+					        	<p:spacer></p:spacer>
+					        	<p:spacer></p:spacer>
+					        	<p:selectOneRadio id="idTipoConsulta" value="#{ccBancaPersonaMB.vradio}"> 
+					        		<f:selectItem itemLabel="DNI" itemValue="0" />
+					        		<f:selectItem itemLabel="PRODUCTO" itemValue="1" />
+					        		<p:ajax update="@form" process="@this" 
+											listener="#{ccBancaPersonaMB.cambiarCriterio()}" />
+					        	</p:selectOneRadio>
+					        	<p:spacer></p:spacer>
+				    			<p:outputLabel value="Periodo:"/>
+				    			<h:outputLabel value="Negocio:"/>
+				    			<p:outputLabel value="Producto:" id="sproducto" rendered="#{ccBancaPersonaMB.rProducto}"/>
+				    			<p:outputLabel value="DNI:" id="ssdni" rendered="#{ccBancaPersonaMB.rDNI}"/>
+				    			 <h:outputLabel value="Tipo Base:"/>
+				    			<ui:remove>
+					    			<p:outputLabel value="Base:"/>
+					    			<p:outputLabel value="Prioridad:"/>
+				    			</ui:remove>
+				    			<h:panelGrid columns="2">
+					   	 		    <p:selectOneMenu value="#{ccBancaPersonaMB.mes}" id="selMes" style="width: 100px;">
+										<f:selectItem  itemLabel="Enero" itemValue="01" />
+										<f:selectItem  itemLabel="Febrero" itemValue="02" />
+										<f:selectItem  itemLabel="Marzo" itemValue="03" />
+										<f:selectItem  itemLabel="Abril" itemValue="04" />
+										<f:selectItem  itemLabel="Mayo" itemValue="05" />
+										<f:selectItem  itemLabel="Junio" itemValue="06" />
+										<f:selectItem  itemLabel="Julio" itemValue="07" />
+										<f:selectItem  itemLabel="Agosto" itemValue="08" />
+										<f:selectItem  itemLabel="Setiembre" itemValue="09" />
+										<f:selectItem  itemLabel="Octubre" itemValue="10" />
+										<f:selectItem  itemLabel="Noviembre" itemValue="11" />
+										<f:selectItem  itemLabel="Diciembre" itemValue="12" />
+										<p:ajax process="@this" listener="#{ccBancaPersonaMB.listarProductosyExpedientes}" update=":frmTabla:lisExp :frmFiltro:lblTotal1 :frmFiltro:lblTotal2 :frmFiltro:lblTotal3 :frmTabla:pngPie :frmTabla:dtbEstadistico :frmFiltro:selProd" 
+											onstart="PF('BlockUIWidget').block();"  oncomplete="PF('BlockUIWidget').unblock();"/>
+									</p:selectOneMenu>
+									<p:selectOneMenu value="#{ccBancaPersonaMB.anio}" id="selAnio">
+										<f:selectItem  itemLabel="2014" itemValue="2014" />
+										<f:selectItem  itemLabel="2015" itemValue="2015" />
+										<f:selectItem  itemLabel="2016" itemValue="2016" />
+										<f:selectItem  itemLabel="2017" itemValue="2017" />
+										<f:selectItem  itemLabel="2018" itemValue="2018" />
+										<f:selectItem  itemLabel="2019" itemValue="2019" />
+										<f:selectItem  itemLabel="2020" itemValue="2020" />
+										<p:ajax process="@this" listener="#{ccBancaPersonaMB.listarProductosyExpedientes}" update=":frmTabla:lisExp  :frmFiltro:lblTotal1 :frmFiltro:lblTotal2 :frmFiltro:lblTotal3 :frmTabla:pngPie :frmTabla:dtbEstadistico :frmFiltro:selProd" 
+											onstart="PF('BlockUIWidget').block();"  oncomplete="PF('BlockUIWidget').unblock();"/>
+									</p:selectOneMenu>
+								</h:panelGrid>
+								
+								
+								<p:selectOneMenu value="#{ccBancaPersonaMB.idNegocio}"  disabled="#{ccBancaPersonaMB.view}">
+									<f:selectItem itemLabel="Todos" itemValue="0"  />
+									<f:selectItems itemLabel="#{neg.descripcion}" itemValue="#{neg.id_negocio}" value="#{ccBancaPersonaMB.listaNegocios}" var="neg" />
+									<p:ajax listener="#{ccBancaPersonaMB.buscarProductosXNegocio()}" execute="@this" update=":frmFiltro:selProd" 
+												onstart="PF('BlockUIWidget').block()" oncomplete="PF('BlockUIWidget').unblock()"/>
+								</p:selectOneMenu>
+								
+							    <p:selectOneMenu value="#{ccBancaPersonaMB.id_producto}" id="selProd" style="font" rendered="#{ccBancaPersonaMB.rProducto}">
+				                 	<f:selectItems var="s" itemLabel="#{s.descripcion}" value="#{ccBancaPersonaMB.listCmbFilterProducto}" itemValue="#{s.id_producto}"></f:selectItems>
+				                 	<ui:remove>
+				                 	<p:ajax process="@this" listener="#{ccBancaPersonaMB.iniciarListaExpedientes}" update=":frmTabla:lisExp  :frmFiltro:lblTotal1 :frmFiltro:lblTotal2 :frmFiltro:lblTotal3 :frmTabla:pngPie :frmTabla:dtbEstadistico" 
+										onstart="PF('BlockUIWidget').block();"  oncomplete="PF('BlockUIWidget').unblock();"/>
+									</ui:remove>
+				                </p:selectOneMenu>
+				                
+				                <p:inputText value="#{ccBancaPersonaMB.sdni}" id="cdni" rendered="#{ccBancaPersonaMB.rDNI}"> 
+				                	<ui:remove>
+				                	<p:ajax event="blur" process="@this" listener="#{ccBancaPersonaMB.iniciarListaExpedientes}" update=":frmTabla:lisExp  :frmFiltro:lblTotal1 :frmFiltro:lblTotal2 :frmFiltro:lblTotal3 :frmTabla:pngPie :frmTabla:dtbEstadistico" 
+										onstart="PF('BlockUIWidget').block();"  oncomplete="PF('BlockUIWidget').unblock();"></p:ajax>
+									</ui:remove>
+				                </p:inputText>
+				                
+				                 <p:selectOneMenu value="#{ccBancaPersonaMB.tipo_base}" id="selTipBase">
+				               	    	 <f:selectItem itemLabel="Todo" itemValue="" />
+					                    <f:selectItem itemLabel="BANCO" itemValue="BANCO" />
+					                    <f:selectItem itemLabel="REFERIDO" itemValue="REFERIDO" />
+					                    <ui:remove>
+					                 	<p:ajax process="@this :frmTabla:lisExp" listener="#{ccBancaPersonaMB.iniciarListaExpedientes}" update=":frmTabla:lisExp  :frmFiltro:lblTotal1 :frmFiltro:lblTotal2 :frmFiltro:lblTotal3 :frmTabla:pngPie :frmTabla:dtbEstadistico" 
+											onstart="PF('BlockUIWidget').block();"  oncomplete="PF('BlockUIWidget').unblock();"/>
+										</ui:remove>
+					                </p:selectOneMenu>
+				                
+	
+				                <ui:remove>
+				               	    <p:selectOneMenu value="#{ccBancaPersonaMB.f_prioridad}" id="selPrio">
+				               	    	 <f:selectItem itemLabel="Todo" itemValue="TODOS" />
+					                    <f:selectItem itemLabel="1" itemValue="1" />
+					                    <f:selectItem itemLabel="2" itemValue="2" />
+					                    <f:selectItem itemLabel="3" itemValue="3" />
+					                    <f:selectItem itemLabel="4" itemValue="4" />
+					                    <f:selectItem itemLabel="5" itemValue="5" />
+					                    <ui:remove>
+					                 	<p:ajax process="@this" listener="#{ccBancaPersonaMB.iniciarListaExpedientes}" update=":frmTabla:lisExp  :frmFiltro:lblTotal1 :frmFiltro:lblTotal2 :frmFiltro:lblTotal3 :frmTabla:pngPie :frmTabla:dtbEstadistico" 
+											onstart="PF('BlockUIWidget').block();"  oncomplete="PF('BlockUIWidget').unblock();"/>
+										</ui:remove>
+					                </p:selectOneMenu>
+				                </ui:remove>
+				                						
+						    </h:panelGrid>
+						     <h:panelGrid style="float: rigth; margin-left: 20px;" columns="2" id="pngTotales">
+					     		<h:outputLabel value="Exp. Pendientes:" style="font-weight: bold; color: blue; font-size:12px;" rendered="false" />
+								<h:outputText id="lblTotal1_" value="#{ccBancaPersonaMB.numeroPendiente}" style="color: blue; font-size:12px;" rendered="false" />
+								<h:outputLabel value="Exp. en Proceso:" style="font-weight: bold; color: blue; font-size:12px; margin-left: 10px;" rendered="false" />
+								<h:outputText id="lblTotal2_" value="#{ccBancaPersonaMB.numeroProceso}" style="color: blue; font-size:12px;" rendered="false" />
+								<h:outputLabel value="Exp. Concluidos:" style="font-weight: bold; color: blue; font-size:12px; margin-left: 10px;" rendered="false" />
+								<h:outputText id="lblTotal3_" value="#{ccBancaPersonaMB.numeroConcluido}" style="color: blue; font-size:12px;" rendered="false" />
+								<h:outputLabel value="TOTAL:" style="font-weight: bold; color: blue; font-size:13px; margin-left: 10px;" rendered="false" />
+								<h:outputText id="lblTotal" value="#{ccBancaPersonaMB.numeroPendiente + ccBancaPersonaMB.numeroProceso + ccBancaPersonaMB.numeroConcluido}"  style="color: blue; font-size:13px; font-weight: bold;" rendered="false" />
+								
+								
+								<h:outputLabel value="Monto Aprobado:" style="font-weight:bold;font-size: 1.2em;color:blue" />
+								<h:outputText id="lblTotal2" value="#{ccBancaPersonaMB.montoAprobado}" style="font-weight:bold;font-size: 1.2em;color:blue"/>
+								
+								<h:outputLabel value="Monto Desembolsado:" style="font-weight:bold;font-size: 1.2em;color:green" />
+								<h:outputText id="lblTotal3" value="#{ccBancaPersonaMB.montoDesembolsado}" style="font-weight:bold;font-size: 1.2em;color:green"/>
+									
+								<h:outputLabel value="Número Expedientes:" style="font-weight:bold;font-size: 1.2em;"  />
+								<h:outputText id="lblTotal1" value="#{ccBancaPersonaMB.numeroRegistros}" style="font-weight:bold;font-size: 1.2em;" />
+								
+							</h:panelGrid>
+							<h:panelGrid columns="5">
+								<p:outputLabel value="Departamento:"/>
+				    			<p:outputLabel value="Provincia:"/>
+				    			<p:outputLabel value="Distrito:"/>
+				    			<p:outputLabel value=""/>
+				    			<p:outputLabel value=""/>
+				    			<p:selectOneMenu style="width:150px" value="#{ccBancaPersonaMB.sdepartamentoFILTER}" filter="true">
+									<f:selectItem itemLabel="[--Todos--]" itemValue="" />
+									<f:selectItems var="ag" value="#{ccBancaPersonaMB.listaDepartamentosFILTER}" itemValue="#{ag.sdepartamento}" itemLabel="#{ag.sdepartamento}" /> 
+									<p:ajax update=":frmFiltro:cboProvincias :frmTabla:lisExp :frmFiltro:pngTotales" listener="#{ccBancaPersonaMB.listarProvinciasFILTER()}"  event="change" oncomplete="PF('BlockUIWidget').unblock()" onstart="PF('BlockUIWidget').block();"/> 
+								</p:selectOneMenu>
+								
+													
+								<p:selectOneMenu id="cboProvincias" style="width:150px" value="#{ccBancaPersonaMB.sprovinciaFILTER}" filter="true" >
+									<f:selectItem itemLabel="[--Todos--]" itemValue="" />
+									<f:selectItems var="ag" value="#{ccBancaPersonaMB.listaProvinciasFILTER}" itemValue="#{ag.sprovincia}" itemLabel="#{ag.sprovincia}" /> 
+									<p:ajax update=":frmFiltro:cboDistritos :frmTabla:lisExp :frmFiltro:pngTotales" listener="#{ccBancaPersonaMB.listarDistritosFILTER()}"  event="change" oncomplete="PF('BlockUIWidget').unblock()" onstart="PF('BlockUIWidget').block();"/> 
+								</p:selectOneMenu>
+								
+													
+								<p:selectOneMenu id="cboDistritos" style="width:150px" value="#{ccBancaPersonaMB.sdistritoFILTER}" filter="true">
+									<f:selectItem itemLabel="[--Todos--]" itemValue="" />
+									<f:selectItems var="ag" value="#{ccBancaPersonaMB.listaDistritosFILTER}" itemValue="#{ag.sdistrito}" itemLabel="#{ag.sdistrito}" /> 
+									<p:ajax update=":frmTabla:lisExp :frmFiltro:pngTotales" listener="#{ccBancaPersonaMB.contarExpedientes()}"  event="change" oncomplete="PF('BlockUIWidget').unblock()" onstart="PF('BlockUIWidget').block();"/>
+								</p:selectOneMenu>
+								
+								<h:commandLink   id="imprimir" value="Imprimir"   style="padding: 3px 30px;background: #C0C0C0; text-decoration: none; border: solid 1px #624B1E; font-weight: bold;
+    								 color: #1C190A;" actionListener="#{ccBancaPersonaMB.imprimir}" ajax="false" 
+    								/>   
+				    			<p:commandButton value="Consultar"  actionListener="#{ccBancaPersonaMB.iniciarListaExpedientes}" update=":frmTabla:lisExp  :frmFiltro:lblTotal1 :frmFiltro:lblTotal2 :frmFiltro:lblTotal3 :frmTabla:pngPie :frmTabla:dtbEstadistico" style="width:100px;"
+													title="Ver Tracking" onstart="PF('BlockUIWidget').block();"  oncomplete="PF('BlockUIWidget').unblock();" icon="icon-search" />
+							</h:panelGrid>
+							
+						</h:panelGrid>
+				    </p:panel>
+				    </h:form>
+				    <h:form id="frmTabla">
+					<p:dataTable var="p" value="#{ccBancaPersonaMB.modelExpedienteProductoAsigando}" emptyMessage="No se encontraron expedientes." lazy="true" paginatorPosition="bottom"  
+						filteredValue="#{ccBancaPersonaMB.listaExpedienteFiltroProductoAsigando}" paginator="true" rowIndexVar="nro" rows="20" id="lisExp" rowsPerPageTemplate="10, 15, 20, 50, 100"
+						selectionMode="single" selection="#{ccBancaPersonaMB.expedienteProductoSelected}" style="FONT-SIZE: 10px;" rowKey="#{p.id_expediente_producto}" widgetVar="dtExped" 
+						draggableColumns="true" >
+						
+						<p:ajax event="rowSelect" update=":dlgDetCheckList" oncomplete="PF('dlgCheckList').show();" listener="#{ccBancaPersonaMB.abrirCheckList()}" />
+						
+						<f:facet name="header">			
+							<h:outputLabel value="Lista de Bases Asignados" style="font-size: 15px; font-weight: bold;"/>
+						</f:facet>
+						
+						<p:column headerText="Orden" width="25">
+							#{nro+1}
+						</p:column>	
+						
+						<p:column style="width:100px;text-align: center" headerText="Ver Tracking">
+						<p:commandButton actionListener="#{ccBancaPersonaMB.listarTrackingxCkList(p)}" style="width:100px;"
+							update=":dlgDetExpTrack"
+							oncomplete="PF('dlgExpTrack').show();" title="Ver Tracking" icon="icon-search" />
+					
+					</p:column>
+						
+						<p:column width="50" headerText="Act. Resultado Back" rendered="false">
+							<p:commandButton icon="icon-update"  update=":dlgCambiarDetResultado" actionListener="#{ccBancaPersonaMB.setearExpedienteaResultadoCambio(p)}" oncomplete="PF('dlgCambiarResultado').show()" />
+						</p:column>
+						
+						
+						<p:column width="100" headerText="Producto" sortBy="#{p.producto.descripcion}" filterBy="#{p.producto.descripcion}" filterStyle="width: 90%;">
+							<h:outputText value="#{p.producto.descripcion}"/>
+						</p:column>
+						
+						<p:column width="50" headerText="DNI" sortBy="#{p.expediente.num_doc}" filterBy="#{p.expediente.num_doc}"  filterStyle="width: 95%;">
+							<h:outputText value="#{p.expediente.num_doc}" />
+						</p:column>
+						
+						<p:column width="150" headerText="Nombre Completo" sortBy="#{p.expediente.apellido_paterno}" filterBy="#{p.nombre_completo}" filterStyle="width: 90%;">
+							<h:outputText value="#{p.expediente.apellido_paterno} #{p.expediente.apellido_materno} #{p.expediente.nombre_completo}" />
+						</p:column>
+					
+					
+							
+						<p:column width="50" headerText="Monto Solicitado" sortBy="#{p.expediente.prestamo_soles}"  
+								 filterStyle="width: 90%;" style="text-align: right;">
+							<h:outputText value="#{p.expediente.prestamo_soles}" converter="montoDefaultConverter"  />
+						</p:column>
+						
+						<p:column width="55" headerText="Monto Desembolsado" sortBy="#{p.expediente.expediente_prestamo}"  
+								 filterStyle="width: 90%;" style="text-align: right;">
+							<h:outputText value="#{p.expediente.expedientePrestamo}" converter="montoDefaultConverter"  />
+						</p:column>
+						
+						
+						
+						<p:column width="110" headerText="Resultado" sortBy="#{p.indicadorCall.descripcion}"  filterBy="#{p.indicadorCall.descripcion}" 
+									 filterStyle="width: 90%;">
+								<h:outputText value="#{p.descripcionIndicador}"  />
+						</p:column>
+						
+						
+						
+						<p:column width="160" headerText="Ejecutivo Call" sortBy="#{p.usuario.apellido_paterno}" filterBy="#{p.usuario.apellido_paterno}" filterStyle="width: 90%;"
+								>
+							<h:outputText value="#{p.usuario.apellido_paterno} #{p.usuario.apellido_materno} #{p.usuario.nombre}" />
+						</p:column>
+						
+						
+						<p:column width="150" headerText="Supervisor Call" sortBy="#{p.nombreSupervisor}" filterBy="#{p.nombreSupervisor}" filterStyle="width: 90%;"
+									rendered="#{loginMB.perfilUsuario.proceso ne 'EXPEDIENTES ASIGNADOS'}">
+							<h:outputText value="#{p.nombreSupervisor}" rendered="#{loginMB.perfilUsuario.proceso ne 'EXPEDIENTES ASIGNADOS'}"/>
+						</p:column>
+						
+						<ui:remove>
+						<p:column width="160" headerText="Ejecutivo Campo" 
+								>
+							<h:outputText value="#{p.usuario_campo}" />
+						</p:column>
+						
+						
+						<p:column width="150" headerText="Supervisor Campo" 
+									>
+							<h:outputText value="#{p.supervisor_campo}" />
+						</p:column>
+						</ui:remove>
+						
+						<p:column width="150" headerText="Coordinador" sortBy="#{p.nombreCoordinador}" filterBy="#{p.nombreCoordinador}" filterStyle="width: 90%;"
+									rendered="#{loginMB.perfilUsuario.proceso ne 'EXPEDIENTES ASIGNADOS'}">
+							<h:outputText value="#{p.nombreCoordinador}" rendered="#{loginMB.perfilUsuario.proceso ne 'EXPEDIENTES ASIGNADOS'}"/>
+						</p:column>
+						
+						
+						<p:column width="79" headerText="Estado Base" filterBy="#{p.estado.descripcion}"  filterStyle="width: 90%;">
+								<f:facet name="filter">
+					                <p:selectOneMenu onchange="PF('dtExped').filter()" >
+					                    <f:selectItem itemLabel="[--Todos--]" itemValue="" />
+					                    <f:selectItem itemLabel="PENDIENTE" itemValue="PENDIENTE" />
+					                    <f:selectItem itemLabel="PROCESO" itemValue="PROCESO" />
+					                    <f:selectItem itemLabel="CONCLUIDO" itemValue="CONCLUIDO" />
+					                </p:selectOneMenu>
+					            </f:facet>
+					            <h:graphicImage value="/resources/img/pendiente.png" rendered="#{p.estado.descripcion eq 'PENDIENTE'}" />
+								<h:graphicImage value="/resources/img/enproceso.png" rendered="#{p.estado.descripcion eq 'EN PROCESO'}" />
+								<h:graphicImage value="/resources/img/concluido.png" rendered="#{p.estado.descripcion eq 'CONCLUIDO'}" />
+								<h:outputText value="#{p.estado.descripcion}" />
+							</p:column>
+						
+						
+						<ui:remove>
+							<p:column width="70" headerText="Territorio" sortBy="#{p.expediente.territorio_ofc}" filterBy="#{p.expediente.territorio_ofc}"  filterStyle="width: 90%;"
+								rendered="#{ccBancaPersonaMB.renderedUbigeo}">
+								<h:outputText value="#{p.expediente.territorio_ofc}" rendered="#{ccBancaPersonaMB.renderedUbigeo}"/>
+							</p:column>		
+						
+						<p:column width="70" headerText="Oficina" sortBy="#{p.expediente.nombre_oficina}" filterBy="#{p.expediente.nombre_oficina}"  filterStyle="width: 90%;"
+							rendered="#{ccBancaPersonaMB.renderedUbigeo}">
+							<h:outputText value="#{p.expediente.nombre_oficina}" rendered="#{ccBancaPersonaMB.renderedUbigeo}"/>
+						</p:column>	
+						
+						</ui:remove>	
+						
+						
+						<ui:remove>
+						
+						
+							<p:column width="80" headerText="Modalidad" sortBy="#{p.expediente.modalidad}" filterBy="#{p.expediente.modalidad}" filterStyle="width: 90%;">
+									<h:outputText value="#{p.expediente.modalidad}" />
+								</p:column>
+						
+							
+							<p:column  headerText="Comentario"  filterBy="#{p.expediente.comentario_contacto}" filterStyle="width: 95%;" 
+									 rendered="#{loginMB.perfilUsuario.cod_perfil eq 45 or loginMB.perfilUsuario.cod_perfil eq 46}">
+								<h:outputText style="font-size: 11px" value="#{p.expediente.comentario_contacto}"  escape="false"
+									rendered="#{loginMB.perfilUsuario.cod_perfil eq 45 or loginMB.perfilUsuario.cod_perfil eq 46}"/>
+							</p:column>
+							<p:column  headerText="Ultima Cita"  width="50" 
+									 rendered="#{loginMB.perfilUsuario.cod_perfil eq 45 or loginMB.perfilUsuario.cod_perfil eq 46}">
+								<h:outputText style="font-size: 11px" value="#{p.ultima_cita}"  
+									rendered="#{loginMB.perfilUsuario.cod_perfil eq 45 or loginMB.perfilUsuario.cod_perfil eq 46}"/>
+							</p:column>
+							
+						
+							<p:column width="35"  headerText="Prioridad"  filterBy="#{p.expediente.prioridad_cliente}" sortBy="#{p.expediente.prioridad_cliente}" 
+									 filterStyle="width: 95%;">
+								<h:outputText style="font-size: 11px" value="#{p.expediente.prioridad_cliente}"  />
+							</p:column>
+						
+						
+							
+							
+							<p:column width="70" filterBy="#{p.estadoNuevo}" headerText="Registro" filterMatchMode="equals" style="text-align: center; ">
+					            <f:facet name="filter">
+					                <p:selectOneMenu onchange="PF('dtExped').filter()">
+					                    <f:converter converterId="javax.faces.Boolean" />
+					                    <f:selectItem itemLabel="Todo" itemValue="" />
+					                    <f:selectItem itemLabel="Nuevo" itemValue="true" />
+					                    <f:selectItem itemLabel="Repetido" itemValue="false" />
+					                </p:selectOneMenu>
+					            </f:facet>
+					            <h:outputText value="#{p.estadoNuevo ? 'Nuevo': 'Repetido'}" style="font-size: 11px;" />
+					        </p:column>
+					        <p:column width="50" headerText="Descargo" rendered="#{p.producto.negocio.id_negocio eq 11}">
+								<p:commandButton icon="icon-indicadores" rendered="#{p.producto.negocio.id_negocio eq 11}" update=":dlgDetDescargo" actionListener="#{ccBancaPersonaMB.setearExpedienteaDescargo(p)}" oncomplete="PF('dlgDescargo').show()" />
+							</p:column>
+							<p:column width="50" headerText="Comentario" rendered="#{loginMB.perfilUsuario.cod_perfil ne 45 and loginMB.perfilUsuario.cod_perfil ne 46}">
+								<p:commandButton update=":frmComentario" rendered="#{loginMB.perfilUsuario.cod_perfil ne 45 and loginMB.perfilUsuario.cod_perfil ne 46}"
+										 value="Ver"  oncomplete="PF('dlgMostrarComentario').show()">
+									<f:setPropertyActionListener value="#{p}" target="#{ccBancaPersonaMB.expedienteProductoSelected}" />
+								</p:commandButton>
+							</p:column>
+				        </ui:remove>
+						<p:column width="50" headerText="Exped.">
+							 <p:commandLink id="linkexp" oncomplete="PF('dlgExpedienteBaseWAct').show();" update=":dlgExpedienteBaseAct :frmExpedienteBaseAct"
+							 	actionListener="#{ccBancaPersonaMB.mostrarEditarExpediente(p)}" >
+								 <h:graphicImage value="/resources/img/icon_expediente.png" />
+								 	
+							 </p:commandLink>
+							 
+						</p:column>
+						
+						
+						
+						
+						
+					</p:dataTable>
+					<h:panelGrid columns="2" rendered="false">
+						<h:panelGrid id="pngPie">
+						<p:chart type="pie" model="#{ccBancaPersonaMB.pieModel1}"   style="width:300px;height:250px"  rendered="#{ccBancaPersonaMB.pieModel1 ne null}" />
+					</h:panelGrid>
+						
+						<p:dataTable var="car" value="#{ccBancaPersonaMB.listaDatosEstadisticos}" style="width:500px" id="dtbEstadistico" rendered="false">
+							<f:facet name="header">			
+								<h:outputLabel value="Datos Estadisticos" style="font-size: 15px; font-weight: bold;"/>
+							</f:facet>
+							 <p:column headerText="Negocio">
+						        <h:outputText value="#{car.des_negocio}" />
+						    </p:column>
+							
+						    <p:column headerText="Producto">
+						        <h:outputText value="#{car.des_productos}" />
+						    </p:column>
+						 
+						    <p:column headerText="Cantidad">
+						        <h:outputText value="#{car.cant_exp}" />
+						    </p:column>
+						 
+						</p:dataTable>
+					</h:panelGrid>
+				</h:form>
+		</h:panelGrid>
+	</h:panelGrid>
+		
+		<p:dialog id="dlgDetObservacion" widgetVar="dlgObservacion" appendTo="@(body)" resizable="false" 
+			closeOnEscape="true" header="Cambio de Resultado" closable="true" showEffect="explode" hideEffect="explode" modal="true" >
+			
+			<h:form>
+				<h:panelGrid columns="2">
+					
+					<h:outputLabel value="Observación"/>
+					<h:inputTextarea value="#{ccBancaPersonaMB.observacion}"/>
+					<p:commandButton  widgetVar="saveButton3" value="Guardar Observacion" actionListener="#{ccBancaPersonaMB.cargarObservacion()}" 
+									oncomplete="PF('dlgObservacion').hide();"
+									update=":dlgDetCheckList" icon="icon-disk" />
+				
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	
+		<p:dialog id="dlgCambiarDetResultado" widgetVar="dlgCambiarResultado" appendTo="@(body)" resizable="false" 
+			closeOnEscape="true" header="Cambio de Resultado" closable="true" showEffect="explode" hideEffect="explode" modal="true" >
+			<p:messages id="smsCambioResultado" showDetail="false" showSummary="true" closable="true" />
+			<h:form id="frmCambioResultado">
+				<h:panelGrid columns="2">
+					
+					<h:outputLabel value="Categoria:" />
+
+					<p:selectOneMenu value="#{ccBancaPersonaMB.expedProductoCambioResult.expediente.id_estado_categoria_back}" filter="true" filterMatchMode="contains" id="idFamEstBackAc">
+						<f:selectItem itemLabel="[--Seleccione--]" itemValue="" />
+						<f:selectItems value="#{ccBancaPersonaMB.listaFamiliaEstadosBack}" var="sup" itemLabel="#{sup.descripcion}" itemValue="#{sup.id_indicadores_call}" />
+								<p:ajax  listener="#{ccBancaPersonaMB.getSubFamiliaEstadoBack}" execute="@this" update=":frmCambioResultado:idSubEstBackAc" />
+					</p:selectOneMenu>
+					<h:outputLabel value="Resultado:" style="font-weight: bold;" />
+
+					<p:selectOneMenu value="#{ccBancaPersonaMB.expedProductoCambioResult.expediente.id_estado_back}" filter="true" filterMatchMode="contains" id="idSubEstBackAc">
+						<f:selectItem itemLabel="[--Seleccione--]" itemValue="" />
+						<f:selectItems value="#{ccBancaPersonaMB.listaSubFamiliaEstadosBack}" var="usr" itemLabel="#{usr.descripcion}" itemValue="#{usr.id_indicadores_call}" />
+					</p:selectOneMenu>
+					
+					<h:outputLabel value="Comentario:" style="font-weight: bold;" />
+					<p:inputTextarea value="#{ccBancaPersonaMB.comentario_resultado}" rows="4" cols="44" maxlength="1000" />
+					
+
+					<p:commandButton id="saveResul" widgetVar="wbSaveResult" value="ACEPTAR" onclick="PF('wbSaveResult').disable();" oncomplete="PF('wbSaveResult').enable()" actionListener="#{ccBancaPersonaMB.registrarCambioResultado()}" update=":frmTabla:lisExp :smsCambioResultado" icon="ui-icon-circle-check" />
+
+					<p:commandButton value="CERRAR" oncomplete="PF('dlgCambiarResultado').hide();" icon="ui-icon-circle-close" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog id="dlgDetCheckList" widgetVar="dlgCheckList" appendTo="@(body)" resizable="false" 
+			closeOnEscape="true" header="Archivos CheckList" closable="true" showEffect="explode" hideEffect="explode" modal="true" >
+			<p:messages id="smsCheckList" showDetail="false" showSummary="true" closable="true" />
+			<h:form id="frmCheckList">
+				<p:dataTable var="m" value="#{ccBancaPersonaMB.listCheckList}" emptyMessage="No se encontraron checklist." paginatorPosition="bottom"  
+						 paginator="true" rowIndexVar="nro" rows="20" id="lisExp" rowsPerPageTemplate="10, 15, 20, 50, 100" 
+						 style="FONT-SIZE: 10px;width:680px" widgetVar="dtChck" 
+						draggableColumns="true" >
+						<p:column headerText="Orden"  style="width:25px" >
+							#{nro+1}
+						</p:column>
+						<p:column headerText="Documento"  filterBy="#{m.descripcion}" filterMatchMode="contains" filterStyle="width:90%;" style="width:80px">
+	           				 <h:outputText value="#{m.descripcion}" />
+	        			</p:column>
+	        			
+	        			<p:column headerText="Archivo"  filterBy="#{m.desNombreArchivo}" filterMatchMode="contains" filterStyle="width:90%;" style="width:100px">
+	           				 <h:outputText value="#{m.desNombreArchivo}" />
+	        			</p:column>
+	        			
+	        			<p:column headerText="Estado" style="width:80px">
+	           				 <h:outputText value="#{m.estado? 'REQUERIDO':'NO REQUERIDO'}" />
+	        			</p:column>
+	        			<p:column style="width:80px;text-align: center" headerText="Cargar Documento">
+						<p:commandButton actionListener="#{ccBancaPersonaMB.cargaDocumento(m)}"
+							update=":dlgDetCargaDocu" disabled="#{ccBancaPersonaMB.bOcultarCarga}"
+							oncomplete="PF('dlgCargaDocu').show();" title="Cargar Documento" icon="icon-search" />
+						</p:column>
+						
+						<p:column style="width:80px;text-align: center" headerText="Observación">
+						<p:commandButton actionListener="#{ccBancaPersonaMB.cambiarObservacion(m)}"
+							update=":dlgDetObservacion" disabled="#{ccBancaPersonaMB.bOcultarCarga}"
+							oncomplete="PF('dlgObservacion').show();" title="Observación" icon="icon-search" />
+						</p:column>
+						
+						<p:column style="width:80px" headerText="" resizable="false">
+					
+						<p:commandLink value="Descargar" rendered="#{m.desNombreArchivo eq null?false:true}" actionListener="#{ccBancaPersonaMB.exportarArchivo(m)}" ajax="false"> 
+							
+						</p:commandLink>
+						
+					</p:column>
+						
+				</p:dataTable>
+				<h:panelGrid>
+					<p:commandButton  widgetVar="saveButton1" value="Cerrar CheckList" actionListener="#{ccBancaPersonaMB.cerrarCheckList()}" 
+								oncomplete="PF('dlgCheckList').hide();"
+								update=":frmTabla"
+								disabled="#{ccBancaPersonaMB.bCerrarCheckList}" icon="icon-disk" />
+				</h:panelGrid>
+			</h:form>
+			
+		</p:dialog>
+		
+		<p:dialog id="dlgDetExpTrack" widgetVar="dlgExpTrack" appendTo="@(body)" resizable="false" 
+			closeOnEscape="true" header="Tracking de Expediente" closable="true" showEffect="explode" hideEffect="explode" modal="true" >
+			<p:messages id="smsExpedTrack" showDetail="false" showSummary="true" closable="true" />
+			<h:form id="frmExpedTrack">
+				<p:dataTable var="p" value="#{ccBancaPersonaMB.listExpedTracking}" emptyMessage="No se encontraron tracking expediente." paginatorPosition="bottom"  
+						 paginator="true" rowIndexVar="nro" rows="20" id="lisExp" rowsPerPageTemplate="10, 15, 20, 50, 100" 
+						 style="FONT-SIZE: 10px;width:800px" widgetVar="dtExpedTrack" 
+						draggableColumns="true">
+						<f:facet name="header">Lista Tracking</f:facet>
+						
+						<p:column headerText="Orden" width="25" style="width:10px" >
+							#{nro+1}
+						</p:column>
+						
+						<p:column style="width:70px" headerText="Condición" >
+							<h:outputText value="#{p.condicion}" />
+						</p:column>
+						
+						<p:column style="width:70px" headerText="Fecha Movimiento">
+							<h:outputText value="#{p.fecha_movimiento}" >
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" type="date" dateStyle="short" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column style="width:70px" headerText="Estado" >
+							<h:outputText value="#{p.des_estado}" />
+						</p:column>
+			
+						<p:column style="width:70px" headerText="Resultado" >
+							<h:outputText value="#{p.des_estado_resultado}" />
+						</p:column>
+						
+						<p:column style="width:70px" headerText="Usuario Movimiento" >
+							<h:outputText value="#{p.usuarioAsignado}" />
+						</p:column>
+						
+						<p:column style="width:70px" headerText="Usuario Registro" >
+							<h:outputText value="#{p.usuarioRegistro}" />
+						</p:column>
+				</p:dataTable>
+			</h:form>
+			
+		</p:dialog>
+		
+		<p:dialog id="dlgDetCargaDocu" widgetVar="dlgCargaDocu" appendTo="@(body)" resizable="false" 
+			closeOnEscape="true" header="Cargar Archivos" closable="true" showEffect="explode" hideEffect="explode" modal="true" >
+			<h:form>
+			<h:panelGrid columns="2">
+				#{"Subir Documento:"}
+						<p:fileUpload  id="fileupload" 
+											   mode="advanced"  sizeLimit="40000000" 
+											   label="Cargar Archivo" 
+											   uploadLabel="Subir"
+											   cancelLabel="Cancelar"
+											   multiple="true"
+											   fileLimit="1"
+											   
+											   fileUploadListener="#{ccBancaPersonaMB.handleFileUpload}"
+											   allowTypes="/(\.|\/)(pdf|xls)$/" process="@form"
+											   />  
+											   
+			<p:commandButton  widgetVar="saveButton1" value="Guardar" actionListener="#{ccBancaPersonaMB.guardarArchivo()}" update=":frmCheckList"
+						     oncomplete="PF('dlgCargaDocu').hide();" icon="icon-disk" />
+					
+					<p:commandButton value="Cancelar" type="button" onclick="PF('dlgCargaDocu').hide();" icon="icon-cancel" />
+			</h:panelGrid>
+			</h:form>
+		</p:dialog>
+			
+		
+		<p:dialog id="dlgDetResultadoBase" widgetVar="dlgResultadoBase" appendTo="@(body)" resizable="false" 
+			closeOnEscape="true" header="Actualizar Resultado de Base" closable="true" showEffect="explode" hideEffect="explode" modal="true" >
+			<p:messages id="smsResultadoBase" showDetail="false" showSummary="true" closable="true" />
+			<h:form id="frmResultadoBase">
+				<h:panelGrid columns="2">
+					
+					<h:outputLabel value="Resultado:" style="font-weight: bold;" />
+
+					<p:selectOneMenu value="#{ccBancaPersonaMB.expedienteProductoSelected.id_indicadores_call}" filter="true" filterMatchMode="contains" id="idSubEstBackAc">
+						<f:selectItem itemLabel="[--Seleccione--]" itemValue="" />
+						<f:selectItems value="#{ccBancaPersonaMB.listaIndicadoresCall}" var="usr" itemLabel="#{usr.descripcion}" itemValue="#{usr.id_indicadores_call}" />
+					</p:selectOneMenu>
+
+					<p:commandButton id="saveResuld" widgetVar="wbSaveResultd" value="ACEPTAR" onclick="PF('wbSaveResultd').disable();" oncomplete="PF('wbSaveResultd').enable()" actionListener="#{ccBancaPersonaMB.registrarCambioResultado()}" update=":frmTabla:lisExp :smsResultadoBase" icon="ui-icon-circle-check" />
+
+					<p:commandButton value="CERRAR" oncomplete="PF('dlgResultadoBase').hide();" icon="ui-icon-circle-close" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		
+	
+	<p:dialog id="dlgExpedienteBaseAct" widgetVar="dlgExpedienteBaseWAct" appendTo="@(body)" resizable="true" modal="true"
+		header="MODIFICACION DE EXPEDIENTE" closable="false">
+		<h:form id="frmExpedienteBaseAct">
+		<p:messages id="smsConfAct" closable="true" showDetail="false" showSummary="true"></p:messages>  
+			<h:panelGrid >
+			 	
+				<p:panelGrid>
+					<p:row>
+					<p:column style="background-color: #007EBD; color: #FFFFFF; border-color: #FFFFFF;">
+						RESULTADO BASE:
+					</p:column>
+					
+					<p:column>
+	        			<p:panelGrid columns="2" styleClass="companyHeaderGrid2">
+	        			
+	        			<h:outputLabel value="Resultado Base:"/>
+					<p:selectOneMenu value="#{ccBancaPersonaMB.expedienteProductoSelected.id_indicadores_call}" filter="true" filterMatchMode="contains" >
+						<f:selectItem itemLabel="[--Seleccione--]" itemValue="" />
+						<f:selectItems value="#{ccBancaPersonaMB.listaIndicadoresCall}" var="usr" itemLabel="#{usr.descripcion}" itemValue="#{usr.id_indicadores_call}" />
+					</p:selectOneMenu>
+					</p:panelGrid>
+					</p:column>
+					
+					</p:row>
+				
+	        		<p:row>
+						<p:column style="background-color: #007EBD; color: #FFFFFF; border-color: #FFFFFF;">
+							ESTADO FEED BACK:					        			
+	        				</p:column>
+	        				<p:column>
+	        					<p:panelGrid columns="2" styleClass="companyHeaderGrid2">
+									<h:outputLabel value="Categoria:" />
+									<h:outputLabel value="Estado:" />
+
+
+									<p:selectOneMenu value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.id_estado_categoria_back}" filter="true" filterMatchMode="contains" id="idFamEstBack">
+										<f:selectItem itemLabel="[--Seleccione--]" itemValue="" />
+										<f:selectItems value="#{ccBancaPersonaMB.listaFamiliaEstadosBack}" var="sup" itemLabel="#{sup.descripcion}" itemValue="#{sup.id_indicadores_call}" />
+										<p:ajax  listener="#{ccBancaPersonaMB.getSubFamiliaEstadoBack2}" execute="@this" update=":frmExpedienteBaseAct:idSubEstBack" />
+									</p:selectOneMenu>
+
+									<p:selectOneMenu value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.id_estado_back}" filter="true" filterMatchMode="contains" id="idSubEstBack" required="true" requiredMessage="Debe Seleccionar el Estado Feed Back">
+										<f:selectItem itemLabel="[--Seleccione--]" itemValue="" />
+										<f:selectItems value="#{ccBancaPersonaMB.listaSubFamiliaEstadosBack}" var="usr" itemLabel="#{usr.descripcion}" itemValue="#{usr.id_indicadores_call}" />
+									</p:selectOneMenu>
+
+
+								</p:panelGrid>
+	        				</p:column>	        		
+	        		</p:row>
+	        		<p:row>
+	        			<p:column style="background-color: #007EBD; color: #FFFFFF; border-color: #FFFFFF;">
+							CLIENTE:					        			
+	        			</p:column>
+	        			<p:column>
+	        				<p:panelGrid  styleClass="companyHeaderGrid2" style="padding: 0px; margin: 0px;">
+	        					<p:row>
+	        						<p:column> 
+		        						<h:outputLabel value="DNI:"  rendered="#{ccBancaPersonaMB.expedienteProductoSelected.producto.negocio.id_negocio ne 11 and ccBancaPersonaMB.expedienteProductoSelected.producto.id_producto ne 6}"/> 
+		        						<h:outputLabel value="RUC:" rendered="#{ccBancaPersonaMB.expedienteProductoSelected.producto.negocio.id_negocio eq 11 or ccBancaPersonaMB.expedienteProductoSelected.producto.id_producto eq 6}"/> 
+	        						</p:column>
+	        						<p:column> <h:outputLabel value="Número Expediente:" /></p:column>
+	        						<p:column> <h:outputLabel value="Fecha:"/> </p:column>
+	        					</p:row>
+	        					
+	        					<p:row>
+	        						<p:column> 
+	        							<h:outputLabel style="font-weight: bold; font-size: 14px;" value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.num_doc}"  rendered="#{ccBancaPersonaMB.expedienteProductoSelected.producto.negocio.id_negocio ne 11 and ccBancaPersonaMB.expedienteProductoSelected.producto.id_producto ne 6}"/> 
+	        							<h:outputLabel style="font-weight: bold; font-size: 14px;" value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.ruc}"  rendered="#{ccBancaPersonaMB.expedienteProductoSelected.producto.negocio.id_negocio eq 11 or ccBancaPersonaMB.expedienteProductoSelected.producto.id_producto eq 6}"/> 
+	        						</p:column>
+	        						<p:column> <h:inputText value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteNumero}"  
+										style="font-weight: bold; font-size: 13px; text-align: right; width: 150px;"/>
+									</p:column>
+	        						<p:column>
+	        						 	  <p:calendar value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteFechaIngreso}" pattern="dd MMMM yyyy" style="font-size: 17px; font-weight: bold; color: #007EBD;" />
+ 	        						</p:column>
+	        					</p:row>
+	        					
+	        					<p:row>
+	        						<p:column> <h:outputLabel value="Ap Paterno:" rendered="#{ccBancaPersonaMB.expedienteProductoSelected.producto.negocio.id_negocio ne 11 and ccBancaPersonaMB.expedienteProductoSelected.producto.id_producto ne 6}"/> </p:column>
+	        						<p:column> <h:outputLabel value="Ap Materno:" rendered="#{ccBancaPersonaMB.expedienteProductoSelected.producto.negocio.id_negocio ne 11 and ccBancaPersonaMB.expedienteProductoSelected.producto.id_producto ne 6}"/> </p:column>
+	        						<p:column> 
+	        							<h:outputLabel value="Nombres:"  rendered="#{ccBancaPersonaMB.expedienteProductoSelected.producto.negocio.id_negocio ne 11 and ccBancaPersonaMB.expedienteProductoSelected.producto.id_producto ne 6}"/> 
+		        						<h:outputLabel value="Razón Social:" rendered="#{ccBancaPersonaMB.expedienteProductoSelected.producto.negocio.id_negocio eq 11 or ccBancaPersonaMB.expedienteProductoSelected.producto.id_producto eq 6}"/>
+	        						</p:column>
+	        						
+	        						
+								</p:row>
+	        					
+	        					
+	        					<p:row>
+	        						<p:column> <h:inputText style="font-weight: bold; font-size: 14px;" value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteApellidoPaterno}" rendered="#{ccBancaPersonaMB.expedienteProductoSelected.producto.negocio.id_negocio ne 11 and ccBancaPersonaMB.expedienteProductoSelected.producto.id_producto ne 6}"/> </p:column>
+	        						<p:column> <h:inputText style="font-weight: bold; font-size: 14px;" value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteApellidoMaterno}" rendered="#{ccBancaPersonaMB.expedienteProductoSelected.producto.negocio.id_negocio ne 11 and ccBancaPersonaMB.expedienteProductoSelected.producto.id_producto ne 6}"/> </p:column>
+	        						<p:column> <h:inputText style="font-weight: bold; font-size: 14px;" value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteNombreCompleto}"/> </p:column>
+	        					</p:row>
+	        					
+	        					<p:row>
+	        						<p:column colspan="2"> <h:outputLabel value="Dirección:"/> </p:column>
+	        						<p:column ><h:outputLabel value="Monto ofrecido:"/> </p:column>
+	        						
+	        					</p:row>
+	        					<p:row>
+	        						<p:column colspan="2"> <h:inputText style="font-weight: bold; font-size: 13px; width: 70%" value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteDireccion}"/> </p:column>
+	        						<p:column>
+		        						<pe:inputNumber  decimalPlaces="2" thousandSeparator="," decimalSeparator="." style="font-weight: bold; font-size: 18px; text-align: right; width: 150px;background-color:#6FD61B;" maxlength="50" 
+												value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.prestamo_soles}" readOnly="true">
+										</pe:inputNumber>
+	        						</p:column>
+	        					</p:row>
+	        					
+	        				</p:panelGrid>
+	        			</p:column>
+	        		</p:row>
+	        		
+	        		<p:row>
+	        			<p:column style="background-color: #007EBD; color: #FFFFFF; border-color: #FFFFFF;">
+							UBIGEO:					        			
+	        			</p:column>
+	        			<p:column>
+	        				<p:panelGrid columns="3" styleClass="companyHeaderGrid2" >
+	        					
+	        					<h:outputLabel value="Cod Oficina:" rendered="false"/>
+	        					<h:outputLabel value="Oficina:"/>
+	        					<h:outputLabel value="Cod Territorio:" rendered="false"/>
+	        					<h:outputLabel value="Territorio:"/>
+	        					<h:outputLabel value="Modalidad de Venta:"/>
+	        					
+								<p:selectOneMenu value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteCodigoOficina}" filter="true"
+										filterMatchMode="contains">
+									<f:selectItem  itemLabel="[--Ninguno--]" itemValue="" />
+									<f:selectItems value="#{ccBancaPersonaMB.listOficina}" var="ofic"
+									 		itemLabel="#{ofic.nombre} - #{ofic.codigo_oficina}" itemValue="#{ofic.codigo_oficina}" />
+							 		<p:ajax execute="@this" update=":frmExpedienteBaseAct:txtOficinaAct :frmExpedienteBaseAct:txtOficinaAct :frmExpedienteBaseAct:txtCodTerrAct :frmExpedienteBaseAct:txtTerritorioAct" listener="#{ccBancaPersonaMB.seleccionarOficina}"/>
+								</p:selectOneMenu>
+								
+								
+	        					
+								<h:inputText value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteOficina}" id="txtOficinaAct"
+									style="font-weight: bold; font-size: 13px; text-align: right; width: 150px;" readonly="true" rendered="false"/>
+								
+								<h:inputText value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteCodigoTerritorio}" id="txtCodTerrAct"
+										style="font-weight: bold; font-size: 13px; text-align: right; width: 170px;" readonly="true" rendered="false"/>
+										
+								<h:inputText value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteCodigoTerritorio}: #{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteTerritorio}"  id="txtTerritorioAct"
+										style="font-weight: bold; font-size: 13px; text-align: right; width: 350px;" readonly="true"/>
+										
+								<p:selectOneMenu value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.modalidad}">
+									<f:selectItem itemValue="CAMPO"  itemLabel="CAMPO"/>
+									<f:selectItem itemValue="OFICINA"  itemLabel="OFICINA"/>
+									<f:selectItem itemValue="COLECTIVO"  itemLabel="COLECTIVO"/>
+								</p:selectOneMenu>
+								
+	        				</p:panelGrid>
+	        			</p:column>
+	        		</p:row>
+	        		
+	        		<p:row>
+	        			<p:column style="background-color: #007EBD; color: #FFFFFF; border-color: #FFFFFF;">
+							<h:panelGrid columns="1">
+								<h:outputLabel value="DATOS"/>
+								<h:outputLabel value="DEL"/>
+								<h:outputLabel value="EJECUTIVO:"/>
+							</h:panelGrid>					        			
+	        			</p:column>
+	        			<p:column>
+	        				<p:panelGrid columns="2" styleClass="companyHeaderGrid2" >
+	        					<h:outputLabel value="Supervisor Call:"/>
+	        					<h:outputLabel value="Ejecutivo Call:"/>
+	        					
+	        					
+	        					<p:selectOneMenu value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteIdSupervisorCall}" filter="true"
+										filterMatchMode="contains" id="selectSupCall">
+									<f:selectItems value="#{ccBancaPersonaMB.listaSupervisor}" var="sup"
+									 		itemLabel="#{sup.responsable}" itemValue="#{sup.idusuario}" />
+							 		<ui:remove>
+							 		<p:ajax listener="#{ccBancaPersonaMB.listarEjecutivosCall}" execute="@this" update=":frmExpedienteBaseAct:selectEjexCallAct"/>
+							 		</ui:remove>
+								</p:selectOneMenu>
+								
+								<p:selectOneMenu value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteIdEjecutivoCall}" filter="true"
+										filterMatchMode="contains" id="selectEjexCallAct">
+									<f:selectItem  itemLabel="[--Ninguno--]" itemValue="" />
+									<f:selectItems value="#{ccBancaPersonaMB.listaPromotorCall}" var="usr"
+									 		itemLabel="#{usr.nombre_completo}" itemValue="#{usr.idusuario}" />
+								</p:selectOneMenu>
+								
+								
+								<ui:remove>
+								<h:outputLabel value="Supervisor Campo:"/>
+	        					<h:outputLabel value="Ejecutivo Campo:"/>
+								
+								<p:selectOneMenu value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteIdSupervisorCampo}" filter="true"
+										filterMatchMode="contains" id="selectSupCampoAct">
+									<f:selectItems value="#{ccBancaPersonaMB.listaSupervisor}" var="sup"
+									 		itemLabel="#{sup.responsable}" itemValue="#{sup.idusuario}" />
+							 		<p:ajax listener="#{ccBancaPersonaMB.listarEjecutivosCampo}" execute="@this" update=":frmExpedienteBaseAct:selectEjexCampoAct"/>
+								</p:selectOneMenu>
+								
+								<p:selectOneMenu value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteIdEjecutivoCampo}" filter="true"
+										filterMatchMode="contains" id="selectEjexCampoAct">
+									<f:selectItem  itemLabel="[--Ninguno--]" itemValue="" />
+									<f:selectItems value="#{ccBancaPersonaMB.listaPromotorCampo}" var="usr"
+									 		itemLabel="#{usr.nombre_completo}" itemValue="#{usr.idusuario}" />
+								</p:selectOneMenu>
+								</ui:remove>
+								
+							</p:panelGrid>
+							
+	        			</p:column>
+	        		</p:row>
+	        		
+	        		<p:row>
+	        			<p:column style="background-color: #007EBD; color: #FFFFFF; border-color: #FFFFFF;">
+							<h:panelGrid columns="1">
+								<h:outputLabel value="DATOS DEL"/>
+								<h:outputLabel value="PRODUCTO:"/>
+							</h:panelGrid>		        			
+	        			</p:column>
+	        			<p:column>
+	        				<p:panelGrid columns="3" styleClass="companyHeaderGrid2" >
+	        					<h:outputLabel value="Producto:"/>
+	        					<h:outputLabel value="SubProducto:"/>
+	        					
+	        					<h:outputLabel value="Monto Desembolsado:"/>
+	        					
+	        					<p:selectOneMenu value="#{ccBancaPersonaMB.expedienteProductoSelected.producto.id_producto}" filter="true"
+										filterMatchMode="contains" id="selectProductoAct">
+									<f:selectItem  itemLabel="[--Ninguno--]" itemValue="" />
+									<f:selectItems value="#{ccBancaPersonaMB.listaCmbProducto}" var="ofic"
+									 		itemLabel="#{ofic.descripcion}" itemValue="#{ofic.id_producto}" />
+							 		<p:ajax execute="@this" update="selectSubproAct" listener="#{ccBancaPersonaMB.listarSubProductoxProducto}"/>
+								</p:selectOneMenu>
+								
+								<p:selectOneMenu value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedienteSubProducto}" filter="true"
+										filterMatchMode="contains" id="selectSubproAct" >
+									<f:selectItem  itemLabel="[--Ninguno--]" itemValue="" />
+									<f:selectItems value="#{ccBancaPersonaMB.listaCmbSubProducto}" var="ofic"
+									 		itemLabel="#{ofic.descripcion}" itemValue="#{ofic.id_sub_producto}" />
+								</p:selectOneMenu>
+	        					
+							
+							<pe:inputNumber  decimalPlaces="2" thousandSeparator="," decimalSeparator="." style="font-weight: bold; font-size: 18px; text-align: right; width: 150px;background-color:#6FD61B;" maxlength="50" 
+									value="#{ccBancaPersonaMB.expedienteProductoSelected.expediente.expedientePrestamo}"  >
+							</pe:inputNumber>
+						
+									
+	        				</p:panelGrid>
+	        			</p:column>
+	        		</p:row>
+	        	
+	        		
+        		</p:panelGrid>
+				<h:panelGrid style="float: left; text-align: right;">
+					<h:outputLabel value="Está seguro de modificar el expediente?" style="font-weight: bold; font-size: 16px;"/>
+					<h:panelGrid columns="2" style="float: right; text-align: left;">
+						<p:commandButton value="SI" action="#{ccBancaPersonaMB.actualizarExpediente}" update=":frmTabla:lisExp :frmFiltro:lblTotal1 :frmFiltro:pngTotales smsConfAct" 
+							onstart="PF('dlgExpedienteBaseWAct').hide(); PF('BlockUIWidgetAct').block();" oncomplete="PF('BlockUIWidgetAct').unblock();  validarAct(xhr, status, args); setTimeout ( '$(\'#formDETEXP\\\\:msgDetalleForm\').hide()', 3000);"
+							icon="ui-icon-disk" style="float: right; text-align: right;" process="@form"/>
+						<p:commandButton type="button" value="NO" onclick="PF('dlgExpedienteBaseWAct').hide()" icon="ui-icon-close" />
+					</h:panelGrid>	
+				</h:panelGrid>
+			</h:panelGrid>
+			
+		</h:form>
+	</p:dialog>
+	
+	
+
+	
+		<script>
+			
+		function validar(xhr, status, args) {
+			if (!args.esValido) {
+				PF('dlgExpedienteBaseW').show();
+			} else {
+				//limpiando
+				
+			}
+		}
+		
+		function validarAct(xhr, status, args) {
+			if (!args.esValido) {
+				PF('dlgExpedienteBaseWAct').show();
+			} else {
+				//limpiando
+				
+			}
+		}
+		
+		function validarNumTel(xhr, status, args) {
+			if (!args.esValido) {
+				PF('dlgAgregarNumero').show();
+			} else {
+				//limpiando
+				
+			}
+		}
+		
+		function justNumbers(e) {
+			var keynum = window.event ? window.event.keyCode : e.which;
+			if ( keynum == 8 ) return true;
+			return /\d/.test(String.fromCharCode(keynum));
+			}
+		
+		function validarCuenta(xhr, status, args){
+			if (!args.esValidoCuenta) {
+				PF('dlgTabHaberes').show();
+			} else {
+				//limpiando
+				
+			}
+		}
+
+		</script>	
+			
+	</ui:define>
+</ui:composition>
+</html>

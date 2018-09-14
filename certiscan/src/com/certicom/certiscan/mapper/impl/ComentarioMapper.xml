@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.ComentarioMapper">
+
+<resultMap id="comentarioResult" type="com.certicom.certiscan.domain.Comentario">
+	<id column="idcomentario" property="idcomentario"/>
+	<result column="descripcion" property="descripcion"/>
+	<result column="expediente_id" property="expediente_id"/>
+	<result column="fec_hora" property="fec_hora"/>
+</resultMap>
+
+</mapper>

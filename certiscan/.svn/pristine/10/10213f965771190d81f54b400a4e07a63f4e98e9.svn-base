@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+
+		<p:panel>
+			<h:form>
+				<p:breadCrumb>
+					<p:menuitem value="Home" url="#" />
+					<p:menuitem value="Digitalización" url="#" />
+					<p:menuitem value="Subir Archivs Firmados" url="subirArchivosFirmados" />
+				</p:breadCrumb>
+			</h:form>
+			<br />
+			<pe:blockUI   widgetVar="BlockUIWidgetFileUpLoad">        
+	        	<h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        	<h:outputText value="Cargando Archivos, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	   		</pe:blockUI>
+			<p:messages id="sms" showDetail="false" showSummary="true"
+				closable="true" />
+
+			<h:form id="form">
+				<p:panel id="panel">
+					
+					<h:panelGrid columns="7" id="pBusqueda">
+						
+						#{"Filtro Por : "}
+				 		<p:selectOneMenu style="width:150px"
+							value="#{subirArchivosFirmadosMB.mediosFilter.filtradopor}">
+							<f:selectItem itemLabel="Nro Expediente" itemValue="1" />
+							<f:selectItem itemLabel="Fecha de Registro" itemValue="2" />
+							<p:ajax event="change" update=":form" listener="#{subirArchivosFirmadosMB.cambiarCombo()}"/>
+						</p:selectOneMenu>
+						
+						<h:outputText value="Fecha Inicio" rendered="#{subirArchivosFirmadosMB.bfecha}"/>
+						<p:calendar style="width:200px"  readonlyInput="true" rendered="#{subirArchivosFirmadosMB.bfecha}" value="#{subirArchivosFirmadosMB.mediosFilter.fec_ini}" pattern="dd/MM/yyyy" locale="es" maxdate="#{subirArchivosFirmadosMB.fechaActual}"
+							  navigator="true"  required="true" requiredMessage="Seleccione una fecha de inicio">
+							  <p:ajax event="dateSelect" update="form:calFfin" listener="#{subirArchivosFirmadosMB.cambiarFecha()}"/>
+						</p:calendar>
+						
+						<h:outputText value="Fecha Fin" rendered="#{subirArchivosFirmadosMB.bfecha}"/>
+						<p:calendar id="calFfin" readonlyInput="true" rendered="#{subirArchivosFirmadosMB.bfecha}"  style="width:200px" value="#{subirArchivosFirmadosMB.mediosFilter.fec_fin}" mindate="#{subirArchivosFirmadosMB.fechaLimite}" pattern="dd/MM/yyyy" locale="es"
+							  navigator="true"  required="true" requiredMessage="Seleccione una fecha de fin" maxdate="#{subirArchivosFirmadosMB.fechaActual}">
+						</p:calendar>
+						
+						<h:panelGrid id="pBusqueda2" rendered="#{subirArchivosFirmadosMB.bexpediente}" >
+							<p:focus context="pBusqueda2" />
+							<h:inputText
+								value="#{subirArchivosFirmadosMB.mediosFilter.vfiltradopor}"
+								style="width:150px;height:25px;background-color:#FAFFBD;font-size: 1.5em;font-weight: bold;font-family: Arial"
+								required="true"
+								requiredMessage="Debe escribir el filtro seleccionado">
+								</h:inputText>
+						</h:panelGrid>
+
+						<p:commandButton value="Buscar" icon="icon-search"
+							update=":formListaMedios :sms" 
+							actionListener="#{subirArchivosFirmadosMB.buscarExpedientes()}"
+							onstart="PF('statusDialog').show();" oncomplete="PF('statusDialog').hide();" />
+					</h:panelGrid>
+					
+				</p:panel>
+
+			</h:form>
+
+
+
+			<!-- listado de agencias -->
+			<h:form id="formListaMedios">
+				<p:dataTable widgetVar="dtMedios" var="p"
+					value="#{subirArchivosFirmadosMB.listaMedios}"
+					filteredValue="#{subirArchivosFirmadosMB.listaMediosFilter}"
+					emptyMessage="No hay Medios Disponibles." rowIndexVar="nro" rowKey="#{p.id_medio}"
+					paginator="true" rows="10" paginatorPosition="bottom"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,100,200,500,1000" style="FONT-SIZE: 10px; ">
+					<f:facet name="header">Lista de Medios</f:facet>
+					<p:column headerText="Orden" width="25" style="width:10px">
+						#{nro+1}
+					</p:column>
+
+					<p:column style="width:70px" headerText="Medio"
+						filterBy="#{p.descripcion}" filterMatchMode="contains"
+						filterStyle="width:60px;">
+						<h:outputText value="#{p.descripcion}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Total Archivos"
+						filterBy="#{p.total_archivos}" filterMatchMode="contains"
+						filterStyle="width:60px;">
+						<h:outputText value="#{p.total_archivos}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Peso"
+						filterBy="#{p.descripcion_peso}" filterMatchMode="contains"
+						filterStyle="width:60px;">
+						<h:outputText value="#{p.descripcion_peso}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Fec. Registro">
+						<h:outputText value="#{p.fecha_registro}">
+							<f:convertDateTime pattern="dd/MM/yyyy" type="date"
+								dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Estado"
+						filterBy="#{p.desEstado}" filterMatchMode="contains"
+						filterStyle="width:60px;">
+						<h:outputText value="#{p.desEstado}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Tipo Medio"
+						filterBy="#{p.tipo_medio}" filterMatchMode="contains"
+						filterStyle="width:60px;">
+						<h:outputText value="#{p.tipo_medio}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Fec. Registro">
+					
+						<p:commandButton value="Subir Archivo" oncomplete="PF('dlgSubirArchivo').show()" ></p:commandButton>
+						
+					</p:column>
+
+				</p:dataTable>
+				
+			</h:form>
+
+			<!-- #############    Dialogos      ################ -->
+
+			<!-- dialogo nuevo/editar perfil -->
+
+			
+			
+		<p:dialog header="Digitalización Exitosa" widgetVar="dlgSubirArchivo" appendTo="@(body)" position="center" closable="true"
+					resizable="false" id="dlgDetSubirArchivo" modal="true" >
+					<h:form id="fmSucces">
+					
+					<h:panelGrid columns="2">
+					
+					#{'Subir Archivo'}
+					
+					<p:fileUpload fileUploadListener="#{subirArchivosFirmadosMB.cargarDocumentos}" mode="advanced" oncomplete="PF('BlockUIWidgetFileUpLoad').unblock()" onstart="PF('BlockUIWidgetFileUpLoad').block();"
+						allowTypes="/(\.|\/)(zip|rar|pdf)$/"
+						description="Seleccione varios archivos pdf" label="Seleccionar" 
+						id="uploadFile" process="@this" uploadLabel="Subir" cancelLabel="Cancelar" multiple="true" style="font-size:11px; min-width:400px !important;" >
+					</p:fileUpload>
+					
+					
+					<p:commandButton value="SUBIR ARCHIVO" actionListener="#{subirArchivosFirmadosMB.subirRegistrarDocumentos}" oncomplete="PF('dlgSubirArchivo').hide()"></p:commandButton>
+					</h:panelGrid>
+					
+					
+					</h:form>
+		</p:dialog>
+			
+			
+		</p:panel>
+
+		<script>
+			function validar(xhr, status, args) {
+				if (!args.esValido) {
+					jQuery('#dlgDetNuevo').effect("shake", {
+						times : 1
+					}, 100);
+				} else {
+					PF('dlgNuevo').hide();
+				}
+			}
+
+			function validarMasivo(xhr, status, args) {
+				if (!args.esValido) {
+					jQuery('#dlgDetMasivo').effect("shake", {
+						times : 1
+					}, 100);
+				} else {
+					PF('dlgMasivo').hide();
+				}
+			}
+
+			function levanarAlerta() {
+				PF('dlgCargando').show();
+			}
+			
+		</script>
+
+	</ui:define>
+</ui:composition>
+</html>

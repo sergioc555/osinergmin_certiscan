@@ -1,0 +1,314 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+		<h:form>
+			<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: 0px">
+				<p:menuitem value="Home" url="#" />
+				<p:menuitem value="Configuracion" url="#" />
+				<p:menuitem value="Gestión de Indicadores Call" url="indicadorCall" />
+			</p:breadCrumb>
+		</h:form>
+
+
+		<br />
+		<!-- growl general -->
+		<p:messages id="msgGeneral" showDetail="false" showSummary="true"
+			closable="true" />
+
+		<!-- listado de Indicadores Call -->
+
+		<h:form id="formLista">
+			<p:commandButton value="Nuevo Indicador Call" icon="icon-add"
+				update=":dlgDetNuevo" oncomplete="PF('dlgNuevo').show();"
+				actionListener="#{indicadorCallMB.nuevoIndicadorCall()}" />
+			<p:dataTable id="dtCatInd" var="p"
+				value="#{indicadorCallMB.listCategoriaIndicadoresCall}"
+				widgetVar="dtCatInd"
+				emptyMessage="No hay Categoria Indicadores Call Disponibles."
+				rowIndexVar="nro" style="FONT-SIZE: 10px; width: 70%">
+
+				<p:ajax event="rowToggle" update=":formLista:dtCatInd:dataTable1" />
+
+				<f:facet name="header">Lista Categoria Indicadores Call</f:facet>
+
+				<p:column style="width:1%">
+					<p:rowToggler />
+				</p:column>
+
+				<p:column style="width:30%" headerText="Descripción">
+					<h:outputText value="#{p.descripcion}" />
+				</p:column>
+
+
+				<p:rowExpansion>
+					<p:dataTable id="dataTable1" var="a" value="#{p.listIndicadorCall}"
+						widgetVar="dtProducto"
+						filteredValue="#{indicadorCallMB.listaIndicadorCallFilter}"
+						emptyMessage="No hay Indicadores Call Disponibles."
+						rowIndexVar="nro" rowKey="#{a.id_indicadores_call}"
+						paginator="true" rows="10" paginatorPosition="bottom"
+						style="FONT-SIZE: 10px; width:80%">
+
+						<p:ajax event="rowToggle" update=":formLista:dtCatInd:dataTable1:dataTable2" />
+
+						<f:facet name="header">Lista Indicadores Call</f:facet>
+
+						<p:column style="width:1%">
+							<p:rowToggler />
+						</p:column>
+
+						<p:column headerText="Orden" style="width:3%">
+						#{nro+1}
+					</p:column>
+
+
+						<p:column style="width:30%" headerText="Descripción"
+							filterBy="#{a.descripcion}" filterStyle="width:215px;"
+							filterMatchMode="contains">
+							<h:outputText value="#{a.descripcion}" />
+						</p:column>
+
+						<p:column style="width:4%" headerText="Estado">
+
+							<p:commandLink update="@form :msgGeneral"
+								actionListener="#{indicadorCallMB.cambiarEstado(a)}">
+								<h:graphicImage
+									value="#{a.estado?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}"
+									title="#{a.estado?'Activo':'Bloqueado'}" />
+							</p:commandLink>
+
+						</p:column>
+
+						<p:column headerText="Editar/Elim."
+							style="width:10%;text-align: center">
+
+							<p:commandButton
+								actionListener="#{indicadorCallMB.editarIndicadorCall(a)}"
+								update=":dlgDetNuevo" oncomplete="PF('dlgNuevo').show();"
+								title="Editar" icon="icon-edit" />
+
+							<p:commandButton
+								actionListener="#{indicadorCallMB.eliminarIndicadorCall(a)}"
+								oncomplete="PF('dlgEliminar').show();" title="Eliminar"
+								icon="icon-delete" />
+
+						</p:column>
+
+						<p:rowExpansion>
+							<p:dataTable id="dataTable2" var="sp"
+								value="#{a.listSubIndicadorCall}" widgetVar="dtSubProducto"
+								filteredValue="#{indicadorCallMB.listaSubIndicadorCallFilter}"
+								emptyMessage="No hay Sub Indicadores Call Disponibles."
+								rowIndexVar="nro" rowKey="#{sp.idsubindicadores_call}"
+								paginator="true" rows="10" paginatorPosition="bottom"
+								style="FONT-SIZE: 10px; width:80%">
+								<f:facet name="header">Lista Sub Indicadores Call</f:facet>
+								<f:facet name="footer">
+									<p:commandButton value="Nuevo Sub Indicador Call"
+										icon="icon-add" update=":dlgDetNuevoSubIndicador"
+										oncomplete="PF('dlgNuevoSubIndicador').show();"
+										actionListener="#{indicadorCallMB.nuevoSubIndicadorCall(a)}" />
+								</f:facet>
+
+								<p:column headerText="Orden" style="width:3%">
+								#{nro+1}
+							</p:column>
+
+
+								<p:column style="width:30%" headerText="Descripción"
+									filterBy="#{sp.descripcion}" filterStyle="width:215px;"
+									filterMatchMode="contains">
+									<h:outputText value="#{sp.descripcion}" />
+								</p:column>
+
+								<p:column headerText="Editar/Elim."
+									style="width:10%;text-align: center">
+
+									<p:commandButton
+										actionListener="#{indicadorCallMB.editarSubIndicadorCall(sp)}"
+										update=":dlgDetNuevoSubIndicador" oncomplete="PF('dlgNuevoSubIndicador').show();"
+										title="Editar" icon="icon-edit" />
+
+									<p:commandButton
+										actionListener="#{indicadorCallMB.eliminarSubIndicadorCall(sp)}"
+										oncomplete="PF('dlgSubEliminar').show();" title="Eliminar"
+										icon="icon-delete" />
+
+								</p:column>
+
+							</p:dataTable>
+						</p:rowExpansion>
+					</p:dataTable>
+				</p:rowExpansion>
+			</p:dataTable>
+		</h:form>
+
+		<!-- #############    Dialogos      ################ -->
+
+		<!-- dialogo nuevo/editar Indicador Call -->
+
+		<p:dialog header="Indicador Call" widgetVar="dlgNuevo"
+			appendTo="@(body)" resizable="false" id="dlgDetNuevo" modal="true">
+
+			<h:form>
+				<p:messages showDetail="false" showSummary="true" id="msgNuevo"
+					closable="true" />
+
+				<h:panelGrid columns="2">
+					
+						#{"Categoria:"}
+						<p:selectOneMenu style="width:200px"
+						value="#{indicadorCallMB.indicadorCallSelec.id_categoria_call}"
+						required="true" requiredMessage="Seleccione una Categoria">
+						<f:selectItem itemLabel="Seleccione..." itemValue="" />
+						<f:selectItems
+							value="#{indicadorCallMB.listCategoriaIndicadoresCall}" var="p"
+							itemLabel="#{p.descripcion}" itemValue="#{p.id_categoria_call}" />
+					</p:selectOneMenu>				
+
+						#{"Descripción:"}
+						<p:inputText
+						value="#{indicadorCallMB.indicadorCallSelec.descripcion}"
+						id="descripcion" required="true" maxlength="50" label="nombre"
+						requiredMessage="Se necesita una descripción" style="width:200px;" />
+							
+						#{"Estado:"}
+						<p:selectOneMenu style="width:200px"
+						value="#{indicadorCallMB.indicadorCallSelec.estado}"
+						required="true" requiredMessage="Seleccione un Estado">
+						<f:selectItem itemLabel="Seleccione..." itemValue="" />
+						<f:selectItem itemLabel="ACTIVO" itemValue="TRUE" />
+						<f:selectItem itemLabel="DESACTIVO" itemValue="FALSE" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+				<br />
+				<p:commandButton value="Guardar"
+					actionListener="#{indicadorCallMB.guardarIndicadorCall()}"
+					update=":formLista  msgNuevo"
+					oncomplete="validar(xhr, status, args)" icon="icon-disk" />
+
+				<p:commandButton value="Cancelar" type="button"
+					onclick="PF('dlgNuevo').hide()" icon="icon-cancel" />
+			</h:form>
+		</p:dialog>
+
+
+		<!-- dialogo nuevo/editar Sub Indicador Call -->
+
+		<p:dialog header="SubIndicador Call" widgetVar="dlgNuevoSubIndicador"
+			appendTo="@(body)" resizable="false" id="dlgDetNuevoSubIndicador"
+			modal="true">
+
+			<h:form>
+				<p:messages showDetail="false" showSummary="true" id="msgNuevo"
+					closable="true" />
+
+				<h:panelGrid columns="2">
+					
+						#{"Categoria:"}
+						<h:outputText
+						value="#{indicadorCallMB.subindicadorCall.categoria}"
+						id="categoria" required="true" maxlength="50" style="width:200px;" />	
+						
+						#{"Indicador:"}
+						<h:outputText
+						value="#{indicadorCallMB.subindicadorCall.indicador}"
+						id="indicador" required="true" maxlength="50" style="width:200px;" />	
+
+						#{"Descripción:"}
+						<p:inputText
+						value="#{indicadorCallMB.subindicadorCall.descripcion}"
+						id="descripcion" required="true" maxlength="50" label="nombre"
+						requiredMessage="Se necesita una descripción" style="width:200px;" />
+
+					<!--  #{"Estado:"}
+						<p:selectOneMenu style="width:200px" value="#{indicadorCallMB.indicadorCallSelec.estado}" required="true" requiredMessage="Seleccione un Estado">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+							<f:selectItem itemLabel="ACTIVO" itemValue="TRUE" />
+							<f:selectItem itemLabel="DESACTIVO" itemValue="FALSE" />
+						</p:selectOneMenu>	-->
+
+				</h:panelGrid>
+				<br />
+				<p:commandButton value="Guardar"
+					actionListener="#{indicadorCallMB.guardarSubIndicadorCall()}"
+					update=":formLista msgNuevo"
+					oncomplete="validar1(xhr, status, args)" icon="icon-disk" />
+
+				<p:commandButton value="Cancelar" type="button"
+					onclick="PF('dlgNuevoSubIndicador').hide()" icon="icon-cancel" />
+			</h:form>
+		</p:dialog>
+
+
+		<!-- dialogo eliminar -->
+		<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)"
+			message="¿Desea eliminar este Indicador Call?"
+			header="Eliminar Indicador Call" severity="alert"
+			widgetVar="dlgEliminar">
+			<h:form>
+				<p:commandButton value="Eliminar" update=":formLista :msgGeneral"
+					actionListener="#{indicadorCallMB.confirmaEliminar}"
+					oncomplete="PF('dlgEliminar').hide();" icon="icon-delete" />
+
+				<p:commandButton value="Cancelar" type="button"
+					onclick="PF('dlgEliminar').hide()" icon="icon-cancel" />
+
+			</h:form>
+		</p:confirmDialog>
+		
+		<!-- dialogo eliminar -->
+		<p:confirmDialog id="dlgDetSubEliminar" appendTo="@(body)"
+			message="¿Desea eliminar este Sub Indicador Call?"
+			header="Eliminar Sub Indicador Call" severity="alert"
+			widgetVar="dlgSubEliminar">
+			<h:form>
+				<p:commandButton value="Eliminar" update=":formLista :msgGeneral"
+					actionListener="#{indicadorCallMB.confirmaEliminar1}"
+					oncomplete="PF('dlgDetSubEliminar').hide();" icon="icon-delete" />
+
+				<p:commandButton value="Cancelar" type="button"
+					onclick="PF('dlgDetSubEliminar').hide()" icon="icon-cancel" />
+
+			</h:form>
+		</p:confirmDialog>
+
+		<script>
+			function validar(xhr, status, args) {
+				if (!args.esValido) {
+					jQuery('#dlgDetNuevo').effect("shake", {
+						times : 1
+					}, 100);
+				} else {
+					//limpiando
+					PF('dlgNuevo').hide();
+					console.log("cerro")
+				}
+			}
+
+			function validar1(xhr, status, args) {
+				if (!args.esValido) {
+					jQuery('#dlgDetNuevoSubIndicador').effect("shake", {
+						.
+						times : 1
+					}, 100);
+				} else {
+					//limpiando
+					PF('dlgNuevoSubIndicador').hide();
+					console.log("cerro")
+				}
+			}
+		</script>
+
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+
+		<p:panel>
+			<h:form>
+				<p:breadCrumb>
+					<p:menuitem value="Home" url="#" />
+					<p:menuitem value="Digitalización" url="#" />
+					<p:menuitem value="Calidad" url="preCalidad" />
+				</p:breadCrumb>
+			</h:form>
+			<br />
+
+			<p:messages id="sms" showDetail="false" showSummary="true"
+				closable="true" />
+
+			<h:form id="form">
+				<p:panel id="panel">
+					
+					<h:panelGrid columns="7" id="pBusqueda">
+						
+						#{"Filtro Por : "}
+				 		<p:selectOneMenu style="width:150px"
+							value="#{calidadMB.expedienteFilter.filtradopor}">
+							<f:selectItem itemLabel="Nro Expediente" itemValue="1" />
+							<f:selectItem itemLabel="Fecha de Registro" itemValue="2" />
+							<p:ajax event="change" update=":form" listener="#{calidadMB.cambiarCombo()}"/>
+						</p:selectOneMenu>
+						
+						<h:outputText value="Fecha Inicio" rendered="#{calidadMB.bfecha}"/>
+						<p:calendar style="width:200px"  readonlyInput="true" rendered="#{calidadMB.bfecha}" value="#{calidadMB.expedienteFilter.fec_ini}" pattern="dd/MM/yyyy" locale="es" maxdate="#{calidadMB.fechaActual}"
+							  navigator="true"  required="true" requiredMessage="Seleccione una fecha de inicio">
+							  <p:ajax event="dateSelect" update="form:calFfin" listener="#{calidadMB.cambiarFecha()}"/>
+						</p:calendar>
+						
+						<h:outputText value="Fecha Fin" rendered="#{calidadMB.bfecha}"/>
+						<p:calendar id="calFfin" readonlyInput="true" rendered="#{calidadMB.bfecha}"  style="width:200px" value="#{calidadMB.expedienteFilter.fec_fin}" mindate="#{calidadMB.fechaLimite}" pattern="dd/MM/yyyy" locale="es"
+							  navigator="true"  required="true" requiredMessage="Seleccione una fecha de fin" maxdate="#{calidadMB.fechaActual}">
+						</p:calendar>
+						
+						<h:panelGrid id="pBusqueda2" rendered="#{calidadMB.bexpediente}" >
+							<p:focus context="pBusqueda2" />
+							<h:inputText
+								value="#{calidadMB.expedienteFilter.vfiltradopor}"
+								style="width:150px;height:25px;background-color:#FAFFBD;font-size: 1.5em;font-weight: bold;font-family: Arial"
+								required="true"
+								requiredMessage="Debe escribir el filtro seleccionado">
+								</h:inputText>
+						</h:panelGrid>
+
+						<p:commandButton value="Buscar" icon="icon-search"
+							update=":formListaExpediente :sms" 
+							actionListener="#{calidadMB.buscarExpedientes()}"
+							onstart="PF('statusDialog').show();" oncomplete="PF('statusDialog').hide();" />
+					</h:panelGrid>
+					
+				</p:panel>
+
+			</h:form>
+
+
+
+			<!-- listado de agencias -->
+			<h:form id="formListaExpediente">
+				<p:dataTable widgetVar="dtExpediente" var="p"
+					value="#{calidadMB.listaExpedientes}"
+					filteredValue="#{calidadMB.listaExpedientesFilter}"
+					emptyMessage="No hay Expediente Disponibles." rowIndexVar="nro"
+					paginator="true" rows="10" paginatorPosition="bottom"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,100,200,500,1000" style="FONT-SIZE: 10px; ">
+					<f:facet name="header">Lista de Expedientes</f:facet>
+
+					<p:column headerText="Orden" width="25" style="width:10px">
+						#{nro+1}
+					</p:column>
+
+					<p:column style="width:70px" headerText="Nro Expediente"
+						filterBy="#{p.nro_expediente}" filterMatchMode="contains"
+						filterStyle="width:60px;">
+						<h:outputText value="#{p.nro_expediente}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Oficina Origen"
+						filterBy="#{p.oficina_origen}" filterMatchMode="contains"
+						filterStyle="width:60px;">
+						<h:outputText value="#{p.oficina_origen}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Fec. Documento">
+						<h:outputText value="#{p.fecha_documento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" type="date"
+								dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Hor. Documento">
+						<h:outputText value="#{p.hora_documento}">
+							<f:convertDateTime pattern="hh:mm" type="date"
+								dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Proceso"
+						filterBy="#{p.proceso}" filterMatchMode="contains"
+						filterStyle="width:60px;">
+						<h:outputText value="#{p.proceso}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Tipo Prioridad"
+						filterBy="#{p.tipo_prioridad}" filterMatchMode="contains"
+						filterStyle="width:60px;">
+						<h:outputText value="#{p.tipo_prioridad}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Fec. Recepción">
+						<h:outputText value="#{p.fecha_recepcion}">
+							<f:convertDateTime pattern="dd/MM/yyyy" type="date"
+								dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:80px" headerText="Estado"
+						filterBy="#{p.desestado}" filterMatchMode="contains"
+						filterStyle="width:60px;">
+						<h:outputText value="#{p.desestado}" />
+					</p:column>
+					
+					<p:column style="width:150px" headerText="Oficina"
+						filterBy="#{p.desOficina}" filterMatchMode="contains"
+						filterStyle="width:120px;">
+						<h:outputText value="#{p.desOficina}" />
+					</p:column>
+					
+					<p:column headerText="Modificar Estado"
+						style="width:50px;text-align: center">
+						<p:commandButton title="Ver tracking" update=":dlgDetNuevo"
+							actionListener="#{calidadMB.cargarDatos(p)}"
+							oncomplete="PF('dlgNuevo').show();" icon="icon-edit">
+						</p:commandButton>
+					</p:column> 
+
+				</p:dataTable>
+			</h:form>
+
+			<!-- #############    Dialogos      ################ -->
+
+			<!-- dialogo nuevo/editar perfil -->
+
+			<p:dialog header="Modificar Estado" widgetVar="dlgNuevo"
+				appendTo="@(body)" resizable="false" id="dlgDetNuevo" modal="true">
+
+				<h:form id="fm">
+					<p:messages showDetail="false" showSummary="true" id="msgNuevo"
+						closable="true" />
+						
+					<h:panelGrid columns="2">		
+						<h:panelGrid>
+							<h:panelGrid columns="8">
+							
+								#{"Nro Expediente:"}
+								<h:outputText value="#{calidadMB.expSelected.nro_expediente}"
+									style="font-weight:bold;font-size: 1.2em;color:black" />
+									
+								#{"Oficina Origen:"}
+								<h:outputText value="#{calidadMB.expSelected.oficina_origen}"
+									style="font-weight:bold;font-size: 1.2em;color:black" />
+								
+								#{"Fecha Documento:"}
+								<h:outputText value="#{calidadMB.expSelected.fecha_documento}"
+									style="font-weight:bold;font-size: 1.2em;color:black">
+									<f:convertDateTime pattern="dd/MM/yyyy" type="date"
+										dateStyle="short" />
+								</h:outputText>
+								
+								#{"Hora Documento:"}
+								<h:outputText value="#{calidadMB.expSelected.hora_documento}"
+									style="font-weight:bold;font-size: 1.2em;color:black">
+									<f:convertDateTime pattern="hh:mm" type="date"
+										dateStyle="short" />
+								</h:outputText>
+								
+							</h:panelGrid>	
+							<h:panelGrid columns="2">	
+								#{"Proceso:"}
+								<h:outputText value="#{calidadMB.expSelected.proceso}"
+									style="font-weight:bold;font-size: 1.2em;color:black" />
+									
+								#{"Tipo Prioridad:"}
+								<h:outputText value="#{calidadMB.expSelected.tipo_prioridad}"
+									style="font-weight:bold;font-size: 1.2em;color:black" />
+								
+							</h:panelGrid>
+							
+							
+							
+							<br />
+							<h:panelGrid columns="2">
+								
+								Estado:
+								
+								<p:selectOneMenu  value="#{calidadMB.expSelected.id_estado}" disabled="true">	
+									<f:selectItem itemLabel="--TODOS--" itemValue="0"/>
+									<f:selectItems value="#{calidadMB.listEstados}" var="o" itemLabel="#{o.descripcion}" itemValue="#{o.id_estado}" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+							<h:panelGrid columns="3">	
+								Incidencias:
+								
+								<p:selectOneMenu  value="#{calidadMB.id_indicador_call}">	
+									<f:selectItem itemLabel="--TODOS--" itemValue="0"/>
+									<f:selectItems value="#{calidadMB.listIndicadorCalls}" var="o" itemLabel="#{o.descripcion}" itemValue="#{o.id_indicadores_call}" />
+									<p:ajax event="change"></p:ajax>
+								</p:selectOneMenu>
+								
+								<p:commandButton value="Agregar" actionListener="#{calidadMB.agregarIncidencia()}" 
+								 icon="icon-plus" update="detIndicencia"/>
+								
+							</h:panelGrid>
+							<h:panelGrid columns="2">								
+								Observaciones:
+								<p:inputTextarea value="#{calidadMB.expSelected.observacion}" cols="65" rows="5">
+								</p:inputTextarea>
+								
+							</h:panelGrid>
+						</h:panelGrid>
+						<h:panelGrid id="detIndicencia">
+							<p:dataTable widgetVar="dtExpediente" var="p"
+								value="#{calidadMB.listExpedienteIncidencias}"
+								emptyMessage="No hay Expediente Disponibles." rowIndexVar="nro"
+								paginator="true" rows="10" paginatorPosition="bottom"
+								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="10,100" style="FONT-SIZE: 10px; ">
+								<f:facet name="header">Lista de Incidencias</f:facet>
+
+								<p:column headerText="Orden" width="25" style="width:10px">
+									#{nro+1}
+								</p:column>
+			
+								<p:column style="width:70px" headerText="Indicencia"
+									filterBy="#{p.des_incidencia}" filterMatchMode="contains"
+									filterStyle="width:60px;">
+									<h:outputText value="#{p.des_incidencia}" />
+								</p:column>
+								
+								<p:column style="width:70px" headerText="Observación"
+									filterBy="#{p.observacion}" filterMatchMode="contains"
+									filterStyle="width:60px;">
+									<h:outputText value="#{p.observacion}" />
+								</p:column>
+								
+								<p:column headerText="Eliminar" style="width:50px;text-align: center">
+									<p:commandButton actionListener="#{calidadMB.eliminarIndidencia(p)}" update=":dlgDetEliminar" 
+										oncomplete="PF('dlgEliminar').show();" title="Eliminar"
+										icon="icon-delete" />
+								</p:column>
+							</p:dataTable>
+						</h:panelGrid>
+					</h:panelGrid>					
+					<p:commandButton value="Guardar" actionListener="#{calidadMB.modificarEstado()}" update=":formListaExpediente"
+						onclick="PF('dlgNuevo').hide();" icon="icon-disk" />
+						
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgNuevo').hide();" icon="icon-cancel" />
+				</h:form>
+			</p:dialog>
+			
+			<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)" message="¿Desea eliminar esta Incidencia?" header="Eliminar Incidencia"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					<p:commandButton value="Eliminar"
+						update=":fm"
+						actionListener="#{calidadMB.eliminar}"
+						oncomplete="PF('dlgEliminar').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgEliminar').hide()" icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>
+			
+		
+			<p:dialog header="Control de Calidad Interno Exitoso" widgetVar="dlgSuccessGroup" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetSuccesGroup" modal="true" >
+				<h:form id="fmSucces">
+					
+					<h:panelGrid columns="2">
+					<p:graphicImage url="/resources/img/accept.png" height="50" />
+					
+					<h:panelGroup>
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Expediente Preparado para Control de Calidad Interno"/>
+					<h:panelGrid columns="2">
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Estado Actual: Control de Calidad Interno"/>
+					<h:column></h:column>
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Nuevo Estado: Preparado para Control de Calidad - Asistente de Fedatario"/>
+					<h:column></h:column>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="Nro Expediente:  #{calidadMB.expSelected.nro_expediente}"/>
+					
+					</h:panelGrid>
+					</h:panelGroup>
+					</h:panelGrid>
+					
+					<p:commandButton value="Aceptar" type="button" onclick="PF('dlgSuccessGroup').hide()"  />
+				</h:form>
+			</p:dialog>
+			
+		</p:panel>
+
+		<script>
+			function validar(xhr, status, args) {
+				if (!args.esValido) {
+					jQuery('#dlgDetNuevo').effect("shake", {
+						times : 1
+					}, 100);
+				} else {
+					PF('dlgNuevo').hide();
+				}
+			}
+
+			function validarMasivo(xhr, status, args) {
+				if (!args.esValido) {
+					jQuery('#dlgDetMasivo').effect("shake", {
+						times : 1
+					}, 100);
+				} else {
+					PF('dlgMasivo').hide();
+				}
+			}
+
+			function levanarAlerta() {
+				PF('dlgCargando').show();
+			}
+			
+		</script>
+
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.ExpedienteCabeceraMapper">
+
+<resultMap id="expedienteCabeceraResult" type="com.certicom.certiscan.domain.ExpedienteCabecera">
+	<id column="id_expediente_cabecera" property="idExpedienteCabecera" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="idusuario" property="idUsuario" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="id_producto" property="idProducto" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="numeroregistro" property="numeroRegistro" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="periodo" property="periodo" javaType="java.util.Date" jdbcType="DATE"/>
+	<result column="fecha" property="fecha"  />
+	<result column="numeroasignados" property="numeroAsignados" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="nombrearchivo" property="nombreArchivo" />
+	
+	<result column="numerocondatos" property="numeroConDatos" />
+	<result column="numerosindatos" property="numeroSinDatos" />
+	
+	<result column="numerosindireccion" property="numeroSinDireccion" />
+	<result column="numerosinruc" property="numeroSinRuc" />
+	<result column="numerosincobertura" property="numeroSinCobertura" />
+	<result column="numerotelefonoexcluido" property="numeroTelefonoExcluido" />
+	
+	<result column="numerorus" property="numeroRus" />
+	<result column="numerorucinactivo" property="numeroRucInactivo" />
+	<result column="numerorucnoexiste" property="numeroRucNoExiste" />
+	
+    <result column="numerociiutrabajable" property="numeroCiiuTrabajable" />
+	<result column="numerociiunohabido" property="numeroCiiuNoHabido" />
+	<result column="numerociiubajaservicio" property="numeroCiiuBajaServicio" />
+	<result column="numerociiuinvalido" property="numeroCiiuInvalido" />
+	<result column="numerorepetido" property="numeroRepetido" />
+	<result column="numeroexcluidobanco" property="numeroexcluidobanco" />
+	
+	<result column="tipo_base" property="tipoBase" />
+	
+</resultMap>
+
+<insert id="crearExpedienteCabecera" parameterType="com.certicom.certiscan.domain.ExpedienteCabecera" 
+		useGeneratedKeys="true" keyProperty="idExpedienteCabecera" >
+    <selectKey resultType="java.lang.Integer"  keyProperty="idExpedienteCabecera" order="AFTER">
+        SELECT max(t_expediente_cabecera.id_expediente_cabecera) from t_expediente_cabecera where 
+         t_expediente_cabecera.idusuario=#{idUsuario} and t_expediente_cabecera.id_producto=#{idProducto} and t_expediente_cabecera.periodo=#{periodo}  and t_expediente_cabecera.tipo_base=#{tipoBase} 
+    </selectKey>
+    insert into t_expediente_cabecera (idusuario, fecha, numeroregistro,periodo, id_producto, numeroasignados, nombrearchivo, numerocondatos, numerosindatos, tipo_base, numerosindireccion, numerosinruc, numerosincobertura, numerotelefonoexcluido,
+     numerorus, numerorucinactivo, numerorucnoexiste,numerociiutrabajable, numerociiunohabido, numerociiubajaservicio, numerociiuinvalido, numerorepetido, numeroexcluidobanco
+     ) 
+    values (#{idUsuario},#{fecha},#{numeroRegistro},#{periodo},#{idProducto}, #{numeroAsignados}, #{nombreArchivo}, #{numeroConDatos}, #{numeroSinDatos}, #{tipoBase}, #{numeroSinDireccion}, #{numeroSinRuc}, #{numeroSinCobertura}, #{numeroTelefonoExcluido},
+    #{numeroRus}, #{numeroRucInactivo}, #{numeroRucNoExiste}, #{numeroCiiuTrabajable}, #{numeroCiiuNoHabido}, #{numeroCiiuBajaServicio}, #{numeroCiiuInvalido}, #{numeroRepetido}, #{numeroexcluidobanco})
+</insert>
+
+
+	<select id="findByPAGINATOR"  resultMap="expedienteCabeceraResult" >
+		select t_expediente_cabecera.id_expediente_cabecera as idExpedienteCabecera, t_expediente_cabecera.idusuario, t_expediente_cabecera.fecha, t_expediente_cabecera.numeroregistro, 
+			t_expediente_cabecera.periodo, (usuario.nombre || ' ' || usuario.apellido_paterno || ' ' || usuario.apellido_materno) as nombreUsuario, t_expediente_cabecera.nombrearchivo, 
+			t_expediente_cabecera.numerocondatos, t_expediente_cabecera.numerosindatos, t_expediente_cabecera.tipo_base, t_expediente_cabecera.numerosindireccion as numeroSinDireccion, t_expediente_cabecera.numerosinruc as numeroSinRuc, t_expediente_cabecera.numerosincobertura as numeroSinCobertura, t_expediente_cabecera.numerotelefonoexcluido as numeroTelefonoExcluido,
+			t_expediente_cabecera.id_producto as idProducto, t_expediente_cabecera.numeroasignados, producto.descripcion as nombreProducto, negocio.descripcion as nombreNegocio from t_expediente_cabecera 
+			inner join t_usuario usuario on t_expediente_cabecera.idusuario=usuario.idusuario 
+			inner join t_producto producto on producto.id_producto = t_expediente_cabecera.id_producto 
+			inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio 
+		where t_expediente_cabecera.tipo_base=#{tipoBase}	
+		<if test="filters.entrySet() != null">
+	       <foreach item="item" collection="filters.entrySet()" >
+         		and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+           </foreach> 
+           </if>
+           
+           <if test="sortField != null">
+			order by ${sortField} ${sortOrder}    
+	    </if>
+	    
+	    <if test="sortField == null">
+			order by t_expediente_cabecera.periodo desc, producto.descripcion
+	    </if>
+	    
+	    
+		 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+	
+	<select id="findByPAGINATORxUser"  resultMap="expedienteCabeceraResult" >
+		select t_expediente_cabecera.id_expediente_cabecera as idExpedienteCabecera, t_expediente_cabecera.idusuario, t_expediente_cabecera.fecha, t_expediente_cabecera.numeroregistro, 
+			t_expediente_cabecera.periodo, (usuario.nombre || ' ' || usuario.apellido_paterno || ' ' || usuario.apellido_materno) as nombreUsuario, t_expediente_cabecera.nombrearchivo, 
+			t_expediente_cabecera.numerocondatos, t_expediente_cabecera.numerosindatos, t_expediente_cabecera.tipo_base, t_expediente_cabecera.numerosindireccion as numeroSinDireccion, t_expediente_cabecera.numerosinruc as numeroSinRuc, t_expediente_cabecera.numerosincobertura as numeroSinCobertura, t_expediente_cabecera.numerotelefonoexcluido as numeroTelefonoExcluido,
+			t_expediente_cabecera.id_producto as idProducto, t_expediente_cabecera.numeroasignados, producto.descripcion as nombreProducto, negocio.descripcion as nombreNegocio from t_expediente_cabecera 
+			inner join t_usuario usuario on t_expediente_cabecera.idusuario=usuario.idusuario 
+			inner join t_producto producto on producto.id_producto = t_expediente_cabecera.id_producto 
+			inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio 
+		where
+		 	1=1 
+<!-- 		t_expediente_cabecera.tipo_base=#{tipoBase}	 -->
+		<if test="negocio !=0">
+	    	and	negocio.id_negocio = #{negocio}
+	    </if>	       
+		 <if test="periodo !=null">
+	    	and	t_expediente_cabecera.periodo = #{periodo}
+	    </if>
+	     <if test="idusuario !=0">
+	    	and	t_expediente_cabecera.idusuario = #{idusuario}
+	    </if>
+		<if test="filters.entrySet() != null"> 
+	       <foreach item="item" collection="filters.entrySet()" >
+         		and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+           </foreach> 
+           </if>
+           <if test="sortField != null">
+			order by ${sortField} ${sortOrder}    
+	    </if>
+	    
+	    <if test="sortField == null">
+			order by t_expediente_cabecera.periodo desc, producto.descripcion
+	    </if>
+		 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+
+	<select id="getCountPAGINATOR"  resultType="java.lang.Integer">
+			select count(*)
+		    from t_expediente_cabecera 
+		    inner join t_usuario usuario on t_expediente_cabecera.idusuario=usuario.idusuario 
+			inner join t_producto producto on producto.id_producto = t_expediente_cabecera.id_producto 
+			inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+			where t_expediente_cabecera.tipo_base=#{tipoBase}
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+	           </foreach> 
+	        </if>
+		
+		</select>
+		
+		<select id="getCountPAGINATORxUser"  resultType="java.lang.Integer">
+			select count(*)
+		    from t_expediente_cabecera 
+		    inner join t_usuario usuario on t_expediente_cabecera.idusuario=usuario.idusuario 
+			inner join t_producto producto on producto.id_producto = t_expediente_cabecera.id_producto 
+			inner join t_negocio negocio on producto.id_negocio = negocio.id_negocio
+			where  1=1
+<!-- 			t_expediente_cabecera.tipo_base=#{tipoBase} -->
+			<if test="negocio !=0">
+	    		and	negocio.id_negocio = #{negocio}
+	    	</if>	       
+		 	<if test="periodo !=null">
+	    		and	t_expediente_cabecera.periodo = #{periodo}
+	    	</if>
+	     	<if test="idusuario !=0">
+	    		and	t_expediente_cabecera.idusuario = #{idusuario}
+	    	</if>
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+	           </foreach> 
+	        </if>
+		
+		</select>
+
+</mapper>	

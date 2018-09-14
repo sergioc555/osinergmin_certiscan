@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+	
+		<style>
+			.seleccion
+			{background-color: #6CE26C;}
+		
+			.ui-datatable tr.ui-datatable-even:hover, .ui-datatable tr.ui-datatable-odd:hover {
+	    		background: #78BCFF;
+			}
+			
+		</style>
+		<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: -5px">  
+  				<p:menuitem value="Home" url="#" />  
+  				<p:menuitem value="Gestion de Carga" url="#" />
+  				<p:menuitem value="Verificación de Data" url="verificacionBase" />   
+		</p:breadCrumb>	
+		<pe:blockUI   widgetVar="BlockUIWidgetB">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Buscando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+		<h:form id="form" style="margin-top:10px;">
+			<h:panelGrid columns="3">
+				<h:outputLabel value="Negocio:" style="font-weight:  bold; font-size: 16px;"/>
+				<h:outputLabel value="Condición:" style="font-weight:  bold; font-size: 16px;"/>
+				<h:outputLabel value="Valor:" style="font-weight:  bold; font-size: 16px;"/>
+				
+				<p:selectOneMenu style="width:200px; font-size: 16px;" value="#{verificacionBaseMB.idNegocio}"  >
+					<f:selectItems itemLabel="#{neg.descripcion}" itemValue="#{neg.id_negocio}" value="#{verificacionBaseMB.listaNegocios}" var="neg" />
+					<p:ajax listener="#{verificacionBaseMB.iniciarListaExpediente()}"  update=":form:dataTableExpediente" 
+								onstart="PF('BlockUIWidgetB').block()" oncomplete="PF('BlockUIWidgetB').unblock()"/>
+				</p:selectOneMenu>
+				
+				<p:selectOneMenu style="width:140px; font-size: 13px;" value="#{verificacionBaseMB.tipoOpcion}"  >
+					<f:selectItem itemLabel="Repetición" itemValue="Repeticion" />
+					<f:selectItem itemLabel="Teléfono" itemValue="Telefono" />
+					<f:selectItem itemLabel="RUC" itemValue="RUC" />
+					<f:selectItem itemLabel="Cobertura" itemValue="Cobertura" />
+					<f:selectItem itemLabel="Dirección" itemValue="Direccion" />
+					<f:selectItem itemLabel="Tipo Ruc" itemValue="TipoRuc" />
+					<f:selectItem itemLabel="Tipo Ciiu" itemValue="TipoCiiu" />
+					<p:ajax update=":form:pngValue :form:dataTableExpediente :form:lblTotal" onstart="PF('BlockUIWidgetB').block()" oncomplete="PF('BlockUIWidgetB').unblock()"
+						listener="#{verificacionBaseMB.contarBases}"/>
+				</p:selectOneMenu>
+				
+				<h:panelGrid id="pngValue" columns="3">
+	                <p:selectOneMenu 
+	                	value="#{verificacionBaseMB.opcionRepeticion}" rendered="#{verificacionBaseMB.tipoOpcion eq 'Repeticion'}">
+	                    <f:converter converterId="javax.faces.Boolean" />
+	                    <f:selectItem itemLabel="Todo" itemValue="" />
+	                    <f:selectItem itemLabel="Nuevo" itemValue="true" />
+	                    <f:selectItem itemLabel="Repetido" itemValue="false" />
+	                    <p:ajax update=":form:dataTableExpediente :form:lblTotal" onstart="PF('BlockUIWidgetB').block()" oncomplete="PF('BlockUIWidgetB').unblock()"
+	                    	listener="#{verificacionBaseMB.contarBases}"/>
+	                </p:selectOneMenu>
+					<p:selectOneMenu 
+						value="#{verificacionBaseMB.opcionTelefono}" rendered="#{verificacionBaseMB.tipoOpcion eq 'Telefono'}">
+	                    <f:converter converterId="javax.faces.Boolean" />
+	                    <f:selectItem itemLabel="Todo" itemValue="" />
+	                    <f:selectItem itemLabel="Con Número" itemValue="true" />
+	                    <f:selectItem itemLabel="Sin Número" itemValue="false" />
+	                    <p:ajax update=":form:dataTableExpediente :form:lblTotal" onstart="PF('BlockUIWidgetB').block()" oncomplete="PF('BlockUIWidgetB').unblock()"
+	                    	listener="#{verificacionBaseMB.contarBases}"/>
+	                </p:selectOneMenu>
+		            <p:selectOneMenu 
+		            	value="#{verificacionBaseMB.opcionRUC}" rendered="#{verificacionBaseMB.tipoOpcion eq 'RUC'}">
+	                    <f:converter converterId="javax.faces.Boolean" />
+	                    <f:selectItem itemLabel="Todo" itemValue="" />
+	                    <f:selectItem itemLabel="Con RUC" itemValue="true" />
+	                    <f:selectItem itemLabel="Sin RUC" itemValue="false" />
+	                    <p:ajax update=":form:dataTableExpediente :form:lblTotal" onstart="PF('BlockUIWidgetB').block()" oncomplete="PF('BlockUIWidgetB').unblock()"
+	                    	listener="#{verificacionBaseMB.contarBases}"/>
+	                </p:selectOneMenu>
+				    <p:selectOneMenu  
+				    	value="#{verificacionBaseMB.opcionCobertura}" rendered="#{verificacionBaseMB.tipoOpcion eq 'Cobertura'}">
+	                    <f:converter converterId="javax.faces.Boolean" />
+	                    <f:selectItem itemLabel="Todo" itemValue="" />
+	                    <f:selectItem itemLabel="En Cobertura" itemValue="true" />
+	                    <f:selectItem itemLabel="Sin Cobertura" itemValue="false" />
+	                    <p:ajax update=":form:dataTableExpediente :form:lblTotal" onstart="PF('BlockUIWidgetB').block()" oncomplete="PF('BlockUIWidgetB').unblock()"
+	                    	listener="#{verificacionBaseMB.contarBases}"/>
+	                </p:selectOneMenu>
+			
+	                <p:selectOneMenu  
+	                	value="#{verificacionBaseMB.opcionDireccion}" rendered="#{verificacionBaseMB.tipoOpcion eq 'Direccion'}">
+	                    <f:converter converterId="javax.faces.Boolean" />
+	                    <f:selectItem itemLabel="Todo" itemValue="" />
+	                    <f:selectItem itemLabel="Con Dirección" itemValue="true" />
+	                    <f:selectItem itemLabel="Sin Dirección" itemValue="false" />
+	                    <p:ajax update=":form:dataTableExpediente :form:lblTotal" onstart="PF('BlockUIWidgetB').block()" oncomplete="PF('BlockUIWidgetB').unblock()"
+	                    	listener="#{verificacionBaseMB.contarBases}"/>
+	                </p:selectOneMenu>
+	
+	                <p:selectOneMenu  
+						value="#{verificacionBaseMB.opcionTipoRuc}" rendered="#{verificacionBaseMB.tipoOpcion eq 'TipoRuc'}">
+	                    <f:selectItem itemValue="" itemLabel="Todo"/>
+	                    <f:selectItem itemValue="RUC" itemLabel="RUC"/>
+	                    <f:selectItem itemValue="RUS" itemLabel="RUS"/>
+	                    <f:selectItem itemValue="INACTIVO" itemLabel="INACTIVO"/>
+	                    <f:selectItem itemValue="N-E" itemLabel="N-E"/>
+	                    <f:selectItem itemValue="PEND" itemLabel="PEND"/>
+	                    <p:ajax update=":form:dataTableExpediente :form:lblTotal" onstart="PF('BlockUIWidgetB').block()" oncomplete="PF('BlockUIWidgetB').unblock()"
+	                    	listener="#{verificacionBaseMB.contarBases}"/>
+	                </p:selectOneMenu>
+		
+	                <p:selectOneMenu 
+	                	value="#{verificacionBaseMB.opcionTipoCiiu}" rendered="#{verificacionBaseMB.tipoOpcion eq 'TipoCiiu'}">
+	                    <f:selectItem itemValue="" itemLabel="Todo"/>
+	                    <f:selectItem itemValue="TRABAJABLE" itemLabel="TRABAJABLE"/>
+	                    <f:selectItem itemValue="NO_HABIDO" itemLabel="NO_HABIDO"/>
+	                    <f:selectItem itemValue="BAJA_SERVICIO" itemLabel="BAJA_SERVICIO"/>
+	                    <f:selectItem itemValue="PEND" itemLabel="PEND"/>
+	                    <p:ajax update=":form:dataTableExpediente :form:lblTotal" onstart="PF('BlockUIWidgetB').block()" oncomplete="PF('BlockUIWidgetB').unblock()"
+	                    	listener="#{verificacionBaseMB.contarBases}"/>
+	                </p:selectOneMenu>
+	                
+	                <h:outputLabel value="Total de registros:" style="font-size: 16px; color: blue;"/>
+	                <h:outputText value="#{verificacionBaseMB.totalRegistros}" style="font-size: 16px; color: blue; font-weight: bold;" id="lblTotal"/>
+				</h:panelGrid>
+			</h:panelGrid>
+			<p:blockUI block="dataTableExpediente" trigger="dataTableExpediente">
+		        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        	<h:outputText value="Buscando, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/>
+		    </p:blockUI>			
+			<p:dataTable id="dataTableExpediente" rows="10" paginator="true" var="p" value="#{verificacionBaseMB.modelExpedientes}" 
+				widgetVar="dataTableExpediente" filteredValue="#{verificacionBaseMB.listaExpedientesFiltrados}" lazy="true" paginatorPosition="bottom"
+				emptyMessage="No hay Expedientes Disponibles." rowIndexVar="nro"  selection="#{verificacionBaseMB.expedienteSelected}" 
+				 rowKey="#{p.expediente_id}" style="FONT-SIZE: 10px; margin-top: 10px; " rowsPerPageTemplate="10, 50, 100, 200,300, 400, 500, 1000">
+				 
+				<f:facet name="header">
+					<h:outputLabel value="Lista de Bases Cargadas" style="font-size: 17px; "/>
+				</f:facet>
+				
+				<p:column headerText="Orden" width="30">
+					#{nro+1}
+				</p:column>	
+				
+				<p:column width="70" headerText="Id Exp" >
+					<h:outputText value="#{p.expediente_id}" />
+				</p:column>
+				
+				<p:column  headerText="Periodo" style="text-align: center;" width="180" toggleable="false" >
+					<f:facet name="header">
+						Periodo: 
+                               <br/>     
+		                <p:selectOneMenu value="#{verificacionBaseMB.mes}" id="selMes" style="width: 100px;">
+							<f:selectItem  itemLabel="Enero" itemValue="01" />
+							<f:selectItem  itemLabel="Febrero" itemValue="02" />
+							<f:selectItem  itemLabel="Marzo" itemValue="03" />
+							<f:selectItem  itemLabel="Abril" itemValue="04" />
+							<f:selectItem  itemLabel="Mayo" itemValue="05" />
+							<f:selectItem  itemLabel="Junio" itemValue="06" />
+							<f:selectItem  itemLabel="Julio" itemValue="07" />
+							<f:selectItem  itemLabel="Agosto" itemValue="08" />
+							<f:selectItem  itemLabel="Setiembre" itemValue="09" />
+							<f:selectItem  itemLabel="Octubre" itemValue="10" />
+							<f:selectItem  itemLabel="Noviembre" itemValue="11" />
+							<f:selectItem  itemLabel="Diciembre" itemValue="12" />
+							<p:ajax process="@this :form:dataTableExpediente:selMes :form:dataTableExpediente:selAnio" listener="#{verificacionBaseMB.iniciarListaExpediente}" update=":form:dataTableExpediente :form:dataTableExpediente:selMes :form:dataTableExpediente:selAnio" 
+								onstart="PF('BlockUIWidgetB').block();"  oncomplete="PF('BlockUIWidgetB').unblock();"/>
+						</p:selectOneMenu>
+						<p:selectOneMenu value="#{verificacionBaseMB.anio}" id="selAnio">
+							<f:selectItem  itemLabel="2014" itemValue="2014" />
+							<f:selectItem  itemLabel="2015" itemValue="2015" />
+							<f:selectItem  itemLabel="2016" itemValue="2016" />
+							<f:selectItem  itemLabel="2017" itemValue="2017" />
+							<f:selectItem  itemLabel="2018" itemValue="2018" />
+							<f:selectItem  itemLabel="2019" itemValue="2019" />
+							<f:selectItem  itemLabel="2020" itemValue="2020" />
+							<p:ajax process="@this :form:dataTableExpediente:selMes :form:dataTableExpediente:selAnio" listener="#{verificacionBaseMB.iniciarListaExpediente}" update=":form:dataTableExpediente :form:dataTableExpediente:selMes :form:dataTableExpediente:selAnio" 
+								onstart="PF('BlockUIWidgetB').block();"  oncomplete="PF('BlockUIWidgetB').unblock();"/>
+						</p:selectOneMenu>
+	                </f:facet>
+					<h:outputText value="#{p.periodo}">
+						<f:convertDateTime pattern="MMMMM yyyy" />
+					</h:outputText>
+				</p:column>
+								
+				<p:column width="80" headerText="Producto" sortBy="#{p.producto.descripcion}" filterBy="#{p.producto.descripcion}" filterStyle="width: 90%;">
+					<h:outputText value="#{p.desproducto}" />
+				</p:column>
+					
+				<p:column  width="90" headerText="Documento" sortBy="#{p.num_doc}"  filterBy="#{p.num_doc}" filterMatchMode="contains"  filterStyle="width:95%;"  rendered="#{verificacionBaseMB.idNegocio ne 11}">
+					<h:outputText value="#{p.num_doc}"  rendered="#{verificacionBaseMB.idNegocio ne 11}"/>
+				</p:column>
+				
+				<p:column  headerText="RUC" sortBy="#{p.ruc}"  filterBy="#{p.ruc}" filterMatchMode="contains"  filterStyle="width:95%;" rendered="#{verificacionBaseMB.idNegocio eq 11}">
+					<h:outputText value="#{p.ruc}"  rendered="#{verificacionBaseMB.idNegocio eq 11}"/>
+				</p:column>
+				
+				<p:column  headerText="#{(verificacionBaseMB.idNegocio eq 11)?'Razon Social':'Nombres'}" sortBy="#{p.nombre_completo}"  filterBy="#{p.nombre_completo}" filterMatchMode="contains"  filterStyle="width:95%;">
+					<h:outputText value="#{p.nomcompletocliente}" />
+				</p:column>
+				
+				<p:column width="80" headerText="Prestamo" sortBy="#{p.prestamo_soles}" filterMatchMode="contains" filterStyle="width:95%;" style="text-align: right;">
+					<h:outputText value="#{p.prestamo_soles}" converter="montoDefaultConverter" />
+				</p:column>
+				
+				<ui:remove>
+					<p:column headerText="Nuevo" filterBy="#{p.estadoNuevo}" >
+						<f:facet name="filter">
+					                <p:selectOneMenu onchange="PF('dataTableExpediente').filter()">
+					                    <f:converter converterId="javax.faces.Boolean" />
+					                    <f:selectItem itemLabel="Todo" itemValue="" />
+					                    <f:selectItem itemLabel="Nuevo" itemValue="true" />
+					                    <f:selectItem itemLabel="Repetido" itemValue="false" />
+					                </p:selectOneMenu>
+					            </f:facet>
+						 <h:outputText value="#{p.estadoNuevo ? 'Nuevo': 'Repetido'}" style="font-size: 11px;" />
+					</p:column>
+					
+					<p:column headerText="Numero Telf" filterBy="#{p.estadoTrabajo}">
+						<f:facet name="filter">
+					                <p:selectOneMenu onchange="PF('dataTableExpediente').filter()">
+					                    <f:converter converterId="javax.faces.Boolean" />
+					                    <f:selectItem itemLabel="Todo" itemValue="" />
+					                    <f:selectItem itemLabel="Con Número" itemValue="true" />
+					                    <f:selectItem itemLabel="Sin Número" itemValue="false" />
+					                </p:selectOneMenu>
+					            </f:facet>
+						 <h:outputText value="#{p.estadoTrabajo ? 'Con Número(s)': 'Sin Números'}" style="font-size: 11px;" />
+					</p:column>
+					
+					<p:column headerText="RUC" filterBy="#{p.estado_ruc}">
+						<f:facet name="filter">
+					                <p:selectOneMenu onchange="PF('dataTableExpediente').filter()">
+					                    <f:converter converterId="javax.faces.Boolean" />
+					                    <f:selectItem itemLabel="Todo" itemValue="" />
+					                    <f:selectItem itemLabel="Con RUC" itemValue="true" />
+					                    <f:selectItem itemLabel="Sin RUC" itemValue="false" />
+					                </p:selectOneMenu>
+					            </f:facet>
+						 <h:outputText value="#{p.estado_ruc? 'Con Ruc': 'Sin Ruc'}" style="font-size: 11px;" />
+					</p:column>
+					<p:column headerText="Cobertura" filterBy="#{p.estado_cobertura}">
+						<f:facet name="filter">
+					                <p:selectOneMenu onchange="PF('dataTableExpediente').filter()">
+					                    <f:converter converterId="javax.faces.Boolean" />
+					                    <f:selectItem itemLabel="Todo" itemValue="" />
+					                    <f:selectItem itemLabel="En Cobertura" itemValue="true" />
+					                    <f:selectItem itemLabel="Sin Cobertura" itemValue="false" />
+					                </p:selectOneMenu>
+					            </f:facet>
+						 <h:outputText value="#{p.estado_cobertura? 'En Cobertura': 'Sin Cobertura'}" style="font-size: 11px;" />
+					</p:column>
+					<p:column headerText="Con Direccion" filterBy="#{p.estado_direccion}">
+						<f:facet name="filter">
+			                <p:selectOneMenu onchange="PF('dataTableExpediente').filter()">
+			                    <f:converter converterId="javax.faces.Boolean" />
+			                    <f:selectItem itemLabel="Todo" itemValue="" />
+			                    <f:selectItem itemLabel="Con Dirección" itemValue="true" />
+			                    <f:selectItem itemLabel="Sin Dirección" itemValue="false" />
+			                </p:selectOneMenu>
+			            </f:facet>
+						 <h:outputText value="#{p.estado_direccion? 'Con Dirección': 'Sin Dirección'}" style="font-size: 11px;" />
+					</p:column>
+					<p:column headerText="Tipo RUC" filterBy="#{p.tipo_ruc}">
+						<f:facet name="filter">
+			                <p:selectOneMenu onchange="PF('dataTableExpediente').filter()" >
+			                    <f:selectItem itemValue="" itemLabel="Todo"/>
+			                    <f:selectItem itemValue="RUC" itemLabel="RUC"/>
+			                    <f:selectItem itemValue="RUS" itemLabel="RUS"/>
+			                    <f:selectItem itemValue="INACTIVO" itemLabel="INACTIVO"/>
+			                    <f:selectItem itemValue="N-E" itemLabel="N-E"/>
+			                    <f:selectItem itemValue="PEND" itemLabel="PEND"/>
+			                </p:selectOneMenu>
+			            </f:facet>
+			           <h:outputLabel value="#{p.tipo_ruc}" />
+	               </p:column>
+				   <p:column headerText="Tipo CIIU" filterBy="#{p.tipo_ciiu}">
+						<f:facet name="filter">
+			                <p:selectOneMenu onchange="PF('dataTableExpediente').filter()" >
+			                    <f:selectItem itemValue="" itemLabel="Todo"/>
+			                    <f:selectItem itemValue="TRABAJABLE" itemLabel="TRABAJABLE"/>
+			                    <f:selectItem itemValue="NO_HABIDO" itemLabel="NO_HABIDO"/>
+			                    <f:selectItem itemValue="BAJA_SERVICIO" itemLabel="BAJA_SERVICIO"/>
+			                    <f:selectItem itemValue="PEND" itemLabel="PEND"/>
+			                </p:selectOneMenu>
+			            </f:facet>
+			          <h:outputLabel value="#{p.tipo_ciiu}" />
+	                </p:column>
+				</ui:remove>
+				
+			</p:dataTable>
+		</h:form>
+		
+		
+		
+		<script>
+			function validar(xhr, status, args) {
+				if (!args.esValido) {
+					PF('dlgExpedienteBaseW').show();
+				} else {
+					//limpiando
+					
+				}
+			}
+			
+			function justNumbers(e) {
+				var keynum = window.event ? window.event.keyCode : e.which;
+				if ( keynum == 8 ) return true;
+				return /\d/.test(String.fromCharCode(keynum));
+				}
+			
+			function validarCuenta(xhr, status, args){
+				if (!args.esValidoCuenta) {
+					PF('dlgTabHaberes').show();
+				} else {
+					//limpiando
+					
+				}
+			}
+
+		</script>	
+			
+	</ui:define>
+</ui:composition>
+</html>

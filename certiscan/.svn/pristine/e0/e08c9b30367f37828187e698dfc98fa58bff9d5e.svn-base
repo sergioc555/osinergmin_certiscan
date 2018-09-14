@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.FacturacionCabeceraMapper">
+
+<resultMap id="facturacionCabeceraResult" type="com.certicom.certiscan.domain.FacturacionCabecera">
+
+	<id column="id_facturacion_cabecera" property="idFacturacionCabecera" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="idusuario" property="idUsuario" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="id_producto" property="idProducto" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="numeroregistro" property="numeroregistro" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="periodo" property="periodo" javaType="java.util.Date" jdbcType="DATE"/>
+	<result column="fecha" property="fecha" />
+	<result column="id_negocio" property="id_negocio"/>
+	<result column="nombrearchivo" property="nombrearchivo"/>
+	<result column="nombusuario" property="nombusuario"/>
+	<result column="desnegocio" property="desnegocio"/>
+	<result column="desproducto" property="desproducto"/>
+	
+</resultMap>
+
+<insert id="crearFacturacionCabecera" parameterType="com.certicom.certiscan.domain.FacturacionCabecera" 
+		useGeneratedKeys="true" keyProperty="idFacturacionCabecera" >
+    <selectKey resultType="java.lang.Integer"  keyProperty="idFacturacionCabecera" order="AFTER">
+        SELECT max(t_expediente_cabecera.id_expediente_cabecera) from t_expediente_cabecera where 
+         t_expediente_cabecera.idusuario=#{idUsuario} and t_expediente_cabecera.id_producto=#{idProducto} and t_expediente_cabecera.periodo=#{periodo}  and t_expediente_cabecera.tipo_base=#{tipoBase} 
+    </selectKey>
+    insert into t_expediente_cabecera (idusuario, fecha, numeroregistro,periodo, id_producto, numeroasignados, nombrearchivo, numerocondatos, numerosindatos, tipo_base) 
+    values (#{idUsuario},#{fecha},#{numeroRegistro},#{periodo},#{idProducto}, #{numeroAsignados}, #{nombreArchivo}, #{numeroConDatos}, #{numeroSinDatos}, #{tipoBase})
+</insert>
+
+<insert id="crearFacturacionCabecera2" parameterType="com.certicom.certiscan.domain.FacturacionCabecera" 
+		useGeneratedKeys="true" keyProperty="idFacturacionCabecera" >
+    <selectKey resultType="java.lang.Integer"  keyProperty="idFacturacionCabecera" order="AFTER">
+        SELECT max(t_facturacion_cabecera.id_facturacion_cabecera) from t_facturacion_cabecera where 
+         t_facturacion_cabecera.idusuario=#{idUsuario} and t_facturacion_cabecera.id_negocio=#{id_negocio} and t_facturacion_cabecera.periodo=#{periodo}  and t_facturacion_cabecera.fecha=#{fecha} 
+    </selectKey>
+    insert into t_facturacion_cabecera (idusuario, fecha, numeroregistro,periodo, id_producto, id_negocio, nombrearchivo) 
+    values (#{idUsuario},#{fecha},#{numeroregistro},#{periodo},#{idProducto}, #{id_negocio}, #{nombrearchivo})
+</insert>
+
+
+	<select id="findByPAGINATOR"  resultMap="facturacionCabeceraResult" >
+		select fc.*, (u.nombre ||' '|| u.apellido_paterno ||' '|| u.apellido_materno)as nombusuario, n.descripcion as desnegocio, p.descripcion as desproducto, n.id_negocio  
+		from t_facturacion_cabecera fc inner join t_usuario u on u.idusuario = fc.idusuario
+			       inner join t_negocio n on n.id_negocio = fc.id_negocio  
+			       inner join t_producto p on p.id_producto = fc.id_producto
+		 <if test="negocio !=0">
+	    	and	n.id_negocio = #{negocio}
+	    </if>	       
+		 <if test="periodo !=null">
+	    	and	fc.periodo = #{periodo}
+	    </if>	       
+			       
+		<if test="filters.entrySet() != null">
+	       <foreach item="item" collection="filters.entrySet()" >
+         		and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+           </foreach> 
+           </if>
+           
+           <if test="sortField != null">
+			order by ${sortField} ${sortOrder}    
+	    </if>
+	    
+	    <if test="sortField == null">
+			order by fc.periodo desc
+	    </if>
+		 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+
+	<select id="getCountPAGINATOR"  resultType="java.lang.Integer">
+			select count(*)
+		    from t_facturacion_cabecera fc inner join t_usuario u on u.idusuario = fc.idusuario
+			       inner join t_negocio n on n.id_negocio = fc.id_negocio 
+			       inner join t_producto p on p.id_producto = fc.id_producto
+			 <if test="negocio !=0">
+	    		and n.id_negocio = #{negocio}
+	    	</if>	     
+	    	<if test="periodo !=null">
+	    		and	fc.periodo = #{periodo}
+	    	</if>	       
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+	           </foreach> 
+	        </if>
+		
+		</select>
+		
+		
+		<select id="findByNegocioPeriodo"  resultMap="facturacionCabeceraResult" >
+		select fc.*, (u.nombre ||' '|| u.apellido_paterno ||' '|| u.apellido_materno)as nombusuario, n.descripcion as desnegocio, p.descripcion as desproducto, n.id_negocio  
+		from t_facturacion_cabecera fc inner join t_usuario u on u.idusuario = fc.idusuario
+			       inner join t_negocio n on n.id_negocio = fc.id_negocio  
+			       inner join t_producto p on p.id_producto = fc.id_producto
+		 <if test="negocio !=0">
+	    	and	n.id_negocio = #{negocio}
+	    </if>	       
+		 <if test="periodo !=null">
+	    	and	fc.periodo = #{periodo}
+	    </if>	       
+			       
+			order by fc.fecha desc
+	</select>	
+		
+		
+
+</mapper>	

@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.FacturacionMapper">
+
+	<resultMap id="facturacionResult" type="com.certicom.certiscan.domain.Facturacion">
+		
+		<id column="id_facturacion" property="idFacturacion" />
+		<id column="id_producto" property="idProducto" />
+		<id column="periodo" property="periodo" />
+		
+		<result column="cliente_negativo" property="cliente_negativo" />
+		<result column="cr" property="cr" />
+		<result column="vd" property="vd" />
+		<result column="vl" property="vl" />
+		<result column="fuerza_venta" property="fuerza_venta" />
+		<result column="modalidad_venta" property="modalidad_venta" />
+		<result column="codigo_producto" property="codigo_producto" />
+		<result column="nombre_producto" property="nombre_producto" />
+		<result column="codigo_sub_producto" property="codigo_sub_producto" />
+		<result column="sub_producto" property="sub_producto" />
+		<result column="adicional" property="adicional" />
+		<result column="numero_solicitud" property="numero_solicitud" />
+		<result column="documento" property="doi" />
+		<result column="apellido_paterno_cliente" property="apellido_paterno_cliente" />
+		<result column="apellido_materno_cliente" property="apellido_materno_cliente" />
+		<result column="nombre_cliente" property="nombre_cliente" />
+		<result column="direccion_cliente" property="direccion_cliente" />
+		<result column="telefono_cliente" property="telefono_cliente" />
+		<result column="celular_cliente" property="celular_cliente" />
+		<result column="origen" property="origen" />
+		<result column="fecha_rvgl" property="fecha_rvgl" />
+		<result column="fecha_registro" property="fecha_registro" />
+		<result column="fecha_estado" property="fecha_estado" />
+		<result column="fecha_actual" property="fecha_actual" />
+		<result column="moneda_solicitada" property="moneda_solicitada" />
+		<result column="monto_solicitado" property="monto_solicitado" />
+		<result column="moneda_aprobada" property="moneda_aprobada" />
+		<result column="monto_aprobado" property="monto_aprobado" />
+		<result column="fecha_formalizacion_operacion" property="fecha_formalizacion_operacion" />
+		<result column="fecha_estado_comision" property="fecha_estado_comision" />
+		<result column="estado_comision" property="estado_comision" />
+		<result column="fecha_estado_altamira" property="fecha_estado_altamira" />
+		<result column="estado_altamira" property="estado_altamira" />
+		<result column="propiedad_producto" property="propiedad_producto" />
+		<result column="numero_contrato" property="numero_contrato" />
+		<result column="codigo_jefe" property="codigo_jefe" />
+		<result column="jefe" property="jefe" />
+		<result column="codigo_ejecutivo" property="codigo_ejecutivo" />
+		<result column="ejecutivo" property="ejecutivo" />
+		<result column="codigo_oficina_asignada" property="codigo_oficina_asignada" />
+		<result column="observacion" property="observacion" />
+		<result column="ion" property="ion" />
+		<result column="responsable_actual" property="responsable_actual" />
+		<result column="cliente_vip" property="cliente_vip" />
+		<result column="pago_haberes" property="pago_haberes" />
+		<result column="tipo_captacion" property="tipo_captacion" />
+		<result column="canal_venta" property="canal_venta" />
+		<result column="colectivo" property="colectivo" />
+   		<result column="observacion_riesgos" property="observacion_riesgos" />
+		<result column="fondo_aperturado" property="fondo_aperturado" />
+		<result column="origen_fondo" property="origen_fondo" />
+		<result column="procedencia_fondos" property="procedencia_fondos" />
+		<result column="segmento_promotor" property="segmento_promotor" />
+		<result column="cliente" property="cliente" />
+		<result column="razon_social" property="razon_social" />
+		<result column="ruc" property="ruc" />
+		<result column="precio_cts" property="precio_cts" />
+		
+		<result column="idusuario_ejecutivo" property="idusuario_ejecutivo" />
+		<result column="idusuario_supervisor" property="idusuario_jefe" />
+		
+		<result column="idusuario_ejecutivo_original" property="idusuario_ejecutivo_original" />
+		<result column="idusuario_supervisor_original" property="idusuario_jefe_original" />
+		
+		<result column="idusuario_back" property="idusuario_back" />
+		<result column="idusuario_ejecutivo_campo" property="idusuario_ejecutivo_campo" />
+		<result column="idusuario_supervisor_campo" property="idusuario_supervisor_campo" />
+		
+		
+		
+		<result column="monto_descuento_ejecutivo" property="monto_descuento_ejecutivo" />
+		<result column="monto_descuento_supervisor" property="monto_descuento_supervisor" />
+		<result column="observacion_descuento" property="observacion_descuento" />
+		<result column="mes_descuento" property="mes_descuento" />
+		<result column="estado_validacion" property="estado_validacion" />
+		<result column="ubicacion" property="ubicacion" />
+		<result column="modalidad_venta" property="modalidad_venta" />
+		<result column="codigo_oficina" property="codigo_oficina" />
+		
+		<result column="idplanilla_ejecutivo" property="idplanilla_ejecutivo" />
+		<result column="idplanilla_supervisor" property="idplanilla_supervisor" />
+		<result column="idplanilla_ejecutivo_campo" property="idplanilla_ejecutivo_campo" />
+		<result column="idplanilla_supervisor_campo" property="idplanilla_supervisor_campo" />
+		<result column="idplanilla_coordinador" property="idplanilla_coordinador" />
+		<result column="idplanilla_back" property="idplanilla_back" />
+		
+		<result column="por_comision_supervisor" property="por_comision_supervisor" />
+		<result column="por_comision_ejecutivo_campo" property="por_comision_ejecutivo_campo" />
+		<result column="por_comision_supervisor_campo" property="por_comision_supervisor_campo" />
+		<result column="por_comision_coordinador" property="por_comision_coordinador" />
+		<result column="por_comision_back" property="por_comision_back" />
+		<result column="rango" property="rango" />
+		<result column="idProducto" property="idProducto" />
+		
+		
+		<association property="usuarioEjecutivo" column="idusuario_ejecutivo" select="selectUsuarioEjecutivo"/>
+		<association property="usuarioJefe" column="idusuario_supervisor" select="selectUsuarioSupervisor"/>
+		<association property="usuarioEjecutivoOriginal" column="idusuario_ejecutivo_original" select="selectUsuarioEjecutivoOriginal"/>
+		<association property="usuarioJefeOriginal" column="idusuario_supervisor_original" select="selectUsuarioSupervisorOriginal"/>
+		<association property="usuarioEjecutivoCampo" column="idusuario_ejecutivo_campo" select="selectUsuarioEjecutivoCampo"/>
+		<association property="usuarioSupervisorCampo" column="idusuario_supervisor_campo" select="selectUsuarioSupervisorCampo"/>
+		<association property="usuarioCoordinador" column="idusuario_coordinador" select="selectUsuarioCoordinador"/>
+		<association property="usuarioBackOffice" column="idusuario_back" select="selectUsuarioBack"/>
+		
+		
+		<association property="planillaEjecutivo" column="idplanilla_ejecutivo" select="selectPlanillaEjecutivo"/>
+		<association property="planillaSupervisor" column="idplanilla_supervisor" select="selectPlanillaSupervisor"/>
+		<association property="planillaCoordinador" column="idplanilla_coordinador" select="selectPlanillaCoordinador"/>
+		<association property="planillaEjecutivoCampo" column="idplanilla_ejecutivo_campo" select="selectPlanillaEjecutivoCampo"/>
+		<association property="planillaSupervisorCampo" column="idplanilla_supervisor_campo" select="selectPlanillaSupervisorCampo"/>
+		<association property="planillaBack" column="idplanilla_back" select="selectPlanillaBack"/>
+		
+		<association property="producto" column="idproducto" select="selectProducto"/>
+		
+	</resultMap>
+	
+	
+	<select id="selectProducto" parameterType="int" resultType="com.certicom.certiscan.domain.Producto">
+		SELECT * FROM t_producto WHERE id_producto = #{idproducto}
+	</select>
+	
+	<select id="selectUsuarioEjecutivo" parameterType="int" resultType="com.certicom.certiscan.domain.Usuario">
+		SELECT * FROM t_usuario WHERE idusuario = #{idusuario_ejecutivo}
+	</select>
+	
+	<select id="selectUsuarioSupervisor" parameterType="int" resultType="com.certicom.certiscan.domain.Usuario">
+		SELECT * FROM t_usuario WHERE idusuario = #{idusuario_supervisor}
+	</select>
+	
+	<select id="selectUsuarioEjecutivoOriginal" parameterType="int" resultType="com.certicom.certiscan.domain.Usuario">
+		SELECT * FROM t_usuario WHERE idusuario = #{idusuario_ejecutivo_original}
+	</select>
+	
+	<select id="selectUsuarioSupervisorOriginal" parameterType="int" resultType="com.certicom.certiscan.domain.Usuario">
+		SELECT * FROM t_usuario WHERE idusuario = #{idusuario_supervisor_original}
+	</select>
+	
+	<select id="selectUsuarioEjecutivoCampo" parameterType="int" resultType="com.certicom.certiscan.domain.Usuario">
+		SELECT * FROM t_usuario WHERE idusuario = #{idusuario_ejecutivo_campo}
+	</select>
+	
+	<select id="selectUsuarioSupervisorCampo" parameterType="int" resultType="com.certicom.certiscan.domain.Usuario">
+		SELECT * FROM t_usuario WHERE idusuario = #{idusuario_supervisor_campo}
+	</select>
+	
+	<select id="selectUsuarioCoordinador" parameterType="int" resultType="com.certicom.certiscan.domain.Usuario">
+		SELECT * FROM t_usuario WHERE idusuario = #{idusuario_coordinador}
+	</select>
+	
+	<select id="selectUsuarioBack" parameterType="int" resultType="com.certicom.certiscan.domain.Usuario">
+		SELECT * FROM t_usuario WHERE idusuario = #{idusuario_back}
+	</select>
+	
+	<!-- PLANILLAS -->
+	
+	<select id="selectPlanillaEjecutivo" parameterType="int" resultType="com.certicom.certiscan.domain.TipoPlanilla">
+		SELECT * FROM t_tipo_planilla WHERE id_planilla = #{idplanilla_ejecutivo}
+	</select>
+	
+	<select id="selectPlanillaSupervisor" parameterType="int" resultType="com.certicom.certiscan.domain.TipoPlanilla">
+		SELECT * FROM t_tipo_planilla WHERE id_planilla = #{idplanilla_supervisor}
+	</select>
+	
+	<select id="selectPlanillaCoordinador" parameterType="int" resultType="com.certicom.certiscan.domain.TipoPlanilla">
+		SELECT * FROM t_tipo_planilla WHERE id_planilla = #{idplanilla_coordinador}
+	</select>
+	
+	<select id="selectPlanillaEjecutivoCampo" parameterType="int" resultType="com.certicom.certiscan.domain.TipoPlanilla">
+		SELECT * FROM t_tipo_planilla WHERE id_planilla = #{idplanilla_ejecutivo_campo}
+	</select>
+	
+	<select id="selectPlanillaSupervisorCampo" parameterType="int" resultType="com.certicom.certiscan.domain.TipoPlanilla">
+		SELECT * FROM t_tipo_planilla WHERE id_planilla = #{idplanilla_supervisor_campo}
+	</select>
+	
+	<select id="selectPlanillaBack" parameterType="int" resultType="com.certicom.certiscan.domain.TipoPlanilla">
+		SELECT * FROM t_tipo_planilla WHERE id_planilla = #{idplanilla_back}
+	</select>
+	
+	
+	<select id="getCountPAGINATOR"  resultType="java.lang.Integer">
+		select count(*)
+	    from 
+		    t_facturacion facturacion
+		where 
+			facturacion.id_facturacion_cabecera = #{id_cabecera}
+		
+		<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+	           </foreach> 
+	    </if>
+	</select>
+	
+	
+	<select id="obtenerFacturacionbyCabecera"  resultMap="facturacionResult"> 
+	select *, coalesce(NULLIF(facturacion.ubicacion,''),'NO REGISTRADO') as ubicacion
+	    from 
+		    t_facturacion facturacion 
+		where 
+			facturacion.id_facturacion_cabecera = #{id_cabecera} 
+			and id_cargo = 4 
+	</select>
+	
+	
+	<select id="getFacturacionbyCabecera2"  resultMap="facturacionResult">
+		select *
+	    from 
+		    t_facturacion facturacion
+		where 
+			facturacion.id_facturacion_cabecera = #{id_cabecera}
+			
+		<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+	           </foreach> 
+            </if>
+            
+            <if test="sortField != null">
+				order by ${sortField} ${sortOrder}    
+		    </if>
+		    
+		    <if test="sortField == null">
+				order by id_cargo DESC 
+		    </if>
+		    
+		    
+			 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+	
+	<select id="getUsuariosbyFacturacionProducto2"  parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="facturacionResult">
+	select users.idusuario_ejecutivo , users.idproducto as idProducto , sum(sum) as comision_ejecutivo from
+	(
+	(select idusuario_ejecutivo , idproducto , sum(comision_ejecutivo) from
+	t_facturacion
+	 where 
+	 idusuario_ejecutivo is not null
+	and comision_ejecutivo is not null
+	and periodo = #{fini} 
+	 <if test="idnegocio!=0">
+	 and idnegocio = #{idnegocio}
+   	 </if>
+	group by idusuario_ejecutivo, idproducto)
+	union
+
+	(select idusuario_supervisor , idproducto , 
+	case when idproducto = 5 then getcomisionph_supervisor(sc.idusuario_supervisor,#{fini}) else sum(comisionjefe) end from
+	t_facturacion sc
+	 where
+	 idusuario_supervisor is not null
+	and comisionjefe is not null
+	and periodo = #{fini} 
+	<if test="idnegocio!=0">
+	 and idnegocio = #{idnegocio}
+    </if>
+	group by idusuario_supervisor, idproducto)
+	union
+	(select idusuario_ejecutivo_campo , idproducto , sum(comision_ejecutivo_campo)
+	from t_facturacion 
+	where 
+	 idusuario_ejecutivo_campo is not null
+	and comision_ejecutivo_campo is not null
+	and periodo = #{fini} 
+	 <if test="idnegocio!=0">
+	 and idnegocio = #{idnegocio}
+   	</if>
+	group by idusuario_ejecutivo_campo, idproducto)
+	union
+	(select idusuario_supervisor_campo , idproducto ,
+	sum(comision_supervisor_campo) from t_facturacion
+	 where 
+	 idusuario_supervisor_campo is not null
+	and comision_supervisor_campo is not null
+	and periodo = #{fini} 
+	 <if test="idnegocio!=0">
+	 and idnegocio = #{idnegocio}
+    </if>
+	group by idusuario_supervisor_campo,
+	idproducto)
+
+	union
+	(select idusuario_coordinador , idproducto , 
+	case when idproducto = 5 then getcomisionph_coordinador(co.idusuario_coordinador,#{fini}) else sum(comision_coordinador) end from
+	t_facturacion co 
+	where
+	 idusuario_coordinador is not null
+	and comision_coordinador is not null
+	and periodo = #{fini}
+	 <if test="idnegocio!=0">
+		and idnegocio = #{idnegocio}
+    </if> 
+	group by idusuario_coordinador, idproducto)
+	union
+	(select idusuario_back , idproducto , sum(comision_back) from t_facturacion
+	where
+	 idusuario_back is not null
+	and comision_back is not null
+	and periodo = #{fini}
+	 <if test="idnegocio!=0">
+	 and idnegocio = #{idnegocio}
+    </if>
+	group by idusuario_back, idproducto)
+	) as users
+	group by users.idusuario_ejecutivo, users.idproducto
+	</select>
+	
+	<select id="getUsuariosbyFacturacionCuartiles"  parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="facturacionResult">
+		select users.idusuario_ejecutivo , users.idproducto as idProducto , sum(sum) as comision_ejecutivo from
+			(select idusuario_ejecutivo , idproducto , sum(monto_soles) from t_facturacion
+	 		where  idusuario_ejecutivo is not null 	and monto_soles is not null
+			  and periodo = #{fini} 
+		 <if test="idnegocio!=0">
+	 		and idnegocio = #{idnegocio}
+   	 	</if>
+		group by idusuario_ejecutivo, idproducto)
+		as users
+	group by users.idusuario_ejecutivo, users.idproducto
+	</select>
+	
+	<select id="listarProductosFacturadosByAnioByProductoByNegocio"  parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="facturacionResult">
+		<!--select n.descripcion as des_negocio,p.descripcion as des_producto , n.id_negocio as idnegocio, p.id_producto as idProducto, 
+			sum(f.monto_soles) as monto_facturado from t_facturacion f inner join t_producto p
+			 on p.id_producto = f.idproducto inner join t_negocio n on n.id_negocio = f.idnegocio 
+			 WHERE cast(extract(year from f.periodo) as character varying) = #{anio} 
+			 <if test="idproducto != 0">
+			 and f.idproducto = #{idproducto} 
+			 </if>
+			 <if test="idnegocio != 0">
+			 and f.idnegocio = #{idnegocio}
+			 </if>
+			group by n.id_negocio, p.id_producto 
+			 order by n.descripcion,p.descripcion  -->
+			 select n.descripcion as des_negocio,p.descripcion as des_producto , n.id_negocio as idnegocio, p.id_producto as idProducto, 
+			sum(f.monto_soles) as monto_facturado from t_facturacion f inner join t_producto p
+			 on p.id_producto = f.idproducto inner join t_negocio n on n.id_negocio = f.idnegocio 
+			 WHERE cast(extract(year from f.periodo) as character varying) = #{anio} 
+			 <if test="idproducto != 0">
+			 and f.idproducto = #{idproducto} 
+			 </if>
+			 <if test="idnegocio != 0">
+			 and f.idnegocio = #{idnegocio}
+			 </if>
+			group by n.id_negocio, p.id_producto 
+			order by n.descripcion,p.descripcion 
+	</select>
+	
+</mapper>	

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.CategoriaIndicadoresCallMapper">
+
+<resultMap id="categoriaIndicadoresCallResult" type="com.certicom.certiscan.domain.CategoriaIndicadoresCall">
+	<id column="id_categoria_call" property="id_categoria_call" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="descripcion" property="descripcion" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="estado" property="estado" javaType="java.lang.Boolean" jdbcType="BOOLEAN"/>
+	<result column="id_producto" property="id_producto" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+
+</resultMap>
+
+<select id="getCatIndicadoresExisProducto" resultMap="categoriaIndicadoresCallResult">
+select distinct cat.id_categoria_call , cat.descripcion from t_expediente_producto ep 
+	inner join t_expediente ex 
+	on  ep.expediente_id = ex.expediente_id
+	inner join t_categoria_call cat on cat.id_categoria_call = ep.id_categoria_call
+	where ep.id_producto =	#{producto} and ex.periodo = #{periodo}
+</select>
+
+
+</mapper>	

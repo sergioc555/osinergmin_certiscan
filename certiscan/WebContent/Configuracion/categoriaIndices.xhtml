@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+		<h:form>
+			<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: 0px">
+				<p:menuitem value="Home" url="#" />
+				<p:menuitem value="Configuracion" url="#" />
+				<p:menuitem value="Gestion de Indices"
+					url="indices" />
+			</p:breadCrumb>
+		</h:form>
+
+
+		<br />
+		<!-- growl general -->
+		<p:messages id="msgGeneral" showDetail="false" showSummary="true"
+			closable="true" />
+
+		<!-- listado de Categoria Indicadores Call -->
+		<h:form id="formLista">
+			<h:panelGrid columns="1">
+			
+			<h:panelGrid columns="6">		
+			#{"Negocio:"}
+			<p:selectOneMenu style="width:200px"
+						value="#{categoriaIndiceMB._negocio}"
+						required="true" requiredMessage="Seleccione un Negocio">
+						<f:selectItem itemLabel="Seleccione..." itemValue="" />
+						<f:selectItems
+							value="#{categoriaIndiceMB.listaNegocios}" var="n"
+							itemLabel="#{n.descripcion}" itemValue="#{n.id_negocio}" />
+						
+					</p:selectOneMenu>					
+					<p:commandButton value="Buscar"
+				icon="icon-search" update=":formLista"
+				actionListener="#{categoriaIndiceMB.buscar}" />				
+					</h:panelGrid>
+						
+						<p:commandButton value="Nueva Categoria"
+				icon="icon-add" update=':dlgDetNuevo'
+				oncomplete="PF('dlgNuevo').show();" process="@this"
+				actionListener="#{categoriaIndiceMB.nuevoCategoriaIndicadoresIndice()}" />	
+				
+			</h:panelGrid>			
+		</h:form>
+	
+	<!-- #############    Dialogos      ################ -->
+
+		<!-- dialogo nuevo/editar Categoria Indicadores Call -->
+
+		<p:dialog header="Categoria Indicadores" widgetVar="dlgNuevo"
+			appendTo="@(body)" resizable="false" id="dlgDetNuevo" modal="true">
+
+			<h:form>
+				<p:messages showDetail="false" showSummary="true" id="msgNuevo"
+					closable="true" />
+
+				<h:panelGrid columns="2">
+
+						#{"Descripción:"}
+						<p:inputText
+						value="#{categoriaIndiceMB.categoriaIndicadoresIndiceSelec.descripcion}"
+						id="nombre" required="true" maxlength="50" label="nombre"
+						requiredMessage="Se necesita un nombre" style="width:200px;" />
+							
+						#{"Estado:"}
+						<p:selectOneMenu style="width:210px"
+						value="#{categoriaIndiceMB.categoriaIndicadoresIndiceSelec.estado}"
+						required="true" requiredMessage="Seleccione un Estado">
+						<f:selectItem itemLabel="Seleccione..." itemValue="" />
+						<f:selectItem itemLabel="ACTIVO" itemValue="TRUE" />
+						<f:selectItem itemLabel="DESACTIVO" itemValue="FALSE" />
+						</p:selectOneMenu>
+						#{"Negocio:"}
+						<p:selectOneMenu style="width:200px"
+						value="#{categoriaIndiceMB._negocion}"
+						required="true" requiredMessage="Seleccione un Negocio">
+						<f:selectItem itemLabel="Seleccione..." itemValue="" />
+						<f:selectItems
+							value="#{categoriaIndiceMB.listaNegocios}" var="n"
+							itemLabel="#{n.descripcion}" itemValue="#{n.id_negocio}" />						
+						</p:selectOneMenu>
+				</h:panelGrid>
+				<br />
+				<p:commandButton value="Guardar"
+					actionListener="#{categoriaIndicadoresCallMB.guardarCategoriaIndicadoresIndice()}"
+					update=":formLista msgNuevo"
+					oncomplete="validar(xhr, status, args)" icon="icon-disk" />
+
+				<p:commandButton value="Cancelar" type="button"
+					onclick="PF('dlgNuevo').hide()" icon="icon-cancel" />
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Indicador" widgetVar="dlgIndNuevo"
+			appendTo="@(body)" resizable="false" id="dlgDetIndNuevo" modal="true">
+
+			<h:form>
+				<p:messages showDetail="false" showSummary="true" id="msgNuevo"
+					closable="true" />
+
+				<h:panelGrid columns="2">
+					
+						#{"Categoria:"}
+						<h:outputText
+						value="#{categoriaIndicadoresIndiceMB.indicadorIndiceSelec.des_ctgCall}"
+						id="descat" label="Descripción Categoria" style="width:200px;" />		
+
+						#{"Descripción:"}
+						<p:inputText
+						value="#{categoriaIndicadoresIndiceMB.indicadorIndiceSelec.descripcion}"
+						id="descripcion" required="true" maxlength="100" label="nombre"
+						requiredMessage="Se necesita una descripción" style="width:200px;" />
+							
+						#{"Estado:"}
+						<p:selectOneMenu style="width:200px"
+						value="#{categoriaIndicadoresIndiceMB.indicadorIndiceSelec.estado}"
+						required="true" requiredMessage="Seleccione un Estado">
+						<f:selectItem itemLabel="Seleccione..." itemValue="" />
+						<f:selectItem itemLabel="ACTIVO" itemValue="TRUE" />
+						<f:selectItem itemLabel="DESACTIVO" itemValue="FALSE" />
+						</p:selectOneMenu>
+
+				</h:panelGrid>
+				<br />
+				<p:commandButton value="Guardar"
+					actionListener="#{categoriaIndicadoresIndiceMB.guardarIndicadorIndice()}"
+					update=":formLista  msgNuevo"
+					oncomplete="validar1(xhr, status, args)" icon="icon-disk" />
+
+				<p:commandButton value="Cancelar" type="button"
+					onclick="PF('dlgIndNuevo').hide()" icon="icon-cancel" />
+			</h:form>
+		</p:dialog>
+		
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<h:head>
+         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+         <link href="#{request.contextPath}/resources/css/login.css" rel="stylesheet" type="text/css"/>
+              
+         <link rel="stylesheet" href="#{request.contextPath}/resources/css/jquery.Jcrop.min.css" type="text/css" />
+         <link rel="stylesheet" href="#{request.contextPath}/resources/css/principal.css" type="text/css" />     
+         <link rel="icon" type="image/png" href="./resources/img/icon.png" />  
+         <script src="#{request.contextPath}/resources/js/jquery.Jcrop.min.js"></script>
+         <script src="#{request.contextPath}/resources/js/jquery.hotkeys.js"></script>
+         <link rel="stylesheet" href="#{request.contextPath}/resources/css/bootstrap-tagsinput.css" />
+         <h:outputScript library="js" name="calendar_es.js" />
+         
+        <title><ui:insert name="title">..:: certiscan ::.</ui:insert></title>
+</h:head>
+
+<h:body>
+
+<script>
+	//log jquery
+		jQuery.fn.log = function (msg) {
+      		console.log("%s: %o", msg, this);
+      		return this;
+  		};
+
+</script>
+
+
+<pe:layout togglerTipClosed="Mostrar cabecera" togglerTipOpen="Ocultar cabecera">  
+        <pe:layoutPane position="north"  closable="true" resizable="false"  styleClassContent="layoutTop">
+        	<h:panelGroup style="float:left;margin-left:10px;">
+				<h:outputText value="Proyecto: " />
+				<h:outputText value="#{loginMB.centroAtencion}" styleClass="strong" />
+			
+				<h:outputText value="  |  " styleClass="textSplit" />
+			
+				<h:outputText value="Negocio: " />
+				<h:outputText value="#{loginMB.negocio}" styleClass="strong" />
+			
+				<br />
+				<h:outputText value="Fecha de Último Acceso: " />
+				<h:outputText value="#{loginMB.fechaAcceso}" styleClass="strong" />
+			</h:panelGroup>
+			<h:form style="height:100% ; float: right;width:66px">
+				<h:commandButton value="Salir" styleClass="btnSalir"
+					action="#{loginMB.efectuarLogoff}" />
+			
+			</h:form>
+			<h:panelGroup style="float:right;margin-right:10px; text-align:right;">
+				<h:outputText value="Usuario: " />
+				<h:outputText
+					value="#{loginMB.usuario.nombre}	#{loginMB.usuario.apellido_paterno} 	
+									#{loginMB.usuario.apellido_materno}"
+					styleClass="strong" />
+				<h:outputText value="  |  " />
+				<h:outputText value="Oficina: " />
+				<h:outputText value="#{loginMB.oficina_nombre}"
+					styleClass="strong" />
+				<br />
+				<h:outputText value="Perfil: " />
+				<h:outputText value="#{loginMB.perfilUsuario.descripcion}"
+					styleClass="strong" />
+			</h:panelGroup>
+        </pe:layoutPane>  
+        
+        <pe:layoutPane position="center"  styleClassContent="layoutCenter"  >  
+                	<div id="contenido">
+		             <!-- dialogo nuevo/editar -->
+					<p:dialog header="Procesando" showHeader="false" resizable="false" closable="false" widgetVar="BlockUIWidgetxx" styleClass="generalBlockUIWidget" 
+						modal="true" appendTo="@(body)"  >        
+<!-- 				        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />   -->
+				        	<div id="circularG">
+							<div id="circularG_1" class="circularG">
+							</div>
+							<div id="circularG_2" class="circularG">
+							</div>
+							<div id="circularG_3" class="circularG">
+							</div>
+							<div id="circularG_4" class="circularG">
+							</div>
+							<div id="circularG_5" class="circularG">
+							</div>
+							<div id="circularG_6" class="circularG">
+							</div>
+							<div id="circularG_7" class="circularG">
+							</div>
+							<div id="circularG_8" class="circularG">
+							</div>
+							</div>
+				        <h:outputText value="Procesando" style="font-family:Verdana; color:#197BA8 ;margin-top:5px !important; display:block;" /> 
+				    </p:dialog>
+						<ui:insert name="contenido">
+						</ui:insert>
+					</div>
+        </pe:layoutPane>  
+        
+        <pe:layoutPane position="west" size="200" resizable="false" styleClassContent="layoutLeft">  
+			<h:form id="formMenu">
+				<p:panelMenu rendered="#{not loginMB.usuario.es_nuevo}" autoDisplay="true" expanded="true"  autoSubmenuDisplay="true" 
+				model="#{loginMB.model}" type="sliding" style="width:190px;font-size:10px"  />
+			</h:form>
+        </pe:layoutPane>  
+         
+        <pe:layoutPane position="south" size="24" closable="true" resizable="false" styleClassContent="layoutBottom" >  
+            	<h:outputText styleClass="txtCoopy" value="CERTICOM.Todos los Derechos Reservados &reg; V.1.1.2017"  />
+
+        </pe:layoutPane>  
+    </pe:layout> 
+
+	<p:dialog showHeader="false" modal="true" widgetVar="statusDialog"
+		header="Status" draggable="false" closable="false" position="center"
+		resizable="false" >
+		<h:outputText value="Espere porfavor..." />
+		<br />
+		<p:graphicImage value="resources/img/Ajaxloading.gif" />
+	</p:dialog>
+
+	<ui:debug/> 
+
+
+
+
+
+
+</h:body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+	
+		<p:panel>
+			
+			<h:form>
+				<p:breadCrumb>  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Facturacion" url="#" />
+    				<p:menuitem value="Ciclo" url="ciclo" />   
+				</p:breadCrumb>	
+			</h:form>
+			
+			
+			<br/>
+			<!-- growl general -->			
+			<p:messages  id="msgGeneral" showDetail="false" showSummary="true" closable="true" />		
+			
+			<!-- tootlbar -->
+			<h:form style="margin-bottom: 8px">
+				<p:toolbarGroup align="top">
+					<p:commandButton value="Nuevo Ciclo" icon="icon-add" update=":dlgDetNuevo" oncomplete="PF('dlgNuevo').show();"
+						actionListener="#{cicloMB.nuevoCiclo()}"/>
+				</p:toolbarGroup>
+			</h:form>
+			
+				<!-- listado de Ciclo -->
+			<h:form id="formLista">
+				<p:dataTable id="dataTable" var="p" value="#{cicloMB.listaCiclos}" widgetVar="dtCiclo" 
+					emptyMessage="No hay Ciclos Disponibles." rowIndexVar="nro" 
+					 style="FONT-SIZE: 10px; ">
+					<f:facet name="header">Lista Ciclos</f:facet>
+					
+					<p:column headerText="Orden" width="25" style="width:3%" >
+						#{nro+1}
+					</p:column>
+					
+					<p:column style="width:30%" headerText="Mes">
+						<h:outputText value="#{p.nmes}" />
+					</p:column>
+					
+					<p:column style="width:30%" headerText="Año">
+						<h:outputText value="#{p.anio}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Fec. Inicio">
+						<h:outputText value="#{p.fecini}" >
+							<f:convertDateTime pattern="dd/MM/yyyy" type="date" dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Fec. Fin">
+						<h:outputText value="#{p.fecfin}" >
+							<f:convertDateTime pattern="dd/MM/yyyy" type="date" dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Tipo Ciclo">
+						<h:outputText value="#{p.ntipoCiclo}" />
+					</p:column>
+<ui:remove>					
+					<p:column style="width:2%" headerText="Ciclo">
+						<p:commandLink update="@form :msgGeneral" actionListener="#{estadoMB.cambiarEstado(p)}"  > 
+							<h:graphicImage value="#{p.estado?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}" 
+							title="#{p.estado?'Activo':'Bloqueado'}" />
+						</p:commandLink>
+					</p:column> 
+</ui:remove>
+					<p:column headerText="Editar/Elim." style="width:10%;text-align: center">
+	<p:commandButton  
+							actionListener="#{cicloMB.editarCiclo(p)}" update=":dlgDetNuevo" 
+						oncomplete="PF('dlgNuevo').show();" title="Editar" icon="icon-edit" /> 
+
+						<p:commandButton 
+							actionListener="#{cicloMB.eliminarCiclo(p)}" 
+ 							oncomplete="PF('dlgEliminar').show();" title="Eliminar" 
+							icon="icon-delete" /> 
+							
+							
+						</p:column>
+
+				</p:dataTable>
+			</h:form>
+			
+			<!-- #############    Dialogos      ################ -->
+			
+			<!-- dialogo nuevo/editar perfil -->
+			
+			<p:dialog header="Registrar Ciclo" widgetVar="dlgNuevo" appendTo="@(body)"
+					resizable="false" id="dlgDetNuevo" modal="true">
+					
+					<h:form id="formCiclo">
+					<p:messages showDetail="false" showSummary="true" id="msgNuevo" closable="true"/>
+					
+					<h:panelGrid columns="2">
+
+						#{"Mes:"}
+						<p:selectOneMenu style="width:200px" value="#{cicloMB.cicloSelec.mes}"  required="true" requiredMessage="Se necesita un mes" >
+								<f:selectItem itemValue="" itemLabel="--Seleccione--"></f:selectItem>
+								<f:selectItems value="#{cicloMB.listaperiodomensuales}" var="p" itemLabel="#{p.descripcion}" itemValue="#{p.codigo}" />
+						</p:selectOneMenu>
+							
+						#{"Año:"}
+						<p:selectOneMenu style="width:200px" value="#{cicloMB.cicloSelec.anio}"  required="true" requiredMessage="Se necesita un año" >
+								<f:selectItem itemValue="" itemLabel="--Seleccione--"></f:selectItem>
+								<f:selectItem itemValue="2015" itemLabel="2015" />
+								<f:selectItem itemValue="2016" itemLabel="2016" />
+								<f:selectItem itemValue="2017" itemLabel="2017" />
+								<f:selectItem itemValue="2018" itemLabel="2018" />
+								<f:selectItem itemValue="2019" itemLabel="2019" />
+								<f:selectItem itemValue="2020" itemLabel="2020" />
+								<f:selectItem itemValue="2021" itemLabel="2021" />
+								<f:selectItem itemValue="2022" itemLabel="2022" />
+								<f:selectItem itemValue="2023" itemLabel="2023" />
+						</p:selectOneMenu>
+							
+						#{"Fec. Inicio:"}
+						<p:calendar style="width:200px" readonlyInput="true" value="#{cicloMB.cicloSelec.fecini}" pattern="dd/MM/yyyy" locale="es" maxdate="#{cicloMB.fechaActual}"
+							  navigator="true"  required="true" requiredMessage="Seleccione una fecha de inicio">
+							  <p:ajax event="dateSelect" update=":formCiclo:calFfin" listener="#{cicloMB.cambiarFecha()}"/>
+						</p:calendar>
+
+						#{"Fec. Fin:"}
+						<p:calendar id="calFfin" style="width:200px" readonlyInput="true" value="#{cicloMB.cicloSelec.fecfin}" mindate="#{cicloMB.fechaLimite}" pattern="dd/MM/yyyy" locale="es"
+							  navigator="true"  required="true" requiredMessage="Seleccione una fecha de fin">
+						</p:calendar>
+						
+						#{"Tipos Ciclos:"}
+						<p:selectOneMenu style="width:200px" value="#{cicloMB.cicloSelec.cod_tipo_ciclo}"  required="true" requiredMessage="Se necesita un tipo de ciclo" >
+								<f:selectItem itemValue="" itemLabel="--Seleccione--"></f:selectItem>
+								<f:selectItems value="#{cicloMB.listTiposCiclos}" var="p" itemLabel="#{p.descripcion}" itemValue="#{p.cod_tipo_ciclo}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<br/>
+					<p:commandButton value="Guardar" actionListener="#{cicloMB.guardarCiclo()}"
+						update=":formLista msgNuevo" oncomplete="validar(xhr, status, args)" icon="icon-disk" />
+					
+					<p:commandButton value="Cancelar" type="button" onclick="PF('dlgNuevo').hide()" icon="icon-cancel" />
+					</h:form>	
+			</p:dialog>
+			
+
+			<!-- dialogo eliminar -->	
+			<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)"
+					message="¿Desea eliminar este Ciclo" header="Eliminar Ciclo"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					<p:commandButton value="Eliminar"
+						update=":formLista :msgGeneral"
+						actionListener="#{cicloMB.confirmaEliminar}"
+						oncomplete="PF('dlgEliminar').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgEliminar').hide()" icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>
+		
+		
+		</p:panel>
+		
+		<script>
+			
+// 		function validar(xhr, status, args) {
+// 			if (args.esValido) {
+// 				PF('dlgNuevo').hide();
+// 				console.log("cerro")
+// 			} else {
+// 				jQuery('#dlgDetNuevo').effect("shake", {
+// 					times : 1
+// 				}, 100);
+				
+// 				//limpiando
+				
+// 			}
+// 		}
+		
+		function validar(xhr, status, args)
+        {
+            if (args.validationFailed)
+            {
+            	jQuery('#dlgDetNuevo').effect("shake", {
+ 					times : 1
+ 				}, 100);
+            } else {
+                PF('dlgNuevo').hide();
+            }
+        }
+
+
+		</script>
+		
+	</ui:define>
+</ui:composition>
+</html>

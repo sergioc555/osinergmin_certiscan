@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.SubIndicadorCallMapper">
+
+<resultMap id="subindicadorCallResult" type="com.certicom.certiscan.domain.SubIndicadorCall">
+	<id column="idsubindicadores_call" property="idsubindicadores_call" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<id column="id_indicadores_call" property="id_indicadores_call" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<id column="id_categoria_call" property="id_categoria_call" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="descripcion" property="descripcion" javaType="java.lang.String" jdbcType="VARCHAR"/>
+</resultMap>
+
+
+</mapper>	

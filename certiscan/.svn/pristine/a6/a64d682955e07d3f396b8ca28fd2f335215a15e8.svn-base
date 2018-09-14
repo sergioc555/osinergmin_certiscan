@@ -1,0 +1,241 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido" >
+		
+		<style>
+			.ui-picklist-list 
+			.ui-tabs-nav
+			{width:160px!important;}
+			.ui-tabs-selected
+			{background-color:#E6E6E6!important;}
+			.ui-tabs-panels{
+				float:left!important;
+			}
+			
+			.column1{width: 20%;height:auto;vertical-align: top;}
+  			.column2{width: 80%;height:auto;vertical-align: top;}
+		</style>
+		
+		<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: -5px">  
+  				<p:menuitem value="Home" url="#" />  
+  				<p:menuitem value="Digitalizacíon" url="#" />
+  				<p:menuitem value="Agrupar Archivos" url="agruparArchivosExp" />   
+		</p:breadCrumb>	
+	
+		<pe:blockUI widgetVar="BlockUIWidget">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Buscando Expediente, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    <pe:blockUI   widgetVar="BlockUIWidgetSelect">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Seleccionando espere..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+		
+				
+				<h:form id="fmdt">
+					
+					
+				<h:panelGrid columns="2" columnClasses="column1,column2">
+					
+					<h:panelGrid columns="1">	
+					
+					<h:panelGrid columns="3">
+							Nro Exp.:
+						<p:inputText id="txtNroExpediente" value="#{agruArchExp.nuevoExpediente.nro_expediente}" required="true" requiredMessage="Se necesita un numero de expediente" 
+							style="width:120px;"/>
+								
+						<p:commandButton value="Buscar" icon="icon-add" action="#{agruArchExp.listarArchivosRegistrado()}" 
+										 process="@form" update="fmdt:treeDocumentos"  oncomplete="PF('BlockUIWidget').unblock()" onstart="PF('BlockUIWidget').block();"/>
+					
+					</h:panelGrid>
+					<h:panelGrid columns="2" rendered="false">
+						<p:commandButton value="Agrupar" icon="icon-add" action="#{agruArchExp.setearAgruparArchivos()}" 
+										 process="@this" update="fmdt:treeDocumentos fmdt:treeDocumentosGroup"  oncomplete="PF('BlockUIWidget').unblock()" onstart="PF('BlockUIWidget').block();"/>
+					</h:panelGrid>
+							
+				
+				<ui:remove>
+					
+					<p:dataTable id="dataTable2" var="p" value="#{agruArchExp.listaDocumentosRegistrados}" widgetVar="dtNegocio" 
+					filteredValue="#{agruArchExp.listaDocumentosRegistradosF}" selectionMode="single" 
+					selection="#{agruArchExp.expDocumentoSelected}" 
+					rowKey="#{p.id_expediente_documento}"
+					emptyMessage="No hay Documentos Disponibles" rowIndexVar="nro" 
+					paginator="true" rows="10" paginatorPosition="bottom" style="FONT-SIZE: 10px; width:100% " >
+										 
+					<f:facet name="header"><h:outputText value="Lista Documentos Cargados Nro #{agruArchExp.nuevoExpediente.nro_expediente}" /></f:facet>
+					
+					<p:column headerText="Orden"  style="width:10%" >
+						#{nro+1}
+					</p:column>
+
+					<p:column style="width:60%" headerText="Descripcion de la Imagen" filterBy="#{p.nombre_archivo}"  filterStyle="width:90%;" filterMatchMode="contains">
+						<h:outputText value="#{p.nombre_archivo}" />
+					</p:column>						
+					
+				<p:column style="width:10%" headerText="Peso" >
+						<h:outputText value="#{p.descripcion_peso}" />
+					</p:column>	
+					<p:column style="width:10%" headerText="Nro Pag." >
+						<h:outputText value="#{p.nro_paginas}" />
+					</p:column>	
+					
+				<p:column headerText="Ver " style="width:10%">
+					<p:commandButton  actionListener="#{agruArchExp.abrirVisor(p)}"
+								update=":fmdt:pnlFrame" 
+								title="Ver Documento" icon="icon-search" />
+				</p:column>
+				
+					
+				</p:dataTable>
+				
+				</ui:remove>
+				
+				<p:tree id="treeDocumentos" selectionMode="checkbox" dynamic="true" var="node" value="#{agruArchExp.root}"  
+					style="height: 500px;overflow: auto;display: block" rendered="#{agruArchExp.renderedTree}">
+					<p:ajax event="select"  listener="#{agruArchExp.onNodeSelect}" update=":fmdt:pnlFrame"/>
+					<p:treeNode expandedIcon="icon-open" collapsedIcon="icon-close">
+						<h:outputText value="#{node}" id="lblNode"/> 
+					</p:treeNode>
+				</p:tree>
+				
+				 <p:contextMenu for="treeDocumentos">
+        			<p:menuitem value="Eliminar"   icon="icon-delete" actionListener="#{agruArchExp.eliminarArchivo}" />
+        			<p:menuitem value="Reemplazar" icon="icon-replace" actionListener="#{agruArchExp.setearArchivoReem}" oncomplete="PF('dlgReemArchivo').show();"
+        			 update=":dlgDetReemArchivo"/>
+        			<p:menuitem value="Reagrupar" icon="icon-update" />
+    			</p:contextMenu>
+    			
+    			<p:tree id="treeDocumentosGroup" selectionMode="checkbox" dynamic="true" var="node" value="#{agruArchExp.root}" 
+					style="height: 500px;overflow: auto;display: block" rendered="#{agruArchExp.renderedTreeGroup}">
+					<p:ajax event="select"  listener="#{agruArchExp.onNodeSelect}" update=":fmdt:pnlFrame"/>
+					<p:treeNode expandedIcon="icon-open" collapsedIcon="icon-close">
+						<h:outputText value="#{node}" id="lblNode"/> 
+					</p:treeNode>
+				</p:tree>
+				
+				</h:panelGrid>
+				
+
+				<h:panelGroup id="pnlFrame">
+					<h:panelGrid rendered="#{agruArchExp.renderedFrame}" style="width:100%">
+					<iframe  id="pdfiframe"  name="pdfiframe" height="700px" width="100%" frameborder="0" scrolling="auto" src="http://localhost:8080/PDF/web/visor.html?var1=SACCAP$#{agruArchExp.expDocumentoSelected.id_expediente_documento}"/>
+					</h:panelGrid>
+				</h:panelGroup>
+
+				</h:panelGrid>
+				
+					</h:form>
+                
+             
+		<p:dialog header="Reemplazar Archivo" widgetVar="dlgReemArchivo" appendTo="@(body)" position="top" resizable="true" id="dlgDetReemArchivo" modal="true">
+			<h:form id="fmReemArchivo">
+			
+			<h:panelGrid columns="2">
+			<h:outputText value="Archivo a Reemplazar:" style="font-weight:bold;font-size: 1.2em;"></h:outputText>
+			<h:outputText  value="#{agruArchExp.expDocumentoSelected.nombre_archivo}" style="font-weight:bold;font-size: 1.2em;color:blue;"></h:outputText>
+			</h:panelGrid>
+			
+			<p:fileUpload fileUploadListener="#{agruArchExp.cargarDocumentosReemplazo}"  
+					update="btnSaveFiles" allowTypes="/(\.|\/)(pdf)$/" description="Seleccione un archivo" label="Seleccionar" 
+					id="uploadFile" process="@this" uploadLabel="Subir" cancelLabel="Cancelar" multiple="true" style="font-size:11px; min-width:400px !important;" >
+			</p:fileUpload>
+			
+			<h:panelGrid columns="2">
+			<p:commandButton value="Guardar y Reemplazar" actionListener="#{agruArchExp.subirArchivoReemplazo()}"   id="btnSaveFiles"
+							 icon="ui-icon-search"  process="@this"    disabled="#{agruArchExp.renderedBtnSave}"  oncomplete="PF('BlockUIWidget').unblock();PF('dlgReemArchivo').hide();" onstart="PF('BlockUIWidget').block();"/>
+								
+			<p:commandButton value="Cancelar " icon="icon-cancel"  type="button"
+						id="cmdLimpiar"  onclick="PF('dlgReemArchivo').hide();"/>
+			</h:panelGrid>				
+			
+			</h:form>	
+		</p:dialog>
+		
+		<p:dialog header="Archivo" widgetVar="dlgDocumento" appendTo="@(body)" position="top"
+					resizable="true" id="dlgDetDocumento" modal="true">
+					<h:form id="formDocumento">
+						<h:panelGrid columns="5">
+						  
+						</h:panelGrid>
+						
+						<h:panelGrid >
+						<object id="img01"  type="application/pdf" data=""  height="700px" width="950px"/>
+						</h:panelGrid>
+						<!--  <h:panelGrid rendered="#{resultadoExpedienteMB.bVisualiza}">
+								
+								
+		        		</h:panelGrid>-->
+						
+					</h:form>
+			</p:dialog>
+			
+		<p:confirmDialog id="dlgDetAviso" appendTo="@(body)" message="Nro de Expediente no existe" header="Aviso" 
+			severity="alert" widgetVar="dlgAviso" >
+
+				<h:form id="formOmiso" style="text-algin:center">
+			
+				<p:commandButton value="Aceptar" oncomplete="PF('dlgAviso').hide();" icon="icon-cancel" />
+			</h:form>
+		</p:confirmDialog>
+		
+		<pe:blockUI  widgetVar="BlockUIWidgetSave">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Guardando Asignación, espere porfavor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    <pe:blockUI  widgetVar="BlockUIWidgetToogle">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Buscando, espere porfavor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    
+	    <script>  
+	function handleComplete(xhr, status, args) {  
+	    if(args.validationFailed) {  
+	        alert("Validation Failed");  
+	    } else {  
+	        alert("Save:" + args.saved);  
+	         
+	    }  
+	}  
+	
+	function justNumbers(e) {
+		var keynum = window.event ? window.event.keyCode : e.which;
+		if ( keynum == 8 ) return true;
+		return /\d/.test(String.fromCharCode(keynum));
+		}
+	
+	function mostrar(ndoc){
+		//if(valida=='0'){
+		//alert("codigo imagen:"+imgId);
+		console.log('ndoc ', ndoc);
+		var cadena = 'DisplayImage?codigo='+ndoc;
+		//alert('imagen cadena:'+cadena);
+		
+		//jQuery('#img01').show();
+		jQuery('#img01').attr('data',cadena);
+		var abc = jQuery('#img01').attr('data');
+		//alert('imagen cadena:'+abc);
+		//jQuery('#img01').attr('data',cadena);
+		//}				
+	}
+</script>
+
+	</ui:define>
+	
+	
+  
+	
+</ui:composition>
+</html>

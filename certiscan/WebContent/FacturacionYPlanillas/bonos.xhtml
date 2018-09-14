@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+		<h:form>
+			<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: 0px">  
+   				<p:menuitem value="Home" url="#" />  
+   				<p:menuitem value="Facturacion" url="#" />
+   				<p:menuitem value="Bonos" url="bonos" />    
+			</p:breadCrumb>	
+		</h:form>	
+		<p:messages showDetail="false"  showSummary="true" id="msgGeneral" closable="true" />
+		
+			<!-- toolbar -->
+			<h:form style="margin-top: 4px">
+				<h:panelGrid columns="5">
+					<p:outputLabel value="Oficina:"/>
+					<p:selectOneMenu  style="width:150px"  value="#{bonosMB.f_cod_oficina}" required="true" requiredMessage="Seleccione una Oficina">
+						<f:selectItem itemLabel="Seleccionar" itemValue="0" />
+						<f:selectItems itemLabel="#{neg.nombre}" itemValue="#{neg.id_oficina}" value="#{bonosMB.listaOficinas}" var="neg"/>
+						
+					</p:selectOneMenu>
+					
+					<ui:remove>
+					<p:outputLabel value="Ciclo:"/>
+					<p:selectOneMenu  style="width:150px"  value="#{bonosMB.id_negocio}" required="true" requiredMessage="Seleccione un Ciclo">
+						<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems itemLabel="#{c.descripcion}" itemValue="#{c.id_negocio}" value="#{bonosMB.listaNegocios}" var="c"/>
+					</p:selectOneMenu>			
+					</ui:remove>
+					
+					<p:commandButton value="Buscar" icon="icon-search" update=":form :msgGeneral" actionListener="#{bonosMB.buscarPersonal()}" >
+					</p:commandButton>
+				</h:panelGrid>	
+			</h:form>
+			
+			
+			<!-- listado de usuarios -->	
+			<h:form id="form">
+									
+				<p:dataTable widgetVar="dtTelefonosExcluidos" id="lisExp" var="p" value="#{bonosMB.listaPersonal}" 
+							 filteredValue="#{bonosMB.listaPersonalFilter}" 
+							emptyMessage="No hay Promotores Disponibles." rowIndexVar="nro" 
+							paginator="true"
+							rows="15" paginatorPosition="bottom"
+							draggableColumns="true"		
+							style="FONT-SIZE: 10px;">
+						<f:facet name="header">
+							<h:outputLabel value="Relacion de Promotores " style="font-size: 17px; font-weight: bold"/>
+						</f:facet>
+						<p:column headerText="Orden"  style="width:25px" >
+							#{nro+1}
+						</p:column>
+						<p:column headerText="DNI"  filterBy="#{p.dni}" filterMatchMode="contains" filterStyle="width:90%;" style="width:80px">
+	           				 <h:outputText value="#{p.dni}" />
+	        			</p:column>
+	                	<p:column headerText="Apellido Paterno"  filterBy="#{p.apellido_paterno}" filterMatchMode="contains" filterStyle="width:90%;" style="width:80px">
+	           				 <h:outputText value="#{p.apellido_paterno}" />
+	        			</p:column>
+	                	<p:column headerText="Apellido Materno" filterBy="#{p.apellido_materno}" filterMatchMode="contains" filterStyle="width:90%;" style="width:80px">
+	           				 <h:outputText value="#{p.apellido_materno}" />
+	        			</p:column>
+	                	<p:column headerText="Nombres" filterBy="#{p.nombre}" filterMatchMode="contains" filterStyle="width:90%;" style="width:100px">
+	           				 <h:outputText value="#{p.nombre}" />
+	        			</p:column>
+	        			<p:column headerText="Oficina" filterBy="#{p.desOficina}" filterMatchMode="contains" filterStyle="width:90%;" style="width:100px">
+	           				 <h:outputText value="#{p.desOficina}" />
+	        			</p:column>
+						<p:column headerText="Monto" style="width:100px">
+	           				 <h:outputText value="#{p.montoTotal}" />
+	        			</p:column>
+	        			<p:column headerText="Asignar" style="width:80px" >
+							 <p:commandButton value="Asignar" update=":dlgDetAsignarComision" actionListener="#{bonosMB.asignarComision(p)}" 
+									oncomplete="PF('dlgAsignarComision').show();" icon="ui-icon-circle-plus" style="font-size: 9px;" />
+	        			</p:column>
+	        			<p:column headerText="Historial" style="width:80px">
+	           				 <p:commandButton value="Ver Historial" update=":formhistorial" action="#{bonosMB.historialxUsuario(p)}"
+									oncomplete="PF('dlgHistorialComision').show();" icon="ui-icon-circle-plus" style="font-size: 9px;" />
+	        			</p:column>
+						
+				</p:dataTable>
+			</h:form>
+	
+			
+			<!-- dialogo nuevo/ editar usuario -->
+			<p:dialog id="dlgDetAsignarComision" widgetVar="dlgAsignarComision" appendTo="@(body)" resizable="false" modal="true"
+				header="#{bonosMB.titulo}" closable="true"> 
+				<p:messages showDetail="false" showSummary="true" id="msgBono" closable="true"/>
+				
+				<h:form id="formcomision">
+					<h:panelGrid columns="2">
+
+						<h:outputText value="Colaborador" />
+						<h:outputText value="#{bonosMB.bono.nombre_completo}" style="font-weight:bold;"></h:outputText>
+
+						<h:outputText value="Tipo Bono" />
+						<p:selectOneMenu value="#{bonosMB.bono.idtipobono}" style="width:200px"
+							required="true" requiredMessage="Seleccione un tipo bono">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />
+							<f:selectItems value="#{bonosMB.listaTipoBonos}" var="tb" itemValue="#{tb.idtipobono}" itemLabel="#{tb.descripcion}"></f:selectItems>
+						</p:selectOneMenu>
+
+						<h:outputText value="Motivo" />
+						<p:inputTextarea value="#{bonosMB.bono.observacion}"  rows="6" style="width: 200px;"
+							cols="33" />
+
+
+						<h:outputText value="Monto" />
+						<pe:inputNumber style="width:60px"  value="#{bonosMB.bono.monto}" minValue="-999999" maxValue="999999" decimalPlaces="2"
+							required="true" requiredMessage="Ingrese el monto" />
+
+						<p:outputLabel value="Ciclo:"/>	
+						<p:selectOneMenu  style="width:150px"  value="#{bonosMB.f_cod_ciclo}" required="true" requiredMessage="Seleccione un Ciclo">
+							<f:selectItem itemLabel="Seleccionar" itemValue=""  />
+							<f:selectItems itemLabel="#{c.nmes} - #{c.anio} - #{c.nfecini} - #{c.nfecfin}" itemValue="#{c.cod_ciclo}" value="#{bonosMB.listaCiclos}" var="c"/>
+					</p:selectOneMenu>	
+						
+											
+					</h:panelGrid>
+					<p:commandButton value="Guardar"
+						actionListener="#{bonosMB.registroBono()}"
+						oncomplete="validarCampos(xhr, status, args)"
+						update=":form :msgBono" icon="icon-disk"/>
+
+					<p:commandButton value="Cancelar" type="button" onclick="PF('dlgAsignarComision').hide();" icon="icon-cancel" />
+				</h:form>
+			</p:dialog>
+			
+			<p:dialog id="dlgDetEditarComision" widgetVar="dlgEditarComision" appendTo="@(body)" resizable="false" modal="true"
+				header="#{bonosMB.titulo}" closable="true"> 
+				<p:messages showDetail="false" showSummary="true" id="msgBonoEdit" closable="true"/>
+				
+				<h:form id="formcomisionEdit">
+					<h:panelGrid columns="2">
+
+						<h:outputText value="Colaborador" />
+						<h:outputText value="#{bonosMB.bono.nombre_completo}" style="font-weight:bold;"></h:outputText>
+
+						<h:outputText value="Tipo Bono" />
+						<p:selectOneMenu value="#{bonosMB.bono.idtipobono}" style="width:200px"
+							required="true" requiredMessage="Seleccione un tipo bono">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />
+							<f:selectItems value="#{bonosMB.listaTipoBonos}" var="tb" itemValue="#{tb.idtipobono}" itemLabel="#{tb.descripcion}"></f:selectItems>
+						</p:selectOneMenu>
+
+						<h:outputText value="Motivo" />
+						<p:inputTextarea value="#{bonosMB.bono.observacion}"  rows="6" style="width: 200px;"
+							cols="33" />
+
+
+						<h:outputText value="Monto" />
+						<pe:inputNumber style="width:60px"  value="#{bonosMB.bono.monto}" minValue="-999999" maxValue="999999" decimalPlaces="2"
+							required="true" requiredMessage="Ingrese el monto" />
+
+						<p:outputLabel value="Ciclo:"/>	
+						<p:selectOneMenu  style="width:150px"  value="#{bonosMB.f_cod_ciclo}" required="true" requiredMessage="Seleccione un ciclo">
+							<f:selectItem itemLabel="Seleccionar" itemValue=""  />
+							<f:selectItems itemLabel="#{c.nmes} - #{c.anio} - #{c.nfecini} - #{c.nfecfin}" itemValue="#{c.cod_ciclo}" value="#{bonosMB.listaCiclos}" var="c"/>
+						</p:selectOneMenu>	
+						
+											
+					</h:panelGrid>
+					<p:commandButton value="Guardar"
+						actionListener="#{bonosMB.registroBono()}"
+						oncomplete="validarCamposEdit(xhr, status, args)"
+						update=":formhistorial :msgBonoEdit" icon="icon-disk"/>
+
+					<p:commandButton value="Cancelar" type="button" onclick="PF('dlgEditarComision').hide();" icon="icon-cancel" />
+				</h:form>
+			</p:dialog>
+			
+			<p:dialog id="dlgDetHistorialComision" widgetVar="dlgHistorialComision" appendTo="@(body)" resizable="false" modal="true" closeOnEscape="true"
+				header="HISTORIAL COMISION" closable="true">
+				<p:messages showDetail="false" showSummary="true" id="msgHistorial" closable="true"/>
+				<h:form id="formhistorial">
+				<p:dataTable  value="#{bonosMB.listaBono}" var="p"  
+					emptyMessage="No hay Perfiles Disponibles." rowIndexVar="nro" 
+					paginator="true"  widgetVar="dtHistorial" 
+					rows="10" paginatorPosition="bottom" 
+					style="FONT-SIZE: 10px; margin-top:4px; width:1150px">
+
+					<f:facet name="header">Lista de Historial</f:facet>
+					
+				 	<p:column headerText="Ord." style="width:10px;" >
+						#{nro+1}
+					</p:column>
+					
+					<p:column headerText="Nombre"  style="width:200px;">
+	           				 <h:outputText value="#{p.nombre_completo}" />
+        			</p:column>
+        			
+        			<p:column headerText="Ciclo"  style="width:120px;">
+	           				 <h:outputText value="#{p.des_ciclo}" />
+        			</p:column>
+					
+        			<p:column headerText="Monto"  style="width:60px;">
+	           				 <h:outputText value="#{p.monto}" />
+        			</p:column>
+        			
+        			<p:column headerText="Tipo de Bono"  style="width:150px;">
+	           				 <h:outputText value="#{p.desTipoBono}" />
+        			</p:column>
+        			
+        			<p:column headerText="Motivo"  style="width:150px;">
+	           				 <h:outputText value="#{p.observacion}" />
+        			</p:column>
+        			
+        			<p:column headerText="Editar" style="width:50px" >
+							 <p:commandButton value="Editar" update=":dlgDetEditarComision" actionListener="#{bonosMB.editarComision(p)}" 
+									oncomplete="PF('dlgEditarComision').show();" icon="ui-icon-circle-plus" style="font-size: 9px;" />
+	        		</p:column>
+	        		<p:column headerText="Editar" style="width:35px" >
+	        		<p:commandButton 
+ 							actionListener="#{bonosMB.eliminarBono(p)}" 
+ 							oncomplete="PF('dlgEliminar').show();" title="Eliminar" 
+ 							icon="ui-icon-trash" /> 
+ 					</p:column>
+				</p:dataTable>
+
+				</h:form>
+				<p:commandButton value="Cancelar" onclick="PF('dlgHistorialComision').hide();" icon="icon-cancel" />
+			</p:dialog>
+			
+			<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)"
+					message="¿Desea eliminar este Bono" header="Eliminar Bono"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					<p:commandButton value="Eliminar"
+						update=":formhistorial :msgGeneral"
+						actionListener="#{bonosMB.confirmaEliminar}"
+						oncomplete="PF('dlgEliminar').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						oncomplete="PF('dlgEliminar').hide()"  icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>
+			
+		<script>
+		function validarCampos(xhr, status, args) {
+			if (!args.esValido) {
+				jQuery('#dlgAsignarComision').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				//limpiando
+				PF('dlgAsignarComision').hide();
+			}
+		}
+		
+		function validarCamposEdit(xhr, status, args) {
+			if (!args.esValido) {
+				jQuery('#dlgEditarComision').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				//limpiando
+				PF('dlgEditarComision').hide();
+			}
+		}
+		
+		</script>
+
+	</ui:define>
+
+</ui:composition>
+</html>

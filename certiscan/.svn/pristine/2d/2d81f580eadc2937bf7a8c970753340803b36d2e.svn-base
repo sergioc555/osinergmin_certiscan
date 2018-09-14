@@ -1,0 +1,43 @@
+package com.certicom.certiscan.services;
+
+import java.util.List;
+
+import com.certicom.certiscan.commons.ServiceFinder;
+import com.certicom.certiscan.domain.Medios;
+import com.certicom.certiscan.mapper.MediosMapper;
+
+public class MediosServices implements MediosMapper{
+
+	MediosMapper mediosMapper = (MediosMapper)ServiceFinder.findBean("mediosMapper");
+
+	@Override
+	public Medios findById(Integer codigoMedios) throws Exception {
+		// TODO Auto-generated method stub
+		return mediosMapper.findById(codigoMedios);
+	}
+
+	@Override
+	public List<Medios> findAll() throws Exception {
+		// TODO Auto-generated method stub
+		return mediosMapper.findAll();
+	}
+
+	@Override
+	public void crearMedio(Medios cargo) throws Exception {
+		// TODO Auto-generated method stub
+		mediosMapper.crearMedio(cargo);
+	}
+
+	@Override
+	public void actualizarMedio(Medios cargo) throws Exception {
+		// TODO Auto-generated method stub
+		mediosMapper.actualizarMedio(cargo);
+	}
+
+	@Override
+	public void eliminarMedio(Integer cod_medio) throws Exception {
+		// TODO Auto-generated method stub
+		mediosMapper.eliminarMedio(cod_medio);
+	}
+	
+}

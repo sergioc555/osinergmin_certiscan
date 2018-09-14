@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.CabeceraBaseIndecopyMapper">
+
+<resultMap id="baseIndecopyResult" type="com.certicom.certiscan.domain.CabeceraBaseIndecopy">
+
+	<id column="idcabeceraindecopy" property="idCabeceraIndecopy" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="idusuario" property="idUsuario" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="numeroregistro" property="numeroRegistro" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="periodo" property="periodo" javaType="java.util.Date" jdbcType="DATE"/>
+	<result column="fecha" property="fecha" javaType="java.util.Date" jdbcType="DATE"/>
+	<result column="nombrearchivo" property="nombreArchivo" />
+	
+</resultMap>
+
+
+	<select id="findByPAGINATOR"  resultMap="baseIndecopyResult" >
+	    select
+	    t_cabecera_indecopy. idcabeceraindecopy, t_cabecera_indecopy.idusuario, t_cabecera_indecopy.fecha, t_cabecera_indecopy.numeroregistro, t_cabecera_indecopy.nombrearchivo, 
+		t_cabecera_indecopy.periodo, (t_usuario.nombre || ' ' || t_usuario.apellido_paterno || ' ' || t_usuario.apellido_materno) as nombreUsuario  from t_cabecera_indecopy 
+		inner join t_usuario on t_cabecera_indecopy.idusuario=t_usuario.idusuario 
+		where 1=1 
+			
+		<if test="filters.entrySet() != null">
+	       <foreach item="item" collection="filters.entrySet()" >
+         		and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+           </foreach> 
+           </if>
+           
+           <if test="sortField != null">
+			order by ${sortField} ${sortOrder}    
+	    </if>
+	    
+	    <if test="sortField == null">
+			order by t_cabecera_indecopy.periodo desc
+	    </if>
+	    
+	    
+		 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+
+	<select id="getCountPAGINATOR"  resultType="java.lang.Integer">
+			select count(*)
+		    from t_cabecera_indecopy 
+			where 1=1 
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+	           </foreach> 
+	        </if>
+		
+		</select>
+
+</mapper>	

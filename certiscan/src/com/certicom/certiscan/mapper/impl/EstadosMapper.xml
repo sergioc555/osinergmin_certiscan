@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.EstadosMapper">
+
+<resultMap id="estadosResult" type="com.certicom.certiscan.domain.Estados">
+	<id column="id_estado" property="id_estado" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<id column="id_categoria_estado" property="id_categoria_estado" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="descripcion" property="descripcion" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="estado" property="estado" javaType="java.lang.Boolean" jdbcType="BOOLEAN"/>
+	<result column="des_categoria_estados" property="des_categoria_estados" />
+	<result column="id_producto" property="idProducto" />
+</resultMap>
+
+
+</mapper>	

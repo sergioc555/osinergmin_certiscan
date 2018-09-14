@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" targetNamespace="http://ocpsoft.com/prettyfaces/3.3.3"
+	xmlns="http://ocpsoft.com/prettyfaces/3.3.3">
+
+	<url-mapping id="login">
+		<pattern value="/login" />
+		<view-id value="/faces/control_acceso/login.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="principal">
+		<pattern value="/" />
+		<view-id value="/faces/principal.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="cambioPass">
+		<pattern value="/cambioPass" />
+		<view-id value="/faces/control_acceso/cambiar_password.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="usuarios">
+		<pattern value="/seguridad/usuarios" />
+		<view-id value="/faces/control_acceso/usuarios.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="sistemas">
+		<pattern value="/seguridad/sistemas" />
+		<view-id value="/faces/control_acceso/sistemas.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="menuSistema">
+		<pattern value="/seguridad/menuSistema" />
+		<view-id value="/faces/control_acceso/addMenuSistema.xhtml" />
+	</url-mapping>
+
+
+	<url-mapping id="perfiles">
+		<pattern value="/seguridad/perfiles" />
+		<view-id value="/faces/control_acceso/perfiles.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="asignaPermisosPerfil">
+		<pattern value="/seguridad/asignaPermisosPerfil" />
+		<view-id value="/faces/control_acceso/asignarPermisos.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="addPerfilUsuario">
+		<pattern value="/seguridad/addPerfilUsuario" />
+		<view-id value="/faces/control_acceso/addPerfilUsuario.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="parametros">
+		<pattern value="/seguridad/parametros" />
+		<view-id value="/faces/control_acceso/parametros.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="rptAuditoria">
+		<pattern value="/auditoria" />
+		<view-id value="/faces/control_acceso/reporteAuditoria.xhtml" />
+	</url-mapping>
+
+	
+	<url-mapping id="centro_atencion">
+		<pattern value="/proyecto" />
+		<view-id value="/faces/control_acceso/centro_atencion.xhtml" />
+	</url-mapping>
+	
+
+	<!-- SCPF -->
+	
+	
+	<url-mapping id="tipoDocumento">
+		<pattern value="/tipoDocumento" />
+		<view-id value="/faces/Configuracion/tipoDocumento.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="tipoPlanilla">
+		<pattern value="/tipoPlanilla" />
+		<view-id value="/faces/Configuracion/tipoPlanilla.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="cargo">
+		<pattern value="/cargo" />
+		<view-id value="/faces/Configuracion/cargo.xhtml" />
+	</url-mapping>		
+
+	<url-mapping id="negocio">
+		<pattern value="/negocio" />
+		<view-id value="/faces/Configuracion/negocio.xhtml" />
+	</url-mapping>		
+	
+	<url-mapping id="tipoMoneda">
+		<pattern value="/tipoMoneda" />
+		<view-id value="/faces/Configuracion/tipoMoneda.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="producto">
+		<pattern value="/producto" />
+		<view-id value="/faces/Configuracion/producto.xhtml" />
+	</url-mapping>	
+	
+	<url-mapping id="oficina">
+		<pattern value="/oficina" />
+		<view-id value="/faces/Configuracion/oficina.xhtml" />
+	</url-mapping>	
+	
+	<url-mapping id="ubigeo">
+		<pattern value="/ubigeo" />
+		<view-id value="/faces/Configuracion/ubigeo.xhtml" />
+	</url-mapping>	
+	
+	<url-mapping id="categoriaEstados">
+		<pattern value="/categoriaEstados" />
+		<view-id value="/faces/Configuracion/categoriaEstados.xhtml" />
+	</url-mapping>		
+	
+	<url-mapping id="estados">
+		<pattern value="/estados" />
+		<view-id value="/faces/Configuracion/estados.xhtml" />
+	</url-mapping>	
+	
+	<url-mapping id="indicadores">
+		<pattern value="/indicadores" />
+		<view-id value="/faces/Configuracion/categoriaIndicadoresCall.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="indices">
+		<pattern value="/indices" />
+		<view-id value="/faces/Configuracion/categoriaIndices.xhtml" />
+	</url-mapping>		
+	
+	<url-mapping id="indicadoresCall">
+		<pattern value="/indicadoresCall" />
+		<view-id value="/faces/Configuracion/indicadorCall.xhtml" />
+	</url-mapping>	
+	
+	<url-mapping id="catIndicadoresProducto">
+		<pattern value="/catIndicadoresProducto" />
+		<view-id value="/faces/Configuracion/catIndicadoresProducto.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="empresa">
+		<pattern value="/empresa" />
+		<view-id value="/faces/Configuracion/empresa.xhtml" />
+	</url-mapping>	
+	
+	<url-mapping id="addSubProducto">
+		<pattern value="/addSubProducto" />
+		<view-id value="/faces/negocio2/addSubProducto.xhtml" />
+	</url-mapping>		
+	
+	<url-mapping id="ejecutivo">
+		<pattern value="/ejecutivo" />
+		<view-id value="/faces/recursos/ejecutivo.xhtml" />
+	</url-mapping>		
+	
+	<url-mapping id="planillaPersonal">
+		<pattern value="/planillaPersonal" />
+		<view-id value="/faces/recursos/planillaPersonal.xhtml" />
+	</url-mapping>		
+	
+	<url-mapping id="territorio">
+		<pattern value="/territorio" />
+		<view-id value="/faces/Configuracion/territorio.xhtml" />
+	</url-mapping>
+
+	
+	<!-- para nextel -->
+	
+
+	<!-- 	GESTION -->
+	
+	
+<!-- 	CONSULTAS -->
+
+	<!-- bases scpf -->
+	<url-mapping id="cargaIndecopy">
+		<pattern value="/cargaIndecopy" />
+		<view-id value="/faces/bases/cargaIndecopy.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="confResponsableNegocio">
+		<pattern value="/confResponsableNegocio" />
+		<view-id value="/faces/Configuracion/confResponsableNegocio.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="asigBaseEjecutivo">
+		<pattern value="/asigBaseEjecutivo" />
+		<view-id value="/faces/bases/asigBaseEjecutivo.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="cargaBanco">
+		<pattern value="/cargaBanco" />
+		<view-id value="/faces/bases/facturaBanco2.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="cargaBolsaTrabajo">
+		<pattern value="/cargaBolsaTrabajo" />
+		<view-id value="/faces/bases/cargaBolsaTrabajo.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="asignarEjecutivo">
+		<pattern value="/asignarEjecutivo" />
+		<view-id value="/faces/bases/asignarEjecutivo.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="telefonosExcluidos">
+		<pattern value="/telefonosExcluidos" />
+		<view-id value="/faces/bases/telefonosExcluidos.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="eliminarTelofonos">
+		<pattern value="/eliminarTelofonos" />
+		<view-id value="/faces/bases/eliminarTelofonos.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="expedientePromotor">
+		<pattern value="/expedientePromotor" />
+		<view-id value="/faces/bases/expedientePromotor.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="expedientePromotorProd">
+		<pattern value="/expedientePromotorProduccion" />
+		<view-id value="/faces/bases/expedientePromotorProduccion.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="gestionVenta">
+		<pattern value="/gestionVenta" />
+		<view-id value="/faces/bases/gestionVenta.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="expedienteReferido">
+		<pattern value="/expedienteReferido" />
+		<view-id value="/faces/bases/expedienteReferido.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="cargaFacturacion">
+		<pattern value="/cargaFacturacion" />
+		<view-id value="/faces/facturacion/cargaFacturacion.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="expedienteTracking">
+		<pattern value="/expedienteTracking" />
+		<view-id value="/faces/bases/expedienteTracking.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="reasignarExpedientes">
+		<pattern value="/reasignarExpedientes" />
+		<view-id value="/faces/bases/reasignarExpedientes.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="reasigExpPromotor">
+		<pattern value="/reasigExpPromotor" />
+		<view-id value="/faces/bases/reasigExpPromotor.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="reasigExpOficina">
+		<pattern value="/reasigExpOficina" />
+		<view-id value="/faces/bases/reasigExpOficina.xhtml" />
+	</url-mapping>
+
+	
+	
+	<url-mapping id="formatoAsociado">
+		<pattern value="/formatoAsociado" />
+		<view-id value="/faces/negocio2/formatoAsociado.xhtml?valor1=0" />
+	</url-mapping>
+	
+	<url-mapping id="feedBack">
+		<pattern value="/feedBack" />
+		<view-id value="/faces/reportes/feedBack.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="consolidadoBase">
+		<pattern value="/consolidadoBase" />
+		<view-id value="/faces/reportes/consolidadoBase.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="asignarBaseFiltros">
+		<pattern value="/asignarBaseFiltros" />
+		<view-id value="/faces/bases/asignarBaseFiltros.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="exclusionruc">
+		<pattern value="/exclusionruc" />
+		<view-id value="/faces/bases/exclusionruc.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="zonasSinCobertura">
+		<pattern value="/zonasSinCobertura" />
+		<view-id value="/faces/bases/zonasSinCobertura.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="rptDeciles">
+		<pattern value="/rptDeciles" />
+		<view-id value="/faces/reportes/rptDeciles.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="indSeguimiento">
+		<pattern value="/indSeguimiento" />
+		<view-id value="/faces/reportes/indSeguimiento.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="relacionPromotores">
+		<pattern value="/relacionPromotores" />
+		<view-id value="/faces/reportes/relacionPromotores.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="asignacionSupervEjec">
+		<pattern value="/asignacionSupervisorEjecutivo" />
+		<view-id value="/faces/bases/asignacionSupervisorEjecutivo.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="reporteVip">
+		<pattern value="/reporteVip" />
+		<view-id value="/faces/reportes/reporteVip.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="formatoMetodizado">
+		<pattern value="/formatoMetodizado" />
+		<view-id value="/faces/formatos/formatoMetodizado.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="ciiu">
+		<pattern value="/ciiu" />
+		<view-id value="/faces/Configuracion/ciiu.xhtml" />
+	</url-mapping>	
+	
+	<url-mapping id="semaforo">
+		<pattern value="/semaforo" />
+		<view-id value="/faces/reportes/semaforo.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="controlcalidad">
+		<pattern value="/controlcalidad" />
+		<view-id value="/faces/calidad/controlcalidad.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="centralRiesgo">
+		<pattern value="/centralRiesgo" />
+		<view-id value="/faces/central_riesgo/centralRiesgo.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="rptGestionLlamadas">
+		<pattern value="/rptGestionLlamadas" />
+		<view-id value="/faces/reportes/rptGestionLlamadas.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="verificacionBase">
+		<pattern value="/verificacionBase" />
+		<view-id value="/faces/bases/verificacionBase.xhtml" />
+	</url-mapping>
+	
+		<url-mapping id="expPresentados">
+		<pattern value="/expPresentados" />
+		<view-id value="/faces/reportes/expPresentados.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="rankingLLamadas">
+		<pattern value="/rankingLLamadas" />
+		<view-id value="/faces/reportes/rankingLLamadas.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="bonos">
+		<pattern value="/bonos" />
+		<view-id value="/faces/FacturacionYPlanillas/bonos.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="exclusionCliente">
+		<pattern value="/exclusionCliente" />
+		<view-id value="/faces/bases/exclusionCliente.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="protocoloAtencion">
+		<pattern value="/protocoloAtencion" />
+		<view-id value="/faces/reportes/protocoloAtencion.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="feedBackLima">
+		<pattern value="/feedBackLima" />
+		<view-id value="/faces/reportes/feedBackLima.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="feedBackPrioridad">
+		<pattern value="/feedBackPrioridad" />
+		<view-id value="/faces/reportes/feedBackPrioridad.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="tableroComisiones">
+		<pattern value="/tableroComisiones" />
+		<view-id value="/faces/facturacion/tableroComisiones.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="planilla">
+		<pattern value="/planilla" />
+		<view-id value="/faces/facturacion/planilla.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="consolidadoComisiones">
+		<pattern value="/consolidadoComisiones" />
+		<view-id value="/faces/facturacion/consolidadoComisiones.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="complementoDescuento">
+		<pattern value="/complementoDescuento" />
+		<view-id value="/faces/facturacion/complementoDescuento.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="editarDetalleFacturacion">
+		<pattern value="/editarDetalleFacturacion" />
+		<view-id value="/faces/facturacion/editarDetalleFacturacion.xhtml" />
+	</url-mapping>	
+	
+	<url-mapping id="facturasProcesadas">
+		<pattern value="/facturasProcesadas" />
+		<view-id value="/faces/facturacion/facturasProcesadas.xhtml" />
+	</url-mapping>	
+	
+	<url-mapping id="validacionApertura">
+		<pattern value="/validacionApertura" />
+		<view-id value="/faces/calidad/validacionApertura.xhtml" />
+	</url-mapping>
+	
+	
+	<url-mapping id="chkListDocu">
+		<pattern value="/chkListDocu" />
+		<view-id value="/faces/Configuracion/chkListDocu.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="ccBancaPersona">
+		<pattern value="/ccBancaPersona" />
+		<view-id value="/faces/calidad/ccBancaPersona.xhtml" />
+	</url-mapping>
+	
+	
+	<url-mapping id="registrarExpediente">
+		<pattern value="/digitalizacionExpediente" />
+		<view-id value="/faces/digitalizacion/registrarExpediente.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="controlCalidad">
+		<pattern value="/controlCalidad" />
+		<view-id value="/faces/digitalizacion/controlCalidad.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="viewer">
+		<pattern value="/viewer" />
+		<view-id value="/faces/digitalizacion/viewer.html" />
+	</url-mapping>	
+	
+	<url-mapping id="trackExpediente">
+		<pattern value="/trackExpediente" />
+		<view-id value="/faces/consultas/trackExpediente.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="ciclo">
+		<pattern value="/ciclo" />
+		<view-id value="/faces/FacturacionYPlanillas/ciclo.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="estado">
+		<pattern value="/estado" />
+		<view-id value="/faces/Configuracion/estado.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="categoriaIndicador">
+		<pattern value="/categoriaIndicador" />
+		<view-id value="/faces/Configuracion/categoriaIndicador.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="tarifa">
+		<pattern value="/tarifa" />
+		<view-id value="/faces/FacturacionYPlanillas/tarifa.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="facturacion">
+		<pattern value="/facturacion" />
+		<view-id value="/faces/FacturacionYPlanillas/facturacion.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="recepcionarExpediente">
+		<pattern value="/recepcionarExpediente" />
+		<view-id value="/faces/digitalizacion/recepcionarExpediente.xhtml" />
+	</url-mapping>
+	
+	
+	<url-mapping id="transfExp">
+		<pattern value="/transfExp" />
+		<view-id value="/faces/digitalizacion/transfExp.xhtml" />
+	</url-mapping>	
+	
+	<url-mapping id="agruparArchivosExp">
+		<pattern value="/agruparArchivosExp" />
+		<view-id value="/faces/digitalizacion/agruparArchivosExp.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="consolidadoFacturacion">
+		<pattern value="/consolidadoFacturacion" />
+		<view-id value="/faces/FacturacionYPlanillas/consolidadoFacturacion.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="consolidadoPlanilla">
+		<pattern value="/consolidadoPlanilla" />
+		<view-id value="/faces/FacturacionYPlanillas/consolidadoPlanilla.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="prepExpediente">
+		<pattern value="/prepExpediente" />
+		<view-id value="/faces/digitalizacion/prepExpediente.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="digExpe">
+		<pattern value="/digExpe" />
+		<view-id value="/faces/digitalizacion/digitalizacion.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="preCalidad">
+		<pattern value="/preCalidad" />
+		<view-id value="/faces/digitalizacion/calidad.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="preCalidadFedatario">
+		<pattern value="/preCalidadFedatario" />
+		<view-id value="/faces/digitalizacion/calidadFedatario.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="reProceso">
+		<pattern value="/reProceso" />
+		<view-id value="/faces/digitalizacion/reProceso.xhtml" />
+	</url-mapping>
+	<url-mapping id="reAgrupar">
+		<pattern value="/reAgrupar" />
+		<view-id value="/faces/digitalizacion/reAgrupar.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="despachoLotExp">
+		<pattern value="/despachoLotExp" />
+		<view-id value="/faces/digitalizacion/despachoLotExp.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="generaMedios">
+		<pattern value="/generaMedios" />
+		<view-id value="/faces/digitalizacion/generaMedios.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="descargaMedios">
+		<pattern value="/descargaMedios" />
+		<view-id value="/faces/digitalizacion/descargaMedios.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="subirArchivosFirmados">
+		<pattern value="/subirArchivosFirmados" />
+		<view-id value="/faces/digitalizacion/subirArchivosFirmados.xhtml" />
+	</url-mapping>
+</pretty-config>

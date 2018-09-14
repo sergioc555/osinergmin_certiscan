@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.BonoMapper">
+
+<resultMap id="bonoResult" type="com.certicom.certiscan.domain.Bono">
+	<id column="id_bono" property="id_bono" />
+	<result column="idusuario" property="idusuario" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="periodo" property="periodo" javaType="java.util.Date" jdbcType="DATE"/>
+	<result column="observacion" property="observacion" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	
+	<result column="fec_registro" property="fec_registro" />
+	<result column="usu_registro" property="usu_registro" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="monto" property="monto" javaType="java.lang.Double" jdbcType="DOUBLE"/>
+	<result column="idtipobono" property="idtipobono" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="cod_ciclo" property="idtipobono" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="anio" property="idtipobono" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="mes" property="nombre_completo" javaType="java.lang.String" jdbcType="VARCHAR"/>
+
+</resultMap>
+
+<insert id="registraBono"  parameterType="com.certicom.certiscan.domain.Bono" >
+			insert into t_bono (idusuario, observacion, fec_registro, usu_registro, monto, idtipobono ,cod_ciclo ,anio, mes)
+			values (#{idusuario},#{observacion}, #{fec_registro}, #{usu_registro},
+			 #{monto}, #{idtipobono}, #{cod_ciclo}, #{anio}, #{mes})
+</insert>
+
+
+	<select id="listBonosByColaborador" parameterType="com.certicom.certiscan.commons.ExpedienteFilter" resultMap="bonoResult">
+		SELECT b.idusuario,sum(b.monto) as monto 
+			from t_bono b
+			 where
+			  b.periodo = #{fini} 
+			 <if test="idnegocio!=0">
+				and b.id_negocio = #{idnegocio}
+   			</if>
+   			and b.idtipobono !=5 and  b.idtipobono !=6
+			  group by idusuario 
+	</select>
+	
+	
+	<select id="listRegularizacionByColaborador" parameterType="com.certicom.certiscan.commons.ExpedienteFilter" resultMap="bonoResult">
+		SELECT b.idusuario,sum(b.monto) as monto 
+			from t_bono b
+			 where
+			  b.periodo = #{fini} 
+			 <if test="idnegocio!=0">
+				and b.id_negocio = #{idnegocio}
+   			</if>
+   			and b.idtipobono =5
+			  group by idusuario 
+	</select>
+
+	<select id="listDescuentosByColaborador" parameterType="com.certicom.certiscan.commons.ExpedienteFilter" resultMap="bonoResult">
+		SELECT b.idusuario,sum(b.monto) as monto 
+			from t_bono b
+			 where
+			  b.periodo = #{fini} 
+			 <if test="idnegocio!=0">
+				and b.id_negocio = #{idnegocio}
+   			</if>
+   			and b.idtipobono =6
+			  group by idusuario 
+	</select>
+	
+	
+	
+
+
+
+</mapper>	

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.ProyeccionVentasMapper">
+
+<resultMap id="proyeccionVentasResult" type="com.certicom.certiscan.domain.ProyeccionVentas">
+	<id column="id_proyeccion_venta" property="id_proyeccion_venta"/>
+	<id column="id_negocio" property="id_negocio"/>
+	<result column="id_producto" property="id_producto"/>
+	<result column="id_ejecutivo" property="id_ejecutivo"/>
+	<result column="id_ejecutivo_padre" property="id_ejecutivo_padre"/>
+	<result column="meta" property="meta" />
+	<result column="periodo" property="periodo" />
+	<result column="tipo_nivel" property="tipo_nivel" />
+</resultMap>
+
+
+</mapper>	

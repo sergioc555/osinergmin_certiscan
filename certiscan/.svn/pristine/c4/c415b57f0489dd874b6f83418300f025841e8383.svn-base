@@ -1,0 +1,53 @@
+package com.certicom.certiscan.services;
+
+import java.util.List;
+
+import com.certicom.certiscan.commons.ServiceFinder;
+import com.certicom.certiscan.domain.Cargo;
+import com.certicom.certiscan.domain.Lote;
+import com.certicom.certiscan.domain.Test;
+import com.certicom.certiscan.mapper.CargoMapper;
+import com.certicom.certiscan.mapper.LoteMapper;
+import com.certicom.certiscan.mapper.TestMapper;
+
+public class LoteServices implements LoteMapper{
+
+	LoteMapper loteMapper = (LoteMapper)ServiceFinder.findBean("loteMapper");
+
+	@Override
+	public Lote findById(Integer codigoLote) throws Exception {
+		// TODO Auto-generated method stub
+		return loteMapper.findById(codigoLote);
+	}
+
+	@Override
+	public List<Lote> findAll() throws Exception {
+		// TODO Auto-generated method stub
+		return loteMapper.findAll();
+	}
+
+	@Override
+	public void crearLote(Lote lote) throws Exception {
+		// TODO Auto-generated method stub
+		loteMapper.crearLote(lote);
+	}
+
+	@Override
+	public void actualizarLote(Lote lote) throws Exception {
+		// TODO Auto-generated method stub
+		loteMapper.actualizarLote(lote);
+	}
+
+	@Override
+	public void eliminarLote(Integer codLote) throws Exception {
+		// TODO Auto-generated method stub
+		loteMapper.eliminarLote(codLote);
+	}
+
+	@Override
+	public Integer maxIdLote() throws Exception {
+		// TODO Auto-generated method stub
+		return loteMapper.maxIdLote();
+	}
+	
+}

@@ -1,0 +1,19 @@
+.strong{
+	font-weight: bold;
+}
+.center{
+	text-align: center !important;
+	margin: auto !important;
+}
+
+.w60{
+	width:60px !important;
+}
+
+.w50{
+	width:50px !important;
+}
+
+.w40{
+	width:40px !important;
+}

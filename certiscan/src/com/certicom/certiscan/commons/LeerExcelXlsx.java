@@ -1,0 +1,282 @@
+package com.certicom.certiscan.commons;
+
+import java.io.InputStream;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+ 
+import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.xssf.eventusermodel.ReadOnlySharedStringsTable;
+import org.apache.poi.xssf.eventusermodel.XSSFReader;
+import org.apache.poi.xssf.eventusermodel.XSSFSheetXMLHandler;
+import org.apache.poi.xssf.eventusermodel.XSSFSheetXMLHandler.SheetContentsHandler;
+import org.apache.poi.xssf.model.StylesTable;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
+import com.certicom.certiscan.domain.ArchivoExcel;
+/*
+import com.incesoft.tools.excel.xlsx.Cell;
+import com.incesoft.tools.excel.xlsx.Sheet;
+import com.incesoft.tools.excel.xlsx.Sheet.SheetRowReader;
+import com.incesoft.tools.excel.xlsx.SimpleXLSXWorkbook;
+*/
+import com.sun.media.sound.InvalidFormatException;
+
+public class LeerExcelXlsx {
+	
+
+public static void processSheet(StylesTable styles, ReadOnlySharedStringsTable strings, InputStream sheetInputStream) throws IOException, SAXException {
+
+        InputSource sheetSource = new InputSource(sheetInputStream);
+        SAXParserFactory saxFactory = SAXParserFactory.newInstance();
+        try {
+            SAXParser saxParser = saxFactory.newSAXParser();
+            XMLReader sheetParser = saxParser.getXMLReader();
+            ContentHandler handler = new XSSFSheetXMLHandler(styles, strings, new SheetContentsHandler() {
+
+            @Override
+                public void startRow(int rowNum) {
+                }
+                @Override
+                public void endRow() {
+                }
+                @Override
+                public void cell(String cellReference, String formattedValue) {
+                }
+                @Override
+                public void headerFooter(String text, boolean isHeader, String tagName) {
+
+                }
+
+            }, 
+            false//means result instead of formula
+            );
+            sheetParser.setContentHandler(handler);
+            sheetParser.parse(sheetSource);
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException("SAX parser appears to be broken - " + e.getMessage());
+        }
+}
+	
+	public static ArchivoExcel leerExcelBanco(String fileName) throws ParseException, IOException, org.apache.poi.openxml4j.exceptions.InvalidFormatException{
+		ArchivoExcel archivo = new ArchivoExcel();
+		List<String> listaCabecera =new ArrayList<String>();
+		List<String> listaData =new ArrayList<String>();
+		
+		List cellDataList = new ArrayList();
+		
+		File file2 = new File(fileName);
+        OPCPackage pkg = OPCPackage.open(new FileInputStream(file2.getAbsolutePath()));
+        XSSFWorkbook xssfwb = new XSSFWorkbook(pkg);
+
+        SXSSFWorkbook wb = new SXSSFWorkbook(xssfwb, 100);
+        /*
+        Sheet sh = (Sheet) wb.getSheet("Hola");
+
+        System.out.println("Name: "+sh.getSheetIndex()); // Line 19
+        System.out.println("Val: "+((org.apache.poi.ss.usermodel.Sheet) sh).getRow(1).getCell(1).getStringCellValue()); 
+		*/
+		
+		 OPCPackage container;
+	        try {
+	        	File file = new File(fileName);
+	            container = OPCPackage.open(file.getAbsolutePath());
+	            ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(container);
+	            XSSFReader xssfReader = new XSSFReader(container);
+	            StylesTable styles = xssfReader.getStylesTable();
+	            XSSFReader.SheetIterator iter = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
+	            while (iter.hasNext()) {
+	                InputStream stream = iter.next();
+	                System.out.println("ok");
+	                processSheet(styles, strings, stream);
+	                stream.close();
+	            }
+	        } catch (InvalidFormatException e) {
+	            e.printStackTrace();
+	        } catch (SAXException e) {
+	            e.printStackTrace();
+	        } catch (OpenXML4JException e) {
+	            e.printStackTrace();
+	        }
+		
+		try{
+			
+			/*SimpleXLSXWorkbook workbook = new SimpleXLSXWorkbook(new File(fileName));  
+			  
+            HSSFWorkbook hsfWorkbook = new HSSFWorkbook();  
+  
+            org.apache.poi.ss.usermodel.Sheet hsfSheet = hsfWorkbook.createSheet();  
+  
+            Sheet sheetToRead = workbook.getSheet(0, false);  
+  
+            SheetRowReader reader = sheetToRead.newReader();  
+            Cell[] row;  
+            int rowPos = 0;  
+            while ((row = reader.readRow()) != null) {  
+                org.apache.poi.ss.usermodel.Row hfsRow = hsfSheet.createRow(rowPos);  
+                int cellPos = 0;  
+                for (Cell cell : row) {  
+                    if(cell != null){  
+                        org.apache.poi.ss.usermodel.Cell hfsCell = hfsRow.createCell(cellPos);  
+                        hfsCell.setCellType(org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING);  
+                        hfsCell.setCellValue(cell.getValue());  
+                        System.out.println("==>"+cell.getValue());
+                    }  
+                    cellPos++;  
+                }  
+                rowPos++;  
+            }  
+            */
+			
+			//XLS
+			/*HSSFWorkbook wb = new HSSFWorkbook(fileInputStream);
+			HSSFSheet sheet=wb.getSheetAt(0);
+			HSSFRow row;
+			HSSFCell cell;
+			Iterator rows = sheet.rowIterator();
+			while (rows.hasNext())
+			{
+				row=(HSSFRow) rows.next();
+				Iterator cells = row.cellIterator();
+				while (cells.hasNext()) {
+					cell=(HSSFCell) cells.next();
+					if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+						System.out.print(cell.getStringCellValue()+" ");
+					} else if(cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+						System.out.print(cell.getNumericCellValue()+" ");
+					} else {
+					//U Can Handel Boolean, Formula, Errors
+					}
+				}
+				System.out.println();
+			}
+			
+			//XLSX
+			XSSFWorkbook wb = new XSSFWorkbook(fileInputStream);
+			XSSFWorkbook test = new XSSFWorkbook();
+			XSSFSheet sheet = wb.getSheetAt(0);
+			XSSFRow row;
+			XSSFCell cell;
+			 
+			Iterator rows = sheet.rowIterator();
+			 
+			int k=0;
+			while (rows.hasNext()){
+				row=(XSSFRow) rows.next();
+				Iterator cells = row.cellIterator();
+				k++;
+				System.out.println("===>"+k);
+				while (cells.hasNext()){
+					cell=(XSSFCell) cells.next();
+					if (cell.getCellType() == XSSFCell.CELL_TYPE_STRING){
+					System.out.print(cell.getStringCellValue()+" ");
+					}else if(cell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC){
+					System.out.print(cell.getNumericCellValue()+" ");
+					}else{
+					//U Can Handel Boolean, Formula, Errors
+					}
+				}
+				System.out.println();
+			}
+			*/
+			boolean hola = true;
+			if(hola)
+				return null;
+			FileInputStream fileInputStream = new FileInputStream(fileName);
+			//FileInputStream fileInputStream  = new FileInputStream(fileInputStream.)
+			//FileInputStream file = (FileInputStream) fileInputStream;
+			//InputStream is = new FileInputStream("c:/test/test.xlsx");// - See more at: http://www.quicklyjava.com/read-xlsx-file-in-java-using-apache-poi/#sthash.Z98sKl5o.dpuf
+			System.out.println("leyendo");
+			XSSFWorkbook workBook = new XSSFWorkbook(fileInputStream);
+			
+			//SXSSFWorkbook workbook= new SXSSFWorkbook(200);
+			System.out.println("Pasooo");
+			//XSSFWorkbook archivoExcel = new XSSFWorkbook(archivoDestino);
+			System.out.println("===>>>>paso leida");
+			XSSFSheet hssfSheet = workBook.getSheetAt(0);
+			System.out.println("===>>>>1111");
+			Iterator rowIterator = hssfSheet.rowIterator();
+			while (rowIterator.hasNext()){
+				System.out.println("===>>>>");
+				XSSFRow hssfRow = (XSSFRow) rowIterator.next();
+				Iterator iterator = hssfRow.cellIterator();
+				List cellTempList = new ArrayList();
+				while (iterator.hasNext()){
+					XSSFCell hssfCell = (XSSFCell) iterator.next();
+					cellTempList.add(hssfCell);
+				}
+				cellDataList.add(cellTempList);
+			}
+		}catch (Exception e){
+			System.out.println("===>"+ e.toString());
+			e.printStackTrace();
+		}
+		leer(cellDataList);
+		archivo.setListaCabecera(listaCabecera);
+		archivo.setListaData(listaData);
+		return archivo;
+	}
+	
+	
+		private static void leer(List cellDataList){
+			for (int i = 0; i < cellDataList.size(); i++){
+				List cellTempList = (List) cellDataList.get(i);
+				for (int j = 0; j < cellTempList.size(); j++){
+					XSSFCell hssfCell = (XSSFCell) cellTempList.get(j);
+					String stringCellValue = hssfCell.toString();
+					System.out.print(stringCellValue+" ");
+				}
+			System.out.println();
+			}
+		}
+		
+		
+}

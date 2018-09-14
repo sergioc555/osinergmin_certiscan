@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certisacan.mapper.BaseIndecopyMapper">
+
+<resultMap id="baseIndecopyResult" type="com.certicom.certiscan.domain.BaseIndecopy">
+	<id column="baseIndecopyId" property="baseIndecopyId" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	
+	<result column="codigo" property="codigo" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="valor" property="valor" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="fecharegistro" property="fecharegistro" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="tiporegistro" property="tiporegistro" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="periodo" property="periodo" javaType="java.util.Date" jdbcType="DATE"/>
+	<result column="fechacarga" property="fechacarga" javaType="java.util.Date" jdbcType="DATE"/>
+	<result column="nuevo" property="nuevo" javaType="java.lang.Boolean" jdbcType="BOOLEAN"/>
+	<result column="motivo" property="motivo" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="detalle" property="detalle" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="idcabeceraindecopy" property="idCabeceraIndecopy" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+</resultMap>
+
+
+<select id="findByAnioMesPAGINATOR"  resultMap="baseIndecopyResult" >
+		select * from t_baseindecopy  where extract(month from periodo)=#{mes} 
+			and  extract(year from periodo)=#{anio} 
+
+			
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+	           </foreach> 
+            </if>
+            
+            <if test="sortField != null">
+				order by ${sortField} ${sortOrder}    
+		    </if>
+		    
+		    <if test="sortField == null">
+				order by tiporegistro DESC 
+		    </if>
+		    
+		    
+			 OFFSET #{first} LIMIT #{pageSize} 
+	</select>
+
+	<select id="getCountBaseIndecopyPAGINATOR"  resultType="java.lang.Integer">
+			select count(*)
+		    from 
+			    t_baseindecopy  where extract(month from periodo)=#{mes} 
+			and  extract(year from periodo)=#{anio} 
+			<if test="filters.entrySet() != null">
+		       <foreach item="item" collection="filters.entrySet()" >
+	         		and  ${item.key} like ('%' || replace( #{item.value}, ' ', '%')  || '%') 
+	           </foreach> 
+	        </if>
+		
+		</select>
+		
+	<insert id="crearBaseIndecopy" parameterType="com.certicom.certiscan.domain.BaseIndecopy" 
+		useGeneratedKeys="true" keyProperty="baseIndecopyId" >
+    <selectKey resultType="java.lang.Integer"  keyProperty="baseIndecopyId" order="AFTER">
+        SELECT max(t_baseindecopy.baseindecopyid) from t_baseindecopy where 
+          t_expediente_cabecera.periodo=#{periodo} and t_expediente_cabecera.idcabeceraindecopy=#{idcabeceraindecopy} 
+    </selectKey>
+    insert into t_baseindecopy (codigo, valor, fecharegistro,tiporegistro,periodo,fechacarga,nuevo,motivo,detalle,idcabeceraindecopy) 
+    values (#{codigo},#{valor},#{fecharegistro},#{tiporegistro},#{periodo},now(),#{nuevo},#{motivo},#{detalle},#{idCabeceraIndecopy})
+</insert>
+</mapper>	

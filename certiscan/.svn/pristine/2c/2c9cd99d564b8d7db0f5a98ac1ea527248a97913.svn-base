@@ -1,0 +1,226 @@
+package com.certicom.certiscan.domain;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.lowagie.text.pdf.PdfReader;
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+
+public class ExpedienteDocumento {
+	
+	private Integer id_expediente_documento;
+	private Integer expediente_id;
+	private String nombre_archivo;
+	private String ruta;
+	private Date fecha_subida;
+	private Integer id_usuario_creacion;
+	
+	private String descripcion_archivo;
+	private Long peso;
+	private String descripcion_peso;
+	private Integer nro_paginas;
+	private Integer nro_archivo;
+	
+	private String desNombreArchiOrig;
+	
+	private String estado_accion;
+	private boolean estado;
+	private Integer orden_expediente;
+	private Integer id_padre_group;
+	private ByteArrayOutputStream baoss;
+	
+	private File file;
+	private InputStream inputStreamFile;
+	private PdfReader pdfReader;
+	private com.itextpdf.text.pdf.PdfReader pdfReader2;
+	private List<DocumentoPagina> listaPaginas = new ArrayList<>();
+	
+	//alterno para expediente
+	private String nro_expediente;
+	private Date fec_recep;
+	private String desOficina;
+	private String desEstado;
+	/*-------------------*/
+	private Integer ordenTexto;
+	private ByteArrayOutputStream baos;
+	
+	
+	public Integer getId_expediente_documento() {
+		return id_expediente_documento;
+	}
+	public void setId_expediente_documento(Integer id_expediente_documento) {
+		this.id_expediente_documento = id_expediente_documento;
+	}
+	public String getDescripcion_archivo() {
+		return descripcion_archivo;
+	}
+	public void setDescripcion_archivo(String descripcion_archivo) {
+		this.descripcion_archivo = descripcion_archivo;
+	}
+	public Date getFecha_subida() {
+		return fecha_subida;
+	}
+	public void setFecha_subida(Date fecha_subida) {
+		this.fecha_subida = fecha_subida;
+	}
+	public Integer getId_usuario_creacion() {
+		return id_usuario_creacion;
+	}
+	public void setId_usuario_creacion(Integer id_usuario_creacion) {
+		this.id_usuario_creacion = id_usuario_creacion;
+	}
+	public String getRuta() {
+		return ruta;
+	}
+	public void setRuta(String ruta) {
+		this.ruta = ruta;
+	}
+	public Integer getExpediente_id() {
+		return expediente_id;
+	}
+	public void setExpediente_id(Integer expediente_id) {
+		this.expediente_id = expediente_id;
+	}
+	public String getNombre_archivo() {
+		return nombre_archivo;
+	}
+	public void setNombre_archivo(String nombre_archivo) {
+		this.nombre_archivo = nombre_archivo;
+	}
+	public File getFile() {
+		return file;
+	}
+	public void setFile(File file) {
+		this.file = file;
+	}
+	public Long getPeso() {
+		return peso;
+	}
+	public void setPeso(Long peso) {
+		this.peso = peso;
+	}
+	public String getDescripcion_peso() {
+		return descripcion_peso;
+	}
+	public void setDescripcion_peso(String descripcion_peso) {
+		this.descripcion_peso = descripcion_peso;
+	}
+	public Integer getNro_paginas() {
+		return nro_paginas;
+	}
+	public void setNro_paginas(Integer nro_paginas) {
+		this.nro_paginas = nro_paginas;
+	}
+	public Integer getNro_archivo() {
+		return nro_archivo;
+	}
+	public void setNro_archivo(Integer nro_archivo) {
+		this.nro_archivo = nro_archivo;
+	}
+	public List<DocumentoPagina> getListaPaginas() {
+		return listaPaginas;
+	}
+	public void setListaPaginas(List<DocumentoPagina> listaPaginas) {
+		this.listaPaginas = listaPaginas;
+	}
+	public String getEstado_accion() {
+		return estado_accion;
+	}
+	public void setEstado_accion(String estado_accion) {
+		this.estado_accion = estado_accion;
+	}
+	public boolean isEstado() {
+		return estado;
+	}
+	public void setEstado(boolean estado) {
+		this.estado = estado;
+	}
+	public InputStream getInputStreamFile() {
+		return inputStreamFile;
+	}
+	public void setInputStreamFile(InputStream inputStreamFile) {
+		this.inputStreamFile = inputStreamFile;
+	}
+	public PdfReader getPdfReader() {
+		return pdfReader;
+	}
+	public void setPdfReader(PdfReader pdfReader) {
+		this.pdfReader = pdfReader;
+	}
+	public com.itextpdf.text.pdf.PdfReader getPdfReader2() {
+		return pdfReader2;
+	}
+	public void setPdfReader2(com.itextpdf.text.pdf.PdfReader pdfReader2) {
+		this.pdfReader2 = pdfReader2;
+	}
+	public Integer getOrden_expediente() {
+		return orden_expediente;
+	}
+	public void setOrden_expediente(Integer orden_expediente) {
+		this.orden_expediente = orden_expediente;
+	}
+	public Integer getId_padre_group() {
+		return id_padre_group;
+	}
+	public void setId_padre_group(Integer id_padre_group) {
+		this.id_padre_group = id_padre_group;
+	}
+	public Integer getOrdenTexto() {
+		return ordenTexto;
+	}
+	public void setOrdenTexto(Integer ordenTexto) {
+		this.ordenTexto = ordenTexto;
+	}
+	public String getNro_expediente() {
+		return nro_expediente;
+	}
+	public void setNro_expediente(String nro_expediente) {
+		this.nro_expediente = nro_expediente;
+	}
+	public Date getFec_recep() {
+		return fec_recep;
+	}
+	public void setFec_recep(Date fec_recep) {
+		this.fec_recep = fec_recep;
+	}
+	public String getDesOficina() {
+		return desOficina;
+	}
+	public void setDesOficina(String desOficina) {
+		this.desOficina = desOficina;
+	}
+	public String getDesEstado() {
+		return desEstado;
+	}
+	public void setDesEstado(String desEstado) {
+		this.desEstado = desEstado;
+	}
+	public ByteArrayOutputStream getBaoss() {
+		return baoss;
+	}
+	public void setBaoss(ByteArrayOutputStream baoss) {
+		this.baoss = baoss;
+	}
+	public String getDesNombreArchiOrig() {
+		return desNombreArchiOrig;
+	}
+	public void setDesNombreArchiOrig(String desNombreArchiOrig) {
+		this.desNombreArchiOrig = desNombreArchiOrig;
+	}
+	public ByteArrayOutputStream getBaos() {
+		return baos;
+	}
+	public void setBaos(ByteArrayOutputStream baos) {
+		this.baos = baos;
+	}
+	
+	
+	
+	
+	
+	
+}

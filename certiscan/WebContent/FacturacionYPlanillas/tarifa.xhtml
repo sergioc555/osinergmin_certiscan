@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+	
+		<p:panel>
+			<h:form>
+				<p:breadCrumb>  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Facturacion y Planillas" url="#" />
+    				<p:menuitem value="Tarifario" url="tableroComisiones" />   
+				</p:breadCrumb>	
+			</h:form>
+			<br/>
+			
+			<p:messages  id="msgGeneral" showDetail="false" showSummary="true"  closable="true"/>		
+			
+			<h:form id="formGeneral">
+			<p:tabView id="tabGeneral">		
+			<p:ajax event="tabChange" listener="#{tarifaMB.onTabChange}"/>
+				<p:tab title="Facturación" id="tabFacturacion">
+					<p:panel id="gAction2">
+					<h:panelGrid columns="3">
+						<p:selectOneMenu style="width:270px" value="#{tarifaMB.cod_ciclo_fac}" required="true" requiredMessage="Seleccione un ciclo" >
+									<f:selectItem itemValue="0" itemLabel="--Seleccione--"></f:selectItem>
+									<f:selectItems value="#{tarifaMB.listaCiclosFacturacion}" var="p" itemLabel="#{p.nmes} - #{p.anio} - #{p.nfecini} - #{p.nfecfin}" itemValue="#{p.cod_ciclo}" />
+									<p:ajax event="change" update=":formGeneral" listener="#{tarifaMB.listarTableroFacturacion()}"/>
+							</p:selectOneMenu>
+						<p:commandButton value="Nueva Tarifa" icon="icon-add" update=":dlgDetNuevoFacturacion" oncomplete="validarComboFacturacion(xhr, status, args)" 
+							actionListener="#{tarifaMB.nuevoTableroFacturacion()}"/>
+						<p:commandButton value="Replicar" icon="icon-add" update=":dlgDetNuevoTableroCicloFac" oncomplete="validarComboFacturacionRep(xhr, status, args)"
+							actionListener="#{tarifaMB.nuevaReplicaFacturacion()}"/>
+					</h:panelGrid>
+					</p:panel>
+					<p:separator style="border: 0px; height: 25px" rendered="#{tarifaMB.mostrarTablaFac}"></p:separator>
+					<p:panel id="gTableFacturacion" rendered="#{tarifaMB.mostrarTablaFac}">
+						<p:dataTable id="dtFacturacion" var="tc" value="#{tarifaMB.listaTarifaFacturacion}" widgetVar="dtTableroFacturacion" 
+							emptyMessage="Tabla vacia" rowIndexVar="nro" 
+							 style="FONT-SIZE: 10px; ">
+							 <f:facet name="header">Facturacion</f:facet>
+							 
+							 <p:column headerText="Descripcion">
+								<h:outputLabel  value="#{tc.descripcion}"  />
+								</p:column>
+		        				<p:column headerText="Costo Sin IGV">
+		           				 <h:outputText value="#{tc.costo}" converter="montoDefaultConverter2Decimal"/>
+		        				</p:column>
+		        				<p:column headerText="Editar/Elim." style="width:30%;text-align: center">
+						
+							<p:commandButton title="Editar"  update=":dlgDetNuevoFacturacion" actionListener="#{tarifaMB.editarTableroFacturacion(tc)}"
+											 oncomplete="abrirEditarFacturacion(xhr, status, args)" icon="icon-edit">
+							</p:commandButton>
+	
+							<p:commandButton title="Eliminar" oncomplete="abrirEliminarFacturacion()" update=":dlgDetEliminarFacturacion" icon="icon-delete">
+								    <f:setPropertyActionListener target="#{tarifaMB.tarfacSelec}" value="#{tc}" />
+							</p:commandButton>
+									
+						</p:column>
+							 
+							 
+						</p:dataTable>
+					</p:panel>
+				</p:tab>
+				<p:tab title="Planilla y Comisiones" id="tabPlanilla">
+					<p:panel id="gAction1">
+					<h:panelGrid columns="3">
+						<p:selectOneMenu style="width:270px" value="#{tarifaMB.cod_ciclo_pla}" required="true" requiredMessage="Seleccione un ciclo" >
+									<f:selectItem itemValue="0" itemLabel="--Seleccione--"></f:selectItem>
+									<f:selectItems value="#{tarifaMB.listaCiclosPlanilla}" var="p" itemLabel="#{p.nmes} - #{p.anio} - #{p.nfecini} - #{p.nfecfin}" itemValue="#{p.cod_ciclo}" />
+									<p:ajax event="change" update=":formGeneral" listener="#{tarifaMB.listarTableroPlanilla()}"/>
+							</p:selectOneMenu>
+						<p:commandButton value="Nueva Tarifa" icon="icon-add" update=":dlgDetNuevoPlanilla" oncomplete="validarComboPlanilla(xhr, status, args)" 
+							actionListener="#{tarifaMB.nuevoTableroPlanilla()}"/>
+						<p:commandButton value="Replicar" icon="icon-add" update=":dlgDetNuevoTableroCicloPla" oncomplete="validarComboPlanillaRep(xhr, status, args)"
+							actionListener="#{tarifaMB.nuevaReplicaPlanilla()}"/>
+					</h:panelGrid>
+					</p:panel>
+					<p:separator style="border: 0px; height: 25px" rendered="#{tarifaMB.mostrarTablaPla}"></p:separator>
+					<p:panel id="gTablePlanilla" rendered="#{tarifaMB.mostrarTablaPla}">
+						<p:dataTable id="dtPlanilla" var="tc" value="#{tarifaMB.listaTarifaPlanilla}" widgetVar="dtTableroPlanilla" 
+							emptyMessage="Tabla vacia" rowIndexVar="nro" 
+							 style="FONT-SIZE: 10px; ">
+							 <f:facet name="header">Planilla</f:facet>
+							 
+							 <p:column headerText="Descripcion">
+								<h:outputLabel  value="#{tc.descripcion}"  />
+								</p:column>
+		        				
+		        				
+		        				<p:column headerText="Costo Back" >
+		           				 <h:outputText value="#{tc.costo_back}" converter="montoDefaultConverter2Decimal" />
+		        				</p:column>
+		        				
+		        				<p:column headerText="Costo Digitalizador" >
+		           				 <h:outputText value="#{tc.costo_digitalizador}" converter="montoDefaultConverter2Decimal"/>
+		        				</p:column>
+		        				
+		        				<p:column headerText="Costo Supervisor" >
+		           				 <h:outputText value="#{tc.costo_supervisor}" converter="montoDefaultConverter2Decimal"/>
+		        				</p:column>
+		        				<p:column headerText="Editar/Elim." style="width:30%;text-align: center">
+						
+							<p:commandButton title="Editar"  update=":dlgDetNuevoPlanilla" actionListener="#{tarifaMB.editarTableroPlanilla(tc)}"
+											 oncomplete="abrirEditarPlanilla(xhr, status, args)" icon="icon-edit">
+							</p:commandButton>
+	
+							<p:commandButton title="Eliminar" oncomplete="abrirEliminarPlanilla()" update=":dlgDetEliminarPlanilla" icon="icon-delete">
+								    <f:setPropertyActionListener target="#{tarifaMB.tarplaSelec}" value="#{tc}" />
+							</p:commandButton>
+									
+						</p:column>
+							 
+							 
+						</p:dataTable>
+					</p:panel>
+				</p:tab>
+			</p:tabView>	
+			</h:form>
+						
+			<p:dialog header="Registrar Facturacion" widgetVar="dlgNuevoFacturacion" appendTo="@(body)"
+					resizable="false" id="dlgDetNuevoFacturacion" modal="true" visible="#{facesContext.validationFailed}">
+					
+					<h:form id="formTabfac">
+					<p:messages showDetail="false" showSummary="true" id="msgNuevo" closable="true"/>
+					
+					<h:panelGrid columns="2">
+					
+						#{"Ciclo:"}
+						<h:outputLabel value="#{tarifaMB.ciclo_fac}" style="font-weight:bold; color:blue"/>
+						
+						#{"Tipo:"}
+						<h:outputLabel value="#{tarifaMB.tipoCiclo}" style="font-weight:bold; color:blue"/>							
+							
+						#{"Descripcion:"}
+						<h:inputText value="#{tarifaMB.tarfacSelec.descripcion}" style="font-weight:bold; color:blue" required="true" requiredMessage="hola"  />
+							
+						#{"Costo Incluye IGV:"}
+						<pe:inputNumber  
+							maxlength="50"
+							value="#{tarifaMB.tarfacSelec.costo}">
+						</pe:inputNumber>
+						
+					</h:panelGrid>
+					<br/>
+					<p:commandButton value="Guardar" actionListener="#{tarifaMB.guardarTableroFacturacion()}" update=":formGeneral:tabGeneral:dtFacturacion"
+						 oncomplete="validarFacturacion(xhr, status, args)" icon="icon-disk" />
+					
+					<p:commandButton value="Cancelar" type="button" onclick="PF('dlgNuevoFacturacion').hide()" icon="icon-cancel" />
+					</h:form>	
+			</p:dialog>
+			
+			<p:dialog header="Registrar Planilla" widgetVar="dlgNuevoPlanilla" appendTo="@(body)"
+					resizable="false" id="dlgDetNuevoPlanilla" modal="true" visible="#{facesContext.validationFailed}">
+					
+					<h:form id="formTabpla">
+					<p:messages showDetail="false" showSummary="true" id="msgNuevo" closable="true"/>
+					
+					<h:panelGrid columns="2">
+					
+						#{"Ciclo:"}
+						<h:outputLabel value="#{tarifaMB.ciclo_pla}" style="font-weight:bold; color:blue"/>
+						
+						#{"Tipo:"}
+						<h:outputLabel value="#{tarifaMB.tipoCiclo}" style="font-weight:bold; color:blue"/>							
+							
+						#{"Descripcion:"}
+						<h:inputText value="#{tarifaMB.tarplaSelec.descripcion}" style="font-weight:bold; color:blue" required="true" requiredMessage="hola"  />
+						
+						#{"Costo Back:"}
+						<pe:inputNumber  
+							maxlength="50"
+							value="#{tarifaMB.tarplaSelec.costo_back}">
+						</pe:inputNumber>
+						
+						#{"Costo Digitalizador:"}
+						<pe:inputNumber  
+							maxlength="50"
+							value="#{tarifaMB.tarplaSelec.costo_digitalizador}">
+						</pe:inputNumber>
+						
+						#{"Costo Supervisor:"}
+						<pe:inputNumber  
+							maxlength="50"
+							value="#{tarifaMB.tarplaSelec.costo_supervisor}">
+						</pe:inputNumber>						
+						
+					</h:panelGrid>
+					<br/>
+					<p:commandButton value="Guardar" actionListener="#{tarifaMB.guardarTableroPlanilla()}" update=":formGeneral"
+						 oncomplete="validarPlanilla(xhr, status, args)" icon="icon-disk" />
+					
+					<p:commandButton value="Cancelar" type="button" onclick="PF('dlgNuevoPlanilla').hide()" icon="icon-cancel" />
+					</h:form>	
+			</p:dialog>
+			
+			
+			<p:dialog header="Replicar Tarifario Facturacion" widgetVar="dlgNuevoTableroCicloFac" appendTo="@(body)"
+					resizable="false" id="dlgDetNuevoTableroCicloFac" modal="true">
+					
+					<h:form id="formTabRepfac">
+					<p:messages showDetail="false" showSummary="true" id="msgNuevoRep" closable="true"/>
+					
+					<h:panelGrid columns="2">
+						#{"Ciclo:"}
+						<h:outputLabel value="#{tarifaMB.ciclo_fac}" style="font-weight:bold; color:blue"/>
+						
+						
+						#{"Ciclos:"}
+						<p:selectOneMenu style="width:200px" value="#{tarifaMB.tarfacSelecRep.cod_ciclo}"  required="true" requiredMessage="Se necesita un ciclo" >
+								<f:selectItem itemValue="" itemLabel="--Seleccione--"></f:selectItem>
+								<f:selectItems value="#{tarifaMB.listaCiclosInactivosFacturacion}" var="p" itemLabel="#{p.nmes} - #{p.anio} - #{p.nfecini} - #{p.nfecfin}" itemValue="#{p.cod_ciclo}" />
+						</p:selectOneMenu>
+						
+					</h:panelGrid>
+					<br/>
+					<p:commandButton value="Guardar" actionListener="#{tarifaMB.replicaTableroFacturacion()}" update=":formGeneral"
+						 oncomplete="validarFacturacionRep(xhr, status, args)" icon="icon-disk" />
+					
+					<p:commandButton value="Cancelar" type="button" onclick="PF('dlgNuevoTableroCicloFac').hide()" icon="icon-cancel" />
+					</h:form>	
+			</p:dialog>
+			
+			<p:dialog header="Replicar Tarifario Planilla" widgetVar="dlgNuevoTableroCicloPla" appendTo="@(body)"
+					resizable="false" id="dlgDetNuevoTableroCicloPla" modal="true">
+					
+					<h:form id="formTabReppla">
+					<p:messages showDetail="false" showSummary="true" id="msgNuevoRep" closable="true"/>
+					
+					<h:panelGrid columns="2">
+						#{"Ciclo:"}
+						<h:outputLabel value="#{tarifaMB.ciclo_pla}" style="font-weight:bold; color:blue"/>
+						
+						
+						#{"Ciclos:"}
+						<p:selectOneMenu style="width:200px" value="#{tarifaMB.tarplaSelecRep.cod_ciclo}"  required="true" requiredMessage="Se necesita un ciclo" >
+								<f:selectItem itemValue="" itemLabel="--Seleccione--"></f:selectItem>
+								<f:selectItems value="#{tarifaMB.listaCiclosInactivosPlanilla}" var="p" itemLabel="#{p.nmes} - #{p.anio} - #{p.nfecini} - #{p.nfecfin}" itemValue="#{p.cod_ciclo}" />
+						</p:selectOneMenu>
+						
+					</h:panelGrid>
+					<br/>
+					<p:commandButton value="Guardar" actionListener="#{tarifaMB.replicaTableroPlanilla()}" update=":formGeneral"
+						 oncomplete="validarPlanillaRep(xhr, status, args)" icon="icon-disk" />
+					
+					<p:commandButton value="Cancelar" type="button" onclick="PF('dlgNuevoTableroCicloPla').hide()" icon="icon-cancel" />
+					</h:form>	
+			</p:dialog>
+			
+			
+			<!-- dialogo eliminar -->	
+			<p:confirmDialog id="dlgDetEliminarFacturacion" appendTo="@(body)"
+					message="¿Desea eliminar este Registro" header="Eliminar Registro"
+					severity="alert" widgetVar="dlgEliminarFacturacion">
+				<h:form>
+					<p:commandButton value="Eliminar"
+						update=":formGeneral"
+						actionListener="#{tarifaMB.confirmaEliminarFacturacion}"
+						oncomplete="PF('dlgEliminarFacturacion').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgEliminarFacturacion').hide()" icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>
+			
+			<p:confirmDialog id="dlgDetEliminarPlanilla" appendTo="@(body)"
+					message="¿Desea eliminar este Registro" header="Eliminar Registro"
+					severity="alert" widgetVar="dlgEliminarPlanilla">
+				<h:form>
+					<p:commandButton value="Eliminar"
+						update=":formGeneral"
+						actionListener="#{tarifaMB.confirmaEliminarPlanilla}"
+						oncomplete="PF('dlgEliminarPlanilla').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgEliminarPlanilla').hide()" icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>
+						
+		</p:panel>
+		
+		<script>
+		
+		function validarComboFacturacionRep(xhr, status, args) {
+			if (!args.esValido) {
+				PF('dlgNuevoTableroCicloFac').show();
+			} else {
+				PF('dlgNuevoTableroCicloFac').hide();
+			}
+		}			
+		
+		function validarComboPlanillaRep(xhr, status, args) {
+			if (!args.esValido) {
+				PF('dlgNuevoTableroCicloPla').show();
+			} else {
+				PF('dlgNuevoTableroCicloPla').hide();
+			}
+		}
+		
+		function validarFacturacion(xhr, status, args) {
+			if (!args.esValido) {
+				jQuery('#dlgDetNuevoFacturacion').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				PF('dlgNuevoFacturacion').hide();
+			}
+		}
+		
+		function validarPlanilla(xhr, status, args) {
+			if (!args.esValido) {
+				jQuery('#dlgDetNuevoPlanilla').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				PF('dlgNuevoPlanilla').hide();
+			}
+		}
+		
+		function validarPlanillaRep(xhr, status, args) {
+			if (!args.esValido) {
+				jQuery('#dlgDetNuevoTableroCicloPla').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				PF('dlgNuevoTableroCicloPla').hide();
+			}
+		}
+		
+		function validarFacturacionRep(xhr, status, args) {
+			if (!args.esValido) {
+				jQuery('#dlgDetNuevoTableroCicloFac').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				PF('dlgNuevoTableroCicloFac').hide();
+			}
+		}
+		
+		function validarComboFacturacion(xhr, status, args) {
+			if (!args.esValido) {
+				PF('dlgNuevoFacturacion').show();
+				//jQuery('#dlgDetNuevoPlanilla').effect("shake", {
+				//	times : 1
+				//}, 100);
+			} else {
+				PF('dlgNuevoFacturacion').hide();
+			}
+		}
+		
+		function validarComboPlanilla(xhr, status, args) {
+			if (!args.esValido) {
+				PF('dlgNuevoPlanilla').show();
+				//jQuery('#dlgDetNuevoPlanilla').effect("shake", {
+				//	times : 1
+				//}, 100);
+			} else {
+				PF('dlgNuevoPlanilla').hide();
+			}
+		}
+		
+		function abrirEditarFacturacion(xhr, status, args){
+			PF('dlgNuevoFacturacion').show();
+		}
+		
+		function abrirEditarPlanilla(xhr, status, args){
+			PF('dlgNuevoPlanilla').show();
+		}
+		
+		function abrirEliminarFacturacion(){
+			PF('dlgEliminarFacturacion').show();
+		}
+		
+		function abrirEliminarPlanilla(){
+			PF('dlgEliminarPlanilla').show();
+		}
+
+		</script>
+		
+	</ui:define>
+</ui:composition>
+</html>

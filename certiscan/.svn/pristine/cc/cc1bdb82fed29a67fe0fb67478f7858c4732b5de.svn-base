@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.EstadoMapper">
+
+<resultMap id="estadoResult" type="com.certicom.certiscan.domain.Estado">
+	<id column="id_estado" property="id_estado"/>
+	<result column="descripcion" property="descripcion"/>	
+	<result column="estado" property="estado"/>
+	<result column="abreviacion" property="abreviacion"/>
+	<result column="orden" property="orden"/>
+
+</resultMap>
+
+
+</mapper>	

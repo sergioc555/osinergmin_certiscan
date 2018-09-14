@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.MediosMapper">
+
+<resultMap id="mediosResult" type="com.certicom.certiscan.domain.Medios">
+	<id column="id_medio" property="id_medio"/>
+	<result column="descripcion" property="descripcion"/>
+	<result column="total_archivos" property="total_archivos"/>
+	<result column="descripcion_peso" property="descripcion_peso"/>
+	<result column="peso" property="peso"/>
+	<result column="fecha_registro" property="fecha_registro"/>
+</resultMap>
+
+
+</mapper>	

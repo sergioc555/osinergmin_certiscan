@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.CabeceraNombreMapper">
+
+<resultMap id="cabeceraResult" type="com.certicom.certiscan.domain.CabeceraNombre">
+
+	<id column="idcabeceranombre" property="idcabeceranombre" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="descripcion" property="descripcion" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="estado" property="estado" javaType="java.lang.Boolean" jdbcType="BOOLEAN"/>
+	<result column="idcabecera" property="idcabecera" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	
+</resultMap>
+
+
+</mapper>	

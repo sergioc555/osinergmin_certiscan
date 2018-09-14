@@ -1,0 +1,747 @@
+package com.certicom.certiscan.managedBeans;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
+
+import com.certicom.certiscan.commons.Constante;
+import com.certicom.certiscan.commons.FacesUtils;
+import com.certicom.certiscan.commons.GenericBeans;
+import com.certicom.certiscan.commons.Utiles;
+import com.certicom.certiscan.domain.DocumentoPagina;
+import com.certicom.certiscan.domain.Expediente;
+import com.certicom.certiscan.domain.ExpedienteDocumento;
+import com.certicom.certiscan.domain.Log;
+import com.certicom.certiscan.domain.Menu;
+import com.certicom.certiscan.domain.Oficina;
+import com.certicom.certiscan.domain.Usuario;
+import com.certicom.certiscan.services.DocumentoPaginaService;
+import com.certicom.certiscan.services.ExpedienteDocumentoService;
+import com.certicom.certiscan.services.ExpedienteService;
+import com.certicom.certiscan.services.MenuServices;
+import com.certicom.certiscan.services.OficinaService;
+import com.lowagie.text.pdf.PdfReader;
+
+import src.com.certicom.certiscan.utils.ResultBean;
+import src.com.certicom.certiscan.utils.Utils;
+
+@ManagedBean(name="regExp")
+@ViewScoped
+public class RegistrarExpedienteMB extends GenericBeans implements Serializable {
+	
+	private String msj_peso_archivo ="";
+	private String _nro_expediente ="";
+	private String _nro_solicitud ="";
+	private String estado_exp_busqueda ="";
+	
+	private boolean renderedRegistro;
+	private boolean renderedFileUpload;
+	private boolean archivoCargado;
+	private boolean renderedBtnCancel;
+	private boolean renderedBtnNuevaBusqueda;
+	
+	private boolean initFieldsRegistro;
+	private boolean renderedTablaDocumento;
+	
+	private boolean renderedBusqueda;
+	
+	private boolean renderedFilUp;
+	
+	private String desPeso;
+	
+	private Integer nro_archivos_subidos = 0;
+	private Integer nro_archivos_guardados = 0;
+	private Log log;
+	private LogMB logmb;
+	
+	private Long peso_tot_archivo;
+	
+	
+	private List<UploadedFile> archivoCargaList = new LinkedList<UploadedFile>();
+	private List<ExpedienteDocumento> listaDocumentos = new ArrayList<>();
+	
+	private List<ExpedienteDocumento> listaDocumentosRegistrados = new ArrayList<>();
+	private List<ExpedienteDocumento> listaDocumentosRegistradosF;
+	private List<DocumentoPagina> listaPaginas = new ArrayList<>();
+	
+	private ExpedienteService expedienteService;
+	private ExpedienteDocumentoService expedienteDocumentoService;
+	private DocumentoPaginaService documentoPaginaService;
+	private OficinaService oficinaService;
+	
+	private Expediente nuevoExpediente;
+	private ExpedienteDocumento expDocSelected;
+	private boolean pnGVisualizar;
+	
+	
+	@ManagedProperty(value = "#{loginMB.usuario}")
+	private Usuario usuarioLogin;
+	@ManagedProperty(value = "#{loginMB}")
+	private LoginMB login;
+
+	private MenuServices menuServices;
+
+	private List<Oficina> listaOficinas;
+	
+	private List<Expediente> listaExpedientes;
+	private List<Expediente> listaExpedientesFilter;
+	private Integer f_idoficina;
+	private Expediente expedSelected;
+	
+	private String successMessage;
+	
+	private String ipcertiscan ;
+	
+	@PostConstruct
+	public void inicio(){
+		
+		this.ipcertiscan = Constante.IP_certiscan;
+		
+		this.expedienteService = new ExpedienteService();
+		this.expedienteDocumentoService = new ExpedienteDocumentoService();
+		this.documentoPaginaService = new DocumentoPaginaService();
+		this.oficinaService = new OficinaService();
+		
+		this.nuevoExpediente = new Expediente();
+		this.expDocSelected = new ExpedienteDocumento();
+		this.menuServices = new MenuServices();
+		
+		this.renderedRegistro = Boolean.FALSE;
+		this.initFieldsRegistro = Boolean.TRUE;
+		this.renderedFileUpload = Boolean.TRUE;
+		this.renderedTablaDocumento = Boolean.FALSE;
+		this.renderedBtnCancel = Boolean.FALSE;
+		this.renderedBtnNuevaBusqueda = Boolean.FALSE;
+		this.peso_tot_archivo = 0L;
+		this.listaDocumentosRegistrados = new ArrayList<>();
+		this.renderedBusqueda = Boolean.TRUE;		
+		
+		this.pnGVisualizar = Boolean.FALSE;
+		
+		this.renderedFilUp = Boolean.FALSE;
+		log = (Log)getSpringBean(Constante.SESSION_LOG);
+		logmb = new LogMB();
+		if(login.isAdmin()){
+			this.f_idoficina = 0;
+		} else{
+			this.f_idoficina = usuarioLogin.getId_oficina();
+		}
+		//int codMenu;
+		try {
+			//codMenu = menuServices.opcionMenuByPrettyCod("pretty:registrarExpediente");
+			//log.setCod_menu(codMenu);
+			
+			Menu codMenu = menuServices.opcionMenuByPretty("pretty:registrarExpediente");
+			log.setCod_menu(codMenu.getCod_menu().intValue());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		initCombos();
+		initLista();
+		
+	}
+	
+	private void initCombos(){
+		try {
+			this.listaOficinas = oficinaService.findAll();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void initLista(){
+		this.listaExpedientes = new ArrayList<>();
+	}
+	
+	public void activarNuevoRegistro(){
+		initFieldsRegistro =  Boolean.FALSE;
+	}
+	
+	private void limpiarExpediente(){
+		this.nuevoExpediente = new Expediente();
+	}
+	
+	private void limpiarListaArchivos(){
+		this.archivoCargaList = new LinkedList<UploadedFile>();
+		this.listaDocumentos = new ArrayList<>();
+	}
+	
+	
+	public void registrarExpediente(){
+		
+		try {
+			boolean bexep = true;
+			boolean bsoli = true;
+			boolean bbb = true;
+			//this.nuevoExpediente.setFecha_reg(new Date());
+		//	this.nuevoExpediente.setIdusuario(this.usuarioLogin.getIdusuario());
+			
+			//expedienteService.crearExpediente(this.nuevoExpediente);
+			this._nro_expediente = this._nro_expediente.trim();
+			//this._nro_solicitud = this._nro_solicitud.trim();
+			System.out.println("NUMERO EXPEDIENTE " + this._nro_expediente);
+			//System.out.println("NUMERO SOLICITUD " + this._nro_solicitud);
+			
+			this.nuevoExpediente = expedienteService.findByNroExpedientePrepToDigi(_nro_expediente);
+						
+			/*if(this._nro_expediente == ""){
+			FacesUtils.showFacesMessage("El expediente esta vacio", Constante.ERROR);
+			}
+			
+			if(this._nro_solicitud == ""){
+				FacesUtils.showFacesMessage("El solicitud esta vacio", Constante.ERROR);
+				}*/
+			
+			if(this._nro_expediente == null || this._nro_expediente == ""){
+				bexep = false;
+			}
+			
+			/*if(this._nro_solicitud  == null || this._nro_solicitud  == ""){
+				bsoli = false;
+			}*/
+			
+			/*if(bexep && bsoli){
+				bbb = false;
+			}*/
+			
+			if(bexep){
+				bbb = false;
+			}
+			
+			if(!(this.nuevoExpediente== null)){
+			
+				
+				if(this.nuevoExpediente.getExpediente_id() !=0){
+					if(this.nuevoExpediente.getCondicion().equals("ACEPTADO")){
+						System.out.println("ID "+this.nuevoExpediente.getExpediente_id());
+						renderedRegistro = Boolean.TRUE;
+						initFieldsRegistro =  Boolean.TRUE;
+						
+						this.estado_exp_busqueda = nuevoExpediente.getDes_estado();
+						renderedBtnNuevaBusqueda = Boolean.TRUE;
+						
+						
+						this.renderedBusqueda = Boolean.TRUE;
+						this.renderedFilUp = Boolean.FALSE;
+					}else{
+						this.estado_exp_busqueda = "";
+						FacesUtils.showFacesMessage("El expediente ha sido RECHAZADO", Constante.ERROR);
+					}
+				}
+			
+			} else{
+				this.estado_exp_busqueda = "";
+				//FacesUtils.showFacesMessage("No existe el nro de expediente o ya fue digitalizado", Constante.ERROR);
+				
+				if(bbb){
+				
+					if(!bexep){
+					
+						FacesUtils.showFacesMessage("El expediente esta vacio", Constante.ERROR);
+					
+					}
+					
+					/*if(!bsoli){
+					
+						FacesUtils.showFacesMessage("El solicitud esta vacio", Constante.ERROR);
+					
+					}*/
+				
+				}else{
+					
+					FacesUtils.showFacesMessage("No existe el nro de expediente o ya fue digitalizado", Constante.ERROR);
+					
+				}
+				
+				
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			renderedRegistro = Boolean.FALSE;
+		}
+		
+	}
+	
+	public void nuevaBusqueda(){
+		this._nro_expediente ="";
+		//this._nro_solicitud ="";
+		
+		this.renderedRegistro = Boolean.FALSE;
+		this.renderedFileUpload = Boolean.TRUE;
+		this.renderedBtnCancel = Boolean.FALSE;
+		this.renderedTablaDocumento = Boolean.FALSE;
+		
+		this.listaDocumentosRegistrados = new ArrayList<>();
+		
+	    this.nro_archivos_subidos = 0;
+	    this.estado_exp_busqueda = "";
+	    
+	    this.listaDocumentos = new ArrayList<>();
+	    
+	    this.renderedBusqueda = Boolean.FALSE;
+	    this.pnGVisualizar = Boolean.FALSE;
+	    this.peso_tot_archivo = 0L;
+	}
+	
+	public void cargarDocumentos(FileUploadEvent event) throws Exception{
+		RequestContext context = RequestContext.getCurrentInstance();
+		this.archivoCargado = true;
+		
+		/*String fileName  = event.getFile().getFileName();
+		ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+		String newFileName = servletContext.getRealPath("") + File.separator + "upload" +    File.separator+ fileName;*/
+		
+		if(event.getFile() != null) {
+			
+			this.archivoCargaList.add(event.getFile());
+			InputStream c;
+			
+			//c.read().
+			
+			
+			//System.out.println("Ruta del archivo: "+newFileName);
+			
+			ExpedienteDocumento ed = new ExpedienteDocumento();
+			ed.setNombre_archivo(event.getFile().getFileName());
+			ed.setPeso(event.getFile().getSize());
+			ed.setDescripcion_peso(Utils.convertirLongBytes(event.getFile().getSize(), false));
+		//	ed.setId_usuario_creacion(this.usuarioLogin.getIdusuario());
+			
+			//String number = ed.getNombre_archivo().replaceAll("[^0-9]", "");
+			//ed.setOrdenTexto(Integer.parseInt(number));
+			//ed.setOrdenTexto(number);
+			ed.setTexto(ed.getNombre_archivo());
+			
+			ed.setNro_archivo(this.expedienteDocumentoService.getNroArchivoSeq());
+			
+			String extension = ed.getTexto().substring(ed.getTexto().length()-4, ed.getTexto().length());
+			
+			System.out.println("EXTENSIÓN: "+extension);
+			
+			if (extension.equals(".pdf")){
+				ed.setTipo_archivo("PDF");
+				ed.setGrupo_formato("PDF");
+			}else if(extension.equals(".zip")){
+				ed.setTipo_archivo("ZIP");
+				ed.setGrupo_formato("ZIPRAR");
+			}else if(extension.equals(".rar")){
+				ed.setTipo_archivo("RAR");
+				ed.setGrupo_formato("ZIPRAR");
+			}
+			
+			//File temporal3 = File.createTempFile("prefix", ".pdf");
+			File _archivo = File.createTempFile("prefix", ".pdf");
+			
+			  InputStream in = event.getFile().getInputstream();
+			  OutputStream out = new FileOutputStream(_archivo);
+			  byte[] buf = new byte[1024];
+	            int len;
+	             
+	            while ((len = in.read(buf)) > 0) {
+	              out.write(buf, 0, len);
+	            }
+	            
+	            in.close();
+	            out.close();
+	            ed.setFile(_archivo);
+	           
+	           StringBuffer cab = new StringBuffer("Las siguientes paginas del archivo "+  ed.getNombre_archivo() + " no esta entre el rango 15kb-300kb :"); 
+	           StringBuffer bf = new StringBuffer();
+	           
+	            
+//	            System.out.println("PESO DEL ARCHIVO " +_archivo.length());
+//	            PDDocument pdf_doc = PDDocument.load(_archivo);
+//	            pdf_doc.
+//	            PDPage page = pdf_doc.getPage(0);
+//	            System.out.println("pdf box " +pdf_doc.getNumberOfPages());
+//	            System.out.println("ss " + page.getContents().available());
+	           
+	           if(extension.equals(".pdf")){
+	           
+	            PdfReader pf = new PdfReader(new FileInputStream(_archivo));
+	     //     PdfReader subrep = new PdfReader(ExportarArchivo.getPath("resources/1.pdf"));
+	            
+	            for(int i = 0; i < pf.getNumberOfPages(); i++) {
+	            	System.out.println("" + pf.getPageContent(i+1).length + " - " +Utils.convertirLongBytes(pf.getPageContent(i+1).length, false));
+	            	System.out.println("subrep " +pf.getPageContent(i+1).length);
+//	            	subrep.setPageContent(i+1, pf.getPageContent(i+1));
+//	            	subrep.close();
+//	            	System.out.println(subrep.getFileLength());
+	            	DocumentoPagina  dp = new DocumentoPagina();
+	            	dp.setNro_pagina(i+1);
+	            	//this.peso_tot_archivo = this.peso_tot_archivo + Long.valueOf(pf.getPageContent(i+1).length);
+	            	//System.out.println("Peso sumado" + this.peso_tot_archivo);
+	            	dp.setPeso(Long.valueOf(pf.getPageContent(i+1).length));
+	            	dp.setDescripcion_peso(Utils.convertirLongBytes(Long.valueOf(pf.getPageContent(i+1).length), false));
+	           
+	            	ed.getListaPaginas().add(dp);
+	            	dp.setFlag(Boolean.TRUE);
+	            	 /*if(Long.valueOf(pf.getPageContent(i+1).length) < 15000 || Long.valueOf(pf.getPageContent(i+1).length) > 300000){
+	            		 bf.append("pag "+dp.getNro_pagina() + " - " +dp.getDescripcion_peso()+ " ");
+	            		 dp.setFlag(Boolean.FALSE);
+	            	 }*/
+	            	
+	            }
+	            
+//	            PdfStamper stamper;
+//   	            String path;
+//   	            pf.selectPages("1-2");
+//   	            path = String.format("E:/prueba_pdf/pdos-%s.pdf", 5);
+//   	            stamper = new PdfStamper(pf,new FileOutputStream(path));
+//   	            stamper.close();
+	          ed.setNro_paginas(pf.getNumberOfPages());
+	          pf.close();
+	          
+	          }
+	          
+	          System.out.println("documento " +event.getFile().getFileName());
+	          this.listaDocumentos.add(ed);  
+	          this.nro_archivos_subidos=  listaDocumentos.size();
+	          
+	          this.renderedFileUpload = Boolean.FALSE;
+	          if(bf.length()>0){
+	        	  msj_peso_archivo = "";
+	        	  //FacesUtils.showFacesMessage(cab.toString()+" "+ bf.toString(), Constante.ADVERTENCIA);
+	        	  msj_peso_archivo = cab.toString()+" "+ bf.toString();
+//	        	  context.update("cdlPesoArchivos");
+//	        	  context.execute("PF('wcdlPesoArchivos').show()");
+	          }
+	          
+	          this.peso_tot_archivo = this.peso_tot_archivo + ed.getPeso();
+	          
+	          //context.addCallbackParam("valido", Boolean.FALSE);
+		}
+		
+		
+		
+	}
+	
+	public void subirRegistrarDocumentos(){
+		RequestContext context = RequestContext.getCurrentInstance();
+		
+		try {
+			if(listaDocumentos != null && listaDocumentos.size()>0){
+				
+				Collections.sort(listaDocumentos, new Comparator<ExpedienteDocumento>() {
+					@Override
+					public int compare(ExpedienteDocumento o1, ExpedienteDocumento o2) {
+						// TODO Auto-generated method stub
+							return o2.getTexto().compareTo(o1.getTexto());
+					}
+				});
+				
+//				for (ExpedienteDocumento ed : listaDocumentos) {
+//					
+//				}}
+
+				this.nuevoExpediente.setNro_archivos_reg(listaDocumentos.size());
+				
+				
+			
+		 boolean res =	expedienteDocumentoService.insertDocumentosRegistros(this.nuevoExpediente.getExpediente_id(),listaDocumentos, this.usuarioLogin.getIdusuario(),this.nuevoExpediente, log);
+		 
+		 if(res){
+			 	//log.setAccion("INSERT");
+		        //log.setDescripcion("Se registraron los documentos del expediente : "+this.nuevoExpediente.getNro_expediente());
+		        //logmb.insertarLog(log);
+			Utiles.enviarArchivoViaSFTPMasivo(listaDocumentos,this.nuevoExpediente.getRuta_carpeta());
+			context.addCallbackParam("esValido", Boolean.TRUE);
+			 this.nro_archivos_guardados =	this.listaDocumentos.size();
+			limpiarListaArchivos();
+			this.renderedFileUpload = Boolean.TRUE;
+			this.nro_archivos_subidos = 0;
+			
+			listarArchivosRegistrado();
+			this.renderedTablaDocumento = Boolean.TRUE;
+			renderedBtnCancel = Boolean.TRUE;
+			
+			this.renderedFilUp = Boolean.TRUE;
+			
+			this.listaDocumentosRegistrados = this.expedienteDocumentoService.listFilesbyExpediente_id(this.nuevoExpediente.getExpediente_id());
+			
+			this.desPeso = Utils.convertirLongBytes(Long.valueOf(this.peso_tot_archivo), false);
+			
+			context.update("dlgDetSucces");
+			context.execute("PF('dlgSuccess').show()");
+						
+			
+			} else{
+				context.addCallbackParam("esValido", Boolean.FALSE);
+				FacesUtils.showFacesMessage("No se pudo guardar los documentos", Constante.ERROR);
+			}
+
+			} else{
+				context.addCallbackParam("esValido", Boolean.FALSE);
+				FacesUtils.showFacesMessage("Debe seleccionar uno o Varios Archivos", Constante.ERROR);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
+	public void cancelarCarga(){
+		limpiarListaArchivos();
+		this.renderedFileUpload = Boolean.TRUE;
+		this.nro_archivos_subidos = 0;
+		
+		this.renderedRegistro = Boolean.FALSE;
+		this.renderedFilUp = Boolean.FALSE;
+		
+	}
+	
+	
+	public void listarArchivosRegistrado() throws Exception{
+		System.out.println("PASO PASO");
+		this.renderedTablaDocumento = Boolean.TRUE;
+		
+		this.listaDocumentosRegistrados = this.expedienteDocumentoService.listFilesbyExpediente_id(this.nuevoExpediente.getExpediente_id());
+		System.out.println("listaDocumentosRegistrados " + listaDocumentosRegistrados.size());
+		System.out.println("PASO PASO");
+	}
+	
+	
+	public void selecccionarDocumento(ExpedienteDocumento ed){
+		this.pnGVisualizar = Boolean.TRUE;
+		this.expDocSelected = ed;
+	}
+	public void beforeUpload(){  
+		System.out.println("hola"); 
+	}
+	
+	public void buscarPaginas(ExpedienteDocumento ed){
+		this.expDocSelected = ed;
+		try {
+			this.listaPaginas = documentoPaginaService.listByIdExpDoc(expDocSelected.getId_expediente_documento());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void buscarExpedientes(){
+		try {
+			this.listaExpedientes = this.expedienteService.buscarExpedientes(this.f_idoficina);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void setearEliminar(Expediente ex){
+		this.expedSelected = ex;
+	}
+
+
+	public boolean isRenderedRegistro() { return renderedRegistro; 	}
+	public void setRenderedRegistro(boolean renderedRegistro) {	this.renderedRegistro = renderedRegistro;}
+
+	public boolean isRenderedFileUpload() {	return renderedFileUpload; 	}
+	public void setRenderedFileUpload(boolean renderedFileUpload) {	this.renderedFileUpload = renderedFileUpload;	}
+
+	public Expediente getNuevoExpediente() {return nuevoExpediente; }
+	public void setNuevoExpediente(Expediente nuevoExpediente) {this.nuevoExpediente = nuevoExpediente; }
+
+	public Usuario getUsuarioLogin() {	return usuarioLogin; }
+	public void setUsuarioLogin(Usuario usuarioLogin) {	this.usuarioLogin = usuarioLogin; }
+
+	public boolean isArchivoCargado() { return archivoCargado; }
+	public void setArchivoCargado(boolean archivoCargado) { this.archivoCargado = archivoCargado; }
+
+	public List<UploadedFile> getArchivoCargaList() { return archivoCargaList; }
+	public void setArchivoCargaList(List<UploadedFile> archivoCargaList) {this.archivoCargaList = archivoCargaList; }
+
+	public boolean isInitFieldsRegistro() { return initFieldsRegistro; 	}
+
+	public void setInitFieldsRegistro(boolean initFieldsRegistro) { this.initFieldsRegistro = initFieldsRegistro;}
+
+	public Integer getNro_archivos_subidos() { 	return nro_archivos_subidos; }
+
+	public void setNro_archivos_subidos(Integer nro_archivos_subidos) { this.nro_archivos_subidos = nro_archivos_subidos;}
+
+	public boolean isRenderedTablaDocumento() {	return renderedTablaDocumento;	}
+
+	public void setRenderedTablaDocumento(boolean renderedTablaDocumento) {	this.renderedTablaDocumento = renderedTablaDocumento; }
+
+	public List<ExpedienteDocumento> getListaDocumentosRegistrados() {return listaDocumentosRegistrados;}
+
+	public void setListaDocumentosRegistrados(List<ExpedienteDocumento> listaDocumentosRegistrados) {this.listaDocumentosRegistrados = listaDocumentosRegistrados;}
+
+	public List<ExpedienteDocumento> getListaDocumentosRegistradosF() { return listaDocumentosRegistradosF; }
+
+	public void setListaDocumentosRegistradosF(	List<ExpedienteDocumento> listaDocumentosRegistradosF) { this.listaDocumentosRegistradosF = listaDocumentosRegistradosF;	}
+
+	public ExpedienteDocumento getExpDocSelected() { return expDocSelected; }
+
+	public void setExpDocSelected(ExpedienteDocumento expDocSelected) { this.expDocSelected = expDocSelected; }
+
+	public Integer getNro_archivos_guardados() { return nro_archivos_guardados; }
+
+	public void setNro_archivos_guardados(Integer nro_archivos_guardados) { this.nro_archivos_guardados = nro_archivos_guardados;}
+
+	public List<DocumentoPagina> getListaPaginas() { return listaPaginas; }
+
+	public void setListaPaginas(List<DocumentoPagina> listaPaginas) { this.listaPaginas = listaPaginas; }
+
+	public String getMsj_peso_archivo() { return msj_peso_archivo; }
+
+	public void setMsj_peso_archivo(String msj_peso_archivo) { this.msj_peso_archivo = msj_peso_archivo; }
+
+	public String get_nro_expediente() { return _nro_expediente; }
+
+	public void set_nro_expediente(String _nro_expediente) { this._nro_expediente = _nro_expediente;}
+
+	public String getEstado_exp_busqueda() { return estado_exp_busqueda; }
+
+	public void setEstado_exp_busqueda(String estado_exp_busqueda) { this.estado_exp_busqueda = estado_exp_busqueda;}
+
+	public boolean isRenderedBtnCancel() { return renderedBtnCancel; }
+
+	public void setRenderedBtnCancel(boolean renderedBtnCancel) { this.renderedBtnCancel = renderedBtnCancel;}
+
+	public boolean isRenderedBtnNuevaBusqueda() { return renderedBtnNuevaBusqueda; }
+
+	public void setRenderedBtnNuevaBusqueda(boolean renderedBtnNuevaBusqueda) { this.renderedBtnNuevaBusqueda = renderedBtnNuevaBusqueda; }
+
+	public List<Oficina> getListaOficinas() {
+		return listaOficinas;
+	}
+
+	public void setListaOficinas(List<Oficina> listaOficinas) {
+		this.listaOficinas = listaOficinas;
+	}
+
+	public List<Expediente> getListaExpedientes() {
+		return listaExpedientes;
+	}
+
+	public void setListaExpedientes(List<Expediente> listaExpedientes) {
+		this.listaExpedientes = listaExpedientes;
+	}
+
+	public List<Expediente> getListaExpedientesFilter() {
+		return listaExpedientesFilter;
+	}
+
+	public void setListaExpedientesFilter(List<Expediente> listaExpedientesFilter) {
+		this.listaExpedientesFilter = listaExpedientesFilter;
+	}
+
+	public Integer getF_idoficina() {
+		return f_idoficina;
+	}
+
+	public void setF_idoficina(Integer f_idoficina) {
+		this.f_idoficina = f_idoficina;
+	}
+
+	public LoginMB getLogin() {
+		return login;
+	}
+
+	public void setLogin(LoginMB login) {
+		this.login = login;
+	}
+
+	public Expediente getExpedSelected() {
+		return expedSelected;
+	}
+
+	public void setExpedSelected(Expediente expedSelected) {
+		this.expedSelected = expedSelected;
+	}
+
+	public boolean isRenderedBusqueda() {
+		return renderedBusqueda;
+	}
+
+	public void setRenderedBusqueda(boolean renderedBusqueda) {
+		this.renderedBusqueda = renderedBusqueda;
+	}
+
+	public boolean isRenderedFilUp() {
+		return renderedFilUp;
+	}
+
+	public void setRenderedFilUp(boolean renderedFilUp) {
+		this.renderedFilUp = renderedFilUp;
+	}
+
+	public String getSuccessMessage() {
+		return successMessage;
+	}
+
+	public void setSuccessMessage(String successMessage) {
+		this.successMessage = successMessage;
+	}
+
+	public String getIpcertiscan() {
+		return ipcertiscan;
+	}
+
+	public void setIpcertiscan(String ipcertiscan) {
+		this.ipcertiscan = ipcertiscan;
+	}
+
+	public Long getPeso_tot_archivo() {
+		return peso_tot_archivo;
+	}
+
+	public void setPeso_tot_archivo(Long peso_tot_archivo) {
+		this.peso_tot_archivo = peso_tot_archivo;
+	}
+
+	public String getDesPeso() {
+		return desPeso;
+	}
+
+	public void setDesPeso(String desPeso) {
+		this.desPeso = desPeso;
+	}
+
+	public boolean isPnGVisualizar() {
+		return pnGVisualizar;
+	}
+
+	public void setPnGVisualizar(boolean pnGVisualizar) {
+		this.pnGVisualizar = pnGVisualizar;
+	}
+
+	public String get_nro_solicitud() {
+		return _nro_solicitud;
+	}
+
+	public void set_nro_solicitud(String _nro_solicitud) {
+		this._nro_solicitud = _nro_solicitud;
+	}
+	
+	
+	
+	
+}

@@ -1,0 +1,34 @@
+re.host=smtp.gmail.com
+re.port=587
+
+#re.host=mail.certicom.com.pe
+#re.port=25
+
+
+#remitente
+from.mail=pdhycts.certicom@gmail.com
+from.pass=senordelcostado15
+from.mail_prueba=enviosmasivoscerticom@gmail.com
+from.pass_prueba=envios123
+from.mail_b=bhuarcaya@certicom.com.pe
+from.pass_b=123
+from.mail_c=cdavila@certicom.com.pe
+from.pass_c=davila120580
+from.name= 
+
+#destinatario
+to.mail=mundosueldoempresas.pe@bbva.com
+#to.mail=emedina@certicom.com.pe
+to.name=
+
+#
+default.message=Este es un mensaje por defecto
+default.subject=Este es un asunto por defecto
+
+#agregar CCS
+default.ccs=sugaz@certicom.com.pe,carrieta@certicom.com.pe,mbarreto@certicom.com.pe
+#default.ccs=sugaz@certicom.com.pe,pmejia@certicom.com.pe,ylopez@certicom.com.pe,clamadrid@certicom.com.pe
+
+cc.centronegocios=centronegociospersonas.pe@bbva.com
+#cc.centronegocios=emedina@certicom.com.pe
+

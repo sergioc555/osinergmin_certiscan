@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.CategoriaIndicadorMapper">
+
+<resultMap id="categoriaResult" type="com.certicom.certiscan.domain.CategoriaIndicador">
+	<id column="id_categoria" property="id_categoria"/>
+	<result column="descripcion" property="descripcion"/>	
+
+</resultMap>
+
+
+</mapper>	

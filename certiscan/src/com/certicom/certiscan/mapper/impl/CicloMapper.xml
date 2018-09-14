@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.CicloMapper">
+
+<resultMap id="cicloResult" type="com.certicom.certiscan.domain.Ciclo">
+	<id column="cod_ciclo" property="cod_ciclo"/>
+	<result column="mes" property="mes"/>
+	<result column="anio" property="anio"/>
+	<result column="fecini" property="fecini"/>
+	<result column="fecfin" property="fecfin"/>
+	<result column="cod_tipo_ciclo" property="cod_tipo_ciclo"/>
+	<result column="estado" property="estado"/>
+	<result column="flag_tab" property="flag_tab"/>
+</resultMap>
+</mapper>	

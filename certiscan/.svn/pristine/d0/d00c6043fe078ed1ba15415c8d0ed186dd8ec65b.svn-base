@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+			<h:form>
+				<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: 0px">  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Configuracion" url="#" />
+    				<p:menuitem value="Gestion de Estado" url="estado" />   
+				</p:breadCrumb>	
+			</h:form>
+			
+			<!-- sms general -->			
+			<p:messages  id="sms" showDetail="false" showSummary="true"  closable="true"/>		
+			
+			<!-- listado de agencias -->
+			<h:form id="formListaEstado">
+				<br>
+				</br>
+				<p:commandButton value="Nuevo Estado" icon="icon-add" update=":dlgDetNuevo" oncomplete="PF('dlgNuevo').show();"
+				 actionListener="#{estadoMB.nuevoEstado()}" />
+				
+				<p:dataTable widgetVar="dtEstado" var="p" value="#{estadoMB.listaEstado}"  
+					emptyMessage="No hay Estados Disponibles." rowIndexVar="nro" 
+					paginator="true"
+					rows="10" paginatorPosition="bottom" 
+					style="FONT-SIZE: 10px; width:700px">
+					<f:facet name="header">Lista de Estados</f:facet>
+					
+					<p:column headerText="Ord." style="width:20px" >
+						#{nro+1}
+					</p:column>
+					
+					<p:column style="width:300px" headerText="Descripcion"  filterBy="#{p.descripcion}" filterMatchMode="contains" filterStyle="width:95%;">
+						<h:outputText value="#{p.descripcion}" />
+					</p:column>
+					
+					<p:column style="width:50px" headerText="Estado">
+						<p:commandLink update="@form :sms" actionListener="#{estadoMB.cambiarEstado(p)}" > 
+							<h:graphicImage value="#{p.estado?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}" 
+							title="#{p.estado?'Activo':'Bloqueado'}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column style="width:50px" headerText="Orden">
+						<h:outputText value="#{p.orden}" />
+					</p:column>
+					
+					
+					
+
+					
+					
+					<p:column headerText="Editar/Elim." style="width:100px;text-align: center">
+					
+						<p:commandButton title="Editar"  update=":dlgDetNuevo" actionListener="#{estadoMB.editarEstado(p)}"
+										 oncomplete="PF('dlgNuevo').show();" icon="icon-edit">
+						</p:commandButton>
+
+						<p:commandButton title="Eliminar" oncomplete="PF('dlgEliminar').show();" update=":dlgDetEliminar" icon="icon-delete">
+							    <f:setPropertyActionListener target="#{estadoMB.estado}" value="#{p}" />
+						</p:commandButton>
+								
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+			
+			<h:form>
+ </h:form>
+			
+			<!-- #############    Dialogos      ################ -->
+			
+			<!-- dialogo nuevo/editar perfil -->
+			
+			<p:dialog header="Datos de Estado" widgetVar="dlgNuevo" appendTo="@(body)" dynamic="true"
+					  resizable="false" id="dlgDetNuevo" modal="true">
+					
+					<h:form>
+						<p:messages showDetail="false" showSummary="true" id="msgNuevo" closable="true"/>
+						
+						<h:panelGrid columns="2"> 
+						
+						    #{"Descripcion:"}
+							<p:inputText style="width:200px" value="#{estadoMB.estadoSelec.descripcion}" required="true" maxlength="50" requiredMessage="Se necesita Descripcion" />
+
+
+							#{"Orden:"}
+							<p:inputText  onkeypress="return justNumbers(event);" style="width:200px" value="#{estadoMB.estadoSelec.orden}">				
+							<!-- filtrar para numeros -->
+							
+							</p:inputText>
+							
+		                    
+							#{"Estado:"}
+							<p:selectOneMenu style="width:200px" value="#{estadoMB.estadoSelec.estado}" required="true" requiredMessage="Seleccione un Estado">
+								<f:selectItem itemLabel="Seleccione..." itemValue="" />
+								<f:selectItem itemLabel="ACTIVO" itemValue="TRUE" />
+								<f:selectItem itemLabel="DESACTIVO" itemValue="FALSE" />
+							</p:selectOneMenu>
+						
+						</h:panelGrid>
+						<br/>
+						<p:commandButton value="Guardar" actionListener="#{estadoMB.guardarEstado()}"
+									 update=":formListaEstado msgNuevo"
+									 oncomplete="validar(xhr, status, args)" icon="icon-disk" />
+									 
+						<p:commandButton value="Cancelar" type="button"	 onclick="PF('dlgNuevo').hide();"  icon="icon-cancel" />
+					</h:form>	
+			</p:dialog>
+			
+
+			<!-- dialogo eliminar -->	
+			<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)"
+					message="¿Desea eliminar este Estado" header="Eliminar Estado"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					Estado a eliminar: <h:outputText value="#{estadoMB.estado.descripcion}" style="font-size:12px;font-weight: bold;" /> 
+					                    
+					<br/>
+					<p:commandButton value="Eliminar"
+						update=":formListaEstado :sms"
+						actionListener="#{estadoMB.eliminarEstado()}"
+						oncomplete="PF('dlgEliminar').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar"  type="button" 
+						onclick="PF('dlgEliminar').hide()" icon="icon-cancel"/>
+
+				</h:form>
+			</p:confirmDialog>
+		
+		<script>
+			
+		function validar(xhr, status, args) {
+			if (!args.esValido) {
+				jQuery('#dlgDetNuevo').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				//limpiando
+				
+				PF('dlgNuevo').hide();
+			}
+		}
+		function justNumbers(e) {
+			var keynum = window.event ? window.event.keyCode : e.which;
+			if ( keynum == 8 ) return true;
+			return /\d/.test(String.fromCharCode(keynum));
+			}
+		
+		</script>
+		
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.LoteMapper">
+
+<resultMap id="testResult" type="com.certicom.certiscan.domain.Lote">
+	<id column="id_lote" property="id_lote"/>
+	<result column="cod_lote" property="cod_lote"/>
+	<result column="fecha_registro" property="fecha_registro"/>
+	<result column="cantidad_expedientes" property="cantidad_expedientes"/>
+	<result column="estado" property="estado"/>
+</resultMap>
+
+
+</mapper>	

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.CategoriaIndicadoresIndiceMapper">
+
+<resultMap id="categoriaIndicadoresIndiceResult" type="com.certicom.certiscan.domain.CategoriaIndicadoresIndice">
+	<id column="id_categoria_call" property="id_categoria_call" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="descripcion" property="descripcion" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="estado" property="estado" javaType="java.lang.Boolean" jdbcType="BOOLEAN"/>
+	<result column="id_producto" property="id_producto" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+
+</resultMap>
+
+</mapper>	

@@ -1,0 +1,517 @@
+package com.certicom.certiscan.test;
+
+
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
+
+import org.junit.Test;
+
+import src.com.certicom.certiscan.utils.CargaDatos;
+import src.com.certicom.certiscan.utils.Utils;
+
+import com.certicom.certiscan.commons.Constante;
+import com.certicom.certiscan.domain.DocumentoPagina;
+import com.certicom.certiscan.domain.ExpedienteDocumento;
+import com.certicom.certiscan.domain.Tarifa;
+import com.certicom.certiscan.jdbc.dao.Conexion;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+import com.lowagie.text.pdf.PdfReader;
+
+
+
+//clase creada para crear las carpetas desde archivos en  base de datos
+
+
+public class TestCreateExpedienteFile {
+	
+	final static String dir_files = "D://Data/1erEntregable/firmado_papel/PAP_01";
+	final static String RUTA_PREVIA = Constante.RUTA_DIGITILZACION2;
+	final static Integer ID_USURIO = 522;
+	
+	private List<ExpedienteDocumento> listaDocumentos = new ArrayList<>();
+	private List<CargaDatos> listaCargaDatos = new ArrayList<>();
+	
+	//@Test
+	public void create() throws Exception{
+		
+		String HOST = Constante.HOST_SCPF;
+	    Integer PUERTO = Constante.PUERTO_SCPF;
+	    String USUARIO = Constante.USUARIO_SCPF;
+	    String PASSWORD = Constante.PASSWORD_SCPF;
+	    
+	    String RUTA_PREVIA = Constante.RUTA_DIGITILZACION2;
+	    
+	   // File folder = new File(RUTA_PREVIA);
+	    Session miSesion = null;
+	    Channel miCanal = null;
+	    ChannelSftp canalSFTP = null;
+		
+		Connection con = null;
+		Statement st = null;
+		con = Conexion.getConnection();
+		st = con.createStatement();
+		
+		//este query es para recuperar y armar los archivos archivos y carpertas desde base de datos
+		
+		//String sql = " select concat(nro_expediente||'_'||to_char(fecha_documento,'ddmmyyyy')||'_'||to_char(hora_documento,'HH24MI')||'_'||oficina_origen) cadena ";
+		/*String sql = " select temp_dir ";	   
+		sql +=" from t_expediente ";
+		ResultSet rs = st.executeQuery(sql);
+		Integer i = 0;
+		while (rs.next()){
+			System.out.println("carpeta a Crear : "+rs.getString(1));
+			String RUTA = RUTA_PREVIA+rs.getString(1);
+			System.out.println("RUTAAAAAAA: "+RUTA);
+			 try
+		        {
+				 	
+		            JSch jsch = new JSch(); //instancia de jsch
+		            miSesion= jsch.getSession(USUARIO,HOST,PUERTO);//establezco la sesion
+		            miSesion.setPassword(PASSWORD); //le doy la clave
+		            Properties configuracion = new Properties(); //nueva instancia de arch de config.
+		            configuracion.put("StrictHostKeyChecking","no"); //seteo una propiedad
+		            miSesion.setConfig(configuracion);//se la paso a la sesion
+		            //System.out.println("iniciando conexion...");
+		            miSesion.connect();//intento la conexion
+		            miCanal =  miSesion.openChannel("sftp"); //abro un canal sftp
+		            miCanal.connect();//me conecto
+		            canalSFTP = (ChannelSftp)miCanal;//casteo
+		            canalSFTP.cd(RUTA_PREVIA);//exploroe el directorio remoto
+		            //this.rutaImagen=RUTA+archImg.getName();
+		            //archImg.setReadOnly();
+		            canalSFTP.mkdir(RUTA);
+		           // this.rutaCarpeta = RUTA;
+		            //canalSFTP.put(new FileInputStream(folder),this.nuevoExpediente.getNro_expediente());
+		            i++;
+		           
+		        }catch(Exception g){
+		            System.out.println("Transferencia Fallida");
+		            System.out.println("Carpeta "+rs.getString(1) + " no creada");
+		            g.printStackTrace();
+		        }finally {
+		        	
+		            // Cerramos el canal y session
+		            if (canalSFTP.isConnected())
+		                    canalSFTP.disconnect();
+		            if (miSesion.isConnected())
+		                    miSesion.disconnect();
+		        }
+			
+			
+			
+		}
+		System.out.println("Total de carpetas creadas : "+i);
+		*/
+		
+		Session miSesion1 = null;
+		Channel miCanal1 = null;
+		Channel miCanal12 = null;
+		//Channel miCanal11 = null;
+		ChannelSftp canalSFTP1 = null;
+		ChannelExec canalExec = null;
+		
+		InputStream is1 = null;
+		ByteArrayOutputStream osx=new ByteArrayOutputStream(); 
+				
+		 try
+	        {
+			 
+	            JSch jsch1 = new JSch(); //instancia de jsch
+	            miSesion1= jsch1.getSession(USUARIO,HOST,PUERTO);//establezco la sesion
+	            miSesion1.setPassword(PASSWORD); //le doy la clave
+	            Properties configuracion1 = new Properties(); //nueva instancia de arch de config.
+	            configuracion1.put("StrictHostKeyChecking","no"); //seteo una propiedad
+	            miSesion1.setConfig(configuracion1);//se la paso a la sesion
+	            System.out.println("iniciando conexion...");
+	            miSesion1.connect();//intento la conexion
+	            miCanal1 =  miSesion1.openChannel("sftp"); //abro un canal sftp
+	            miCanal12 =  miSesion1.openChannel("exec"); //abro un canal sftp
+	            //miCanal11 =  miSesion1.openChannel("shell"); //abro un canal sftp
+	            miCanal1.connect();//me conecto
+	            canalSFTP1 = (ChannelSftp)miCanal1;//casteo
+	            canalExec = (ChannelExec)miCanal12;
+	            
+	            //canalSFTP.cd(RUTA);//exploroe el directorio remoto
+	            //this.rutaImagen=RUTA+archImg.getName();
+	            //canalSFTP.put(new FileInputStream(archImg),archImg.getName());
+	            
+	            //is1=canalSFTP1.get(obtenerDocumentoSQL(codigo,con));
+	            
+	            /*OutputStream inputstream_for_the_channel = miCanal11.getOutputStream();
+	            PrintStream commander = new PrintStream(inputstream_for_the_channel, true);
+
+	            miCanal11.setOutputStream(null);
+	            miCanal11.connect(100);*/
+	            //shell script
+	            //commander.println("cd /user/home/work ; ./checkstaus.sh ; exit");
+	            //commander.println("cd /opt/documentos ; ./prueba.sh; exit");
+	            //commander.flush();
+	            
+	            String variable1 = "victoria";
+	            Integer variable2 = 127;
+	            
+	            //canalExec.setCommand("cd /opt/prueba ; ./prueba.sh "+variable2+" MedioPrueba.zip");
+	            
+	            //canalExec.setCommand("cd /opt/prueba ; ./prueba.sh "+m.getId_medio()+" "+m.getDescripcion().replace(" ", "")+".zip");
+	            canalExec.setCommand("cd /opt/prueba ; ./crearcarpeta.sh ");
+	            canalExec.connect();
+	            //canalExec.getExitStatus();
+	            
+	            //System.out.println("RESULTADO: "+canalExec.getExitStatus());
+	            
+	            InputStream outputstream_from_the_channel = canalExec.getInputStream();
+	            BufferedReader br = new BufferedReader(new InputStreamReader(outputstream_from_the_channel));
+	            String line = null;
+	            StringBuilder sb = new StringBuilder();
+	            boolean isloginStringPassed = false ;
+
+	            while ((line = br.readLine()) != null) {
+	                    sb.append(line.trim());
+	            }
+	            System.out.println("Result ="+sb.toString());
+	            /*is1=canalSFTP1.get("/opt/prueba/prueba.pdf");
+	            try {
+	                byte[] buffer = new byte[1024];
+	                int count;
+	                while (-1 != (count = is1.read(buffer))) {
+	                	osx.write(buffer, 0, count);
+	                }
+	            } finally {
+	            	data = osx.toByteArray();
+	            	
+	            	is1.read(data);
+	                is1.close();
+	            }*/
+	            
+	        }catch(Exception g){
+	            System.out.println("Transferencia Fallida");
+	            g.printStackTrace();
+	        }finally {
+	        	
+	            // Cerramos el canal y session
+	            if (canalSFTP1.isConnected())
+	                    canalSFTP1.disconnect();
+	            if (miSesion1.isConnected())
+	                    miSesion1.disconnect();
+	        }
+		
+	}
+	
+	@Test
+	public void cargaExpedientes() throws Exception{
+		Connection con = null;
+		 PreparedStatement pst = null;
+		 CallableStatement sp = null;
+		 con = Conexion.getConnection();
+		sp = con.prepareCall("{call insert_t_expediente()}");
+		ResultSet rss = sp.executeQuery();
+		
+		create();
+		generarExpedienteDocumento();
+		agregarDocumentosACarpertas();
+	}
+	
+	public void agregarDocumentosACarpertas() throws Exception{
+		
+		String HOST = Constante.HOST_SCPF;
+	    Integer PUERTO = Constante.PUERTO_SCPF;
+	    String USUARIO = Constante.USUARIO_SCPF;
+	    String PASSWORD = Constante.PASSWORD_SCPF;
+	    
+	    String RUTA_PREVIA = Constante.RUTA_DIGITILZACION2;
+	    
+	   // File folder = new File(RUTA_PREVIA);
+	    Session miSesion = null;
+	    Channel miCanal = null;
+	    ChannelSftp canalSFTP = null;
+		
+		Connection con = null;
+		Statement st = null;
+		con = Conexion.getConnection();
+		st = con.createStatement();		
+		
+		Session miSesion1 = null;
+		Channel miCanal1 = null;
+		Channel miCanal12 = null;
+		//Channel miCanal11 = null;
+		ChannelSftp canalSFTP1 = null;
+		ChannelExec canalExec = null;
+		
+		InputStream is1 = null;
+		ByteArrayOutputStream osx=new ByteArrayOutputStream(); 
+				
+		 try
+	        {
+			 
+	            JSch jsch1 = new JSch(); //instancia de jsch
+	            miSesion1= jsch1.getSession(USUARIO,HOST,PUERTO);//establezco la sesion
+	            miSesion1.setPassword(PASSWORD); //le doy la clave
+	            Properties configuracion1 = new Properties(); //nueva instancia de arch de config.
+	            configuracion1.put("StrictHostKeyChecking","no"); //seteo una propiedad
+	            miSesion1.setConfig(configuracion1);//se la paso a la sesion
+	            System.out.println("iniciando conexion...");
+	            miSesion1.connect();//intento la conexion
+	            miCanal1 =  miSesion1.openChannel("sftp"); //abro un canal sftp
+	            miCanal12 =  miSesion1.openChannel("exec"); //abro un canal sftp
+	            //miCanal11 =  miSesion1.openChannel("shell"); //abro un canal sftp
+	            miCanal1.connect();//me conecto
+	            canalSFTP1 = (ChannelSftp)miCanal1;//casteo
+	            canalExec = (ChannelExec)miCanal12;
+	            
+	            //canalSFTP.cd(RUTA);//exploroe el directorio remoto
+	            //this.rutaImagen=RUTA+archImg.getName();
+	            //canalSFTP.put(new FileInputStream(archImg),archImg.getName());
+	            
+	            //is1=canalSFTP1.get(obtenerDocumentoSQL(codigo,con));
+	            
+	            /*OutputStream inputstream_for_the_channel = miCanal11.getOutputStream();
+	            PrintStream commander = new PrintStream(inputstream_for_the_channel, true);
+
+	            miCanal11.setOutputStream(null);
+	            miCanal11.connect(100);*/
+	            //shell script
+	            //commander.println("cd /user/home/work ; ./checkstaus.sh ; exit");
+	            //commander.println("cd /opt/documentos ; ./prueba.sh; exit");
+	            //commander.flush();
+	            
+	            String variable1 = "victoria";
+	            Integer variable2 = 127;
+	            
+	            //canalExec.setCommand("cd /opt/prueba ; ./prueba.sh "+variable2+" MedioPrueba.zip");
+	            
+	            //canalExec.setCommand("cd /opt/prueba ; ./prueba.sh "+m.getId_medio()+" "+m.getDescripcion().replace(" ", "")+".zip");
+	            canalExec.setCommand("cd /opt/prueba ; ./pasararchivos.sh ");
+	            canalExec.connect();
+	            //canalExec.getExitStatus();
+	            
+	            //System.out.println("RESULTADO: "+canalExec.getExitStatus());
+	            
+	            InputStream outputstream_from_the_channel = canalExec.getInputStream();
+	            BufferedReader br = new BufferedReader(new InputStreamReader(outputstream_from_the_channel));
+	            String line = null;
+	            StringBuilder sb = new StringBuilder();
+	            boolean isloginStringPassed = false ;
+
+	            while ((line = br.readLine()) != null) {
+	                    sb.append(line.trim());
+	            }
+	            System.out.println("Result ="+sb.toString());
+	            /*is1=canalSFTP1.get("/opt/prueba/prueba.pdf");
+	            try {
+	                byte[] buffer = new byte[1024];
+	                int count;
+	                while (-1 != (count = is1.read(buffer))) {
+	                	osx.write(buffer, 0, count);
+	                }
+	            } finally {
+	            	data = osx.toByteArray();
+	            	
+	            	is1.read(data);
+	                is1.close();
+	            }*/
+	            
+	        }catch(Exception g){
+	            System.out.println("Transferencia Fallida");
+	            g.printStackTrace();
+	        }finally {
+	        	
+	            // Cerramos el canal y session
+	            if (canalSFTP1.isConnected())
+	                    canalSFTP1.disconnect();
+	            if (miSesion1.isConnected())
+	                    miSesion1.disconnect();
+	        }
+		
+	}
+	
+	public void generarExpedienteDocumento() throws Exception{		
+
+		 Connection con = null;
+		 PreparedStatement pst = null;
+		 CallableStatement sp = null;
+		 con = Conexion.getConnection();
+		 TestUploadFile t = new TestUploadFile();
+		 File [] files =  t.listFilesAndFolders(dir_files);
+		 
+		 ExpedienteDocumento expDocumento;
+		 
+		 //Integer nro_documento = 123516;
+		 
+		 System.out.println("cantidad de archivos: "+files.length);
+		 
+		 int cantidad = 0;
+		 
+		 for (File file : files){
+			 
+			 expDocumento = new ExpedienteDocumento();
+			 expDocumento.setNombre_archivo(file.getName());
+			 expDocumento.setTexto(file.getName());
+			 expDocumento.setFecha_subida(new Date());
+			 expDocumento.setId_usuario_creacion(522);
+			 expDocumento.setPeso(file.length());
+			 expDocumento.setDescripcion_peso(Utils.convertirLongBytes(file.length(), false));			
+			 expDocumento.setEstado_accion("D");
+			 expDocumento.setEstado(Boolean.TRUE);
+			 //expDocumento.setExpediente_id();
+			 //expDocumento.setNro_archivo(nro_documento++);
+			 expDocumento.setMedio(Boolean.FALSE);
+			
+			 String extension = expDocumento.getTexto().substring(expDocumento.getTexto().length()-4, expDocumento.getTexto().length());
+				
+				//System.out.println("EXTENSIÓN: "+extension);
+				
+				if (extension.equals(".pdf")){
+					expDocumento.setTipo_archivo("PDF");
+					expDocumento.setGrupo_formato("PDF");
+				}else if(extension.equals(".zip")){
+					expDocumento.setTipo_archivo("ZIP");
+					expDocumento.setGrupo_formato("ZIPRAR");
+				}else if(extension.equals(".rar")){
+					expDocumento.setTipo_archivo("RAR");
+					expDocumento.setGrupo_formato("ZIPRAR");
+				}
+				
+		           if(extension.equals(".pdf")){
+		           
+		            PdfReader pf = new PdfReader(new FileInputStream(file));
+		            for(int i = 0; i < pf.getNumberOfPages(); i++) {
+		            	//System.out.println("" + pf.getPageContent(i+1).length + " - " +Utils.convertirLongBytes(pf.getPageContent(i+1).length, false));
+		            	//System.out.println("subrep " +pf.getPageContent(i+1).length);
+		            	DocumentoPagina  dp = new DocumentoPagina();
+		            	dp.setNro_pagina(i+1);
+		            	dp.setPeso(Long.valueOf(pf.getPageContent(i+1).length));
+		            	dp.setDescripcion_peso(Utils.convertirLongBytes(Long.valueOf(pf.getPageContent(i+1).length), false));
+		           
+		            	expDocumento.getListaPaginas().add(dp);
+		            	dp.setFlag(Boolean.TRUE);
+		            	
+		            }
+		            
+		          expDocumento.setNro_paginas(pf.getNumberOfPages());
+		          pf.close();
+		          
+		          }		    
+		           
+			 /*String query = " select  dir, expediente_id, orden_expediente from temp_carga_datos where nombre_pdf = ? ";
+			 pst = con.prepareStatement(query);
+			 pst.setString(1, file.getName());
+			 
+			 ResultSet rs = pst.executeQuery();			 
+	
+			 String dir_temp = "";
+			 while (rs.next()){
+				 dir_temp = rs.getString(1)+"/";
+				 expDocumento.setRuta(RUTA_PREVIA+dir_temp+file.getName());
+				 expDocumento.setExpediente_id(rs.getInt(2));
+				 expDocumento.setOrden_expediente(rs.getInt(3));
+				 //System.out.println("La ruta es : " + RUTA_PREVIA+dir_temp+file.getName());
+				 
+			 }	*/		 
+			 
+			 //expDocumento.setOrden_expediente(null);
+			 listaDocumentos.add(expDocumento);
+			 
+			 //llamo al procedure para el insert
+			 cantidad++;
+			 System.out.println("Nro: "+cantidad);
+		 }	
+		 
+		 
+		 
+		 System.out.println("recibiendo carga datos");
+		 
+		 String query = " select  nombre_pdf, dir, expediente_id, orden_expediente from temp_carga_datos ";
+		 pst = con.prepareStatement(query);
+		 
+		 ResultSet rst = pst.executeQuery();			 
+
+		 String dir_temp = "";
+		 while (rst.next()){
+			 CargaDatos cd = new CargaDatos();
+			 cd.setNombre_archivo(rst.getString(1));
+			 dir_temp = rst.getString(2)+"/";
+			 cd.setRuta(RUTA_PREVIA+dir_temp);
+			 cd.setExpediente_id(rst.getInt(3));
+			 cd.setOrden_expediente(rst.getInt(4));
+			 //System.out.println("La ruta es : " + RUTA_PREVIA+dir_temp+file.getName());
+			 listaCargaDatos.add(cd);
+		 }
+		 
+		 HashMap<String, CargaDatos> hm_carga_datos = new HashMap<String, CargaDatos>();
+		 
+		 for (CargaDatos exp : this.listaCargaDatos) {
+			 hm_carga_datos.put(exp.getNombre_archivo(), exp);
+		 }
+		 
+		 System.out.println("cruzando datos");
+		 
+		 for (ExpedienteDocumento expd : listaDocumentos){
+			 CargaDatos cdt=null;
+			 cdt = (CargaDatos) hm_carga_datos.get(expd.getNombre_archivo());
+			 
+			 if(!(cdt==null)){
+				 expd.setRuta(cdt.getRuta()+expd.getNombre_archivo());
+				 expd.setExpediente_id(cdt.getExpediente_id());
+				 expd.setOrden_expediente(cdt.getOrden_expediente());
+			 }
+		 }
+		 
+		 System.out.println("terminó de cruzar datos");
+		 
+		 for (ExpedienteDocumento ex : listaDocumentos){
+			 
+		 }
+		 
+		 System.out.println("vamos a guardar los expedientes documentos");
+		 
+		  for (ExpedienteDocumento ex : listaDocumentos){
+			  
+			    sp = con.prepareCall("{call insert_expediente_documento(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			    			    
+				sp.setInt(1,ex.getExpediente_id());
+				sp.setString(2, ex.getNombre_archivo());
+				sp.setString(3, ex.getRuta());
+				sp.setInt(4, ex.getId_usuario_creacion());
+				sp.setLong(5, ex.getPeso());
+				sp.setString(6, ex.getDescripcion_peso());
+				sp.setInt(7, ex.getNro_paginas());
+				sp.setString(8, ex.getEstado_accion());
+				sp.setBoolean(9, ex.isEstado());
+				sp.setString(10, ex.getTipo_archivo());
+				sp.setString(11, ex.getGrupo_formato());
+				sp.setBoolean(12, ex.isMedio());
+				sp.setInt(13, ex.getOrden_expediente());				
+				
+				ResultSet rs = sp.executeQuery();			
+			
+		  }
+		 
+		  System.out.println("vamos a generar el tracking");
+		  
+		  sp = con.prepareCall("{call insert_tracking_expedientes()}");
+		  
+		  ResultSet rss = sp.executeQuery();	
+		
+	}
+	
+
+}

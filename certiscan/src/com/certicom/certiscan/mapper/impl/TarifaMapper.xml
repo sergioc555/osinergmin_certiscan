@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.TarifaMapper">
+
+<resultMap id="tarifaResult" type="com.certicom.certiscan.domain.Tarifa">
+	<id column="id_tarifa" property="id_tarifa"/>
+	<result column="descripcion" property="descripcion"/>
+	<result column="costo" property="costo"/>
+	<result column="costo_back" property="costo_back"/>
+	<result column="costo_digitalizador" property="costo_digitalizador"/>
+	<result column="costo_supervisor" property="costo_supervisor"/>
+	<result column="cod_ciclo" property="cod_ciclo"/>
+</resultMap>
+</mapper>	

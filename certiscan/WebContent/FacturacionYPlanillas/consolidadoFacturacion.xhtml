@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+	
+		<p:panel>
+			<h:form>
+				<p:breadCrumb>  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Facturacion y Planillas" url="#" />
+    				<p:menuitem value="Consolidado Facturacion" url="consolidadoFacturacion" />   
+				</p:breadCrumb>	
+			</h:form>
+			<br/>
+			
+			<p:messages  id="msgGeneral" showDetail="false" showSummary="true"  closable="true"/>		
+			
+			<h:form id="formGeneral">
+				<p:panel id="gAction">
+					<h:panelGrid columns="3" >
+					<p:selectOneMenu style="width:270px" value="#{consolidadoFacturacionMB.cod_ciclo_fac}" required="true" requiredMessage="Seleccione un ciclo" >
+											<f:selectItem itemValue="0" itemLabel="--Seleccione--"></f:selectItem>
+											<f:selectItems value="#{consolidadoFacturacionMB.listaCiclosFacturacion}" var="p" itemLabel="#{p.nmes} - #{p.anio} - #{p.nfecini} - #{p.nfecfin}" itemValue="#{p.cod_ciclo}" />
+					</p:selectOneMenu>
+					<p:commandButton value="Buscar" icon="icon-add" update="gAction gResumen"
+									actionListener="#{consolidadoFacturacionMB.listarConsolidadoFacturacion()}"/>
+					<h:commandLink id="imprimir" value="Exportar a Excel"   style="padding: 3px 30px;background: #C0C0C0; text-decoration: none; border: solid 1px #624B1E; font-weight: bold; color: #1C190A">
+	        						<p:dataExporter   type="xls"   target=":formGeneral:dataTableResumen" fileName="Consolidado de Facturacion" />
+    							</h:commandLink>
+					</h:panelGrid>
+					
+				</p:panel>
+				
+						
+							<p:panel id="gResumen">
+								<p:dataTable id="dataTableResumen" var="tc" value="#{consolidadoFacturacionMB.listaConsolidadosFacturacion}" widgetVar="dtResumen" 
+									emptyMessage="Tabla vacia" rowIndexVar="nro" 
+									 style="FONT-SIZE: 10px; ">
+									 <f:facet name="header">Resumen Facturacion Adenda</f:facet>
+									 <p:column headerText="Concepto a Facturar">
+										<h:outputText value="#{tc.desConcepto}" />
+									 </p:column>
+									 <p:column headerText="Cantidad">
+										<h:outputText value="#{tc.cantidadPag}" />
+									 </p:column>
+									 <p:column headerText="Precio sin IGV">
+										<h:outputText value="#{tc.costo_planilla_facturacion}" converter="montoDefaultConverter2Decimal"  />
+									 </p:column>
+									 <p:column headerText="Total a Facturar">
+										<h:outputText value="#{tc.totalFacturar}" converter="montoDefaultConverter2Decimal" />
+									 </p:column>
+									 
+								</p:dataTable>
+								
+							</p:panel>
+						
+			</h:form>
+			
+									
+		</p:panel>
+		
+		<script>
+			
+		
+
+		</script>
+		
+	</ui:define>
+</ui:composition>
+</html>

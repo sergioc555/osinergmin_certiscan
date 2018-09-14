@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.CheckListImagenMapper">
+
+<resultMap id="checkListResult" type="com.certicom.certiscan.domain.CheckListImagen">
+	<id column="id_chk_imagen" property="id_chk_imagen" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="id_checklist" property="id_checklist" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="expediente_id" property="expediente_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="ruta" property="ruta" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="observacion" property="observacion" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="idusuario" property="idusuario" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+</resultMap>
+
+
+</mapper>	

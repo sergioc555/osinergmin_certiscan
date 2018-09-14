@@ -1,0 +1,108 @@
+package com.certicom.certiscan.mapper;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
+import com.certicom.certiscan.commons.Constante;
+import com.certicom.certiscan.domain.Expediente;
+
+public interface ExpedienteMapper {
+
+	@Select("select * from t_expediente bc where bc.expediente_id = #{expediente_id}")
+	public Expediente findById(@Param("expediente_id") Integer expediente_id) throws Exception;
+	
+	@Select("select * from t_expediente bc where bc.nro_expediente = #{nro_expediente} order by 1 desc")
+	public Expediente findByNroExpediente(@Param("nro_expediente") String nroexpediente) throws Exception;
+
+	@Select("select * from t_expediente")
+	public List<Expediente> findAll() throws Exception;
+
+	@Select("select * from t_expediente b where b.periodo = #{periodo} order by nuevo DESC")
+	public List<Expediente> findByPeriodo(@Param("periodo") Date periodo) throws Exception;
+	
+	public List<Expediente> consultaMovimientoExpediente(Expediente filter)throws Exception;
+	
+	public List<Expediente> consultaPreparacionExpediente(Expediente filter)throws Exception;
+	
+	public List<Expediente> consultaDigitalizacionExpediente(Expediente filter)throws Exception;	
+	
+	public List<Expediente> consultaCalidadExpediente(Expediente filter)throws Exception;
+	
+	public List<Expediente> consultaCalidadFedatarioExpediente(Expediente filter)throws Exception;
+	
+	public List<Expediente> consultaReprocesoExpediente(Expediente filter)throws Exception;
+	
+	public List<Expediente> consultaReagruparExpediente(Expediente filter)throws Exception;
+	
+	public List<Expediente> procesaFacturacion(Expediente filter)throws Exception;
+	
+	public List<Expediente> procesaPlanilla(Expediente filter)throws Exception;
+	
+	@Select("select * from t_expediente b  where b.periodo = #{periodo} and b.id_producto=#{id_producto} LIMIT 5")
+	public List<Expediente> buscarExpedientePorPeriodoPorProducto(@Param("periodo") Date periodo, @Param("id_producto") Integer id_producto) throws Exception;
+
+//	@Insert("insert into t_expediente ( cod_banco, tipo_planilla,tipo_cliente,tipo_doc,num_doc,departamento,"
+//			+ "provincia,distrito,direccion,nombre_completo,apellido_paterno,apellido_materno,numero_telefono1,numero_telefono2,"
+//			+ "numero_telefono3,nombre_oficina,cod_oficina,cod_territorio,territorio_ofc,periodo,prestamo_soles,subrogado,"
+//			+ "celular1,celular2,celular3,tca_prestamo,tca_vehicular,observacion,edad,periodo_pago,periodo_vehicular, id_producto) "
+//			+ "values (#{cod_banco},#{tipo_planilla},#{tipo_cliente},#{tipo_doc},#{num_doc},"
+//			+ "#{departamento},#{provincia},#{distrito},#{direccion},#{nombre_completo},#{apellido_paterno},#{apellido_materno},"
+//			+ "#{numero_telefono1},#{numero_telefono2},#{numero_telefono3},#{nombre_oficina},#{cod_oficina},#{cod_territorio},#{territorio_ofc},"
+//			+ "#{periodo},#{prestamo_soles},#{subrogado},#{celular1},#{celular2},#{celular3},#{tca_prestamo},#{tca_vehicular},"
+//			+ "#{observacion},#{edad},#{periodo_pago},#{periodo_vehicular}, #{id_producto})")
+	public void crearExpediente(Expediente expediente) throws Exception;
+	
+	@Select("select * from t_expediente where id_lote = #{id_lote}")
+	public List<Expediente> findByIdLote(@Param("id_lote") Integer id_lote) throws Exception;
+	
+	@Select("select * from t_expediente b where b.nro_expediente = #{nro_expediente} order by b.fecha_reg DESC limit 1")
+	public Expediente findByNroExp(@Param("nro_expediente") String nro_expediente) throws Exception;
+	
+	@Select("select * from t_expediente b where b.nro_expediente = #{nro_expediente} and b.nro_solicitud = #{nro_solicitud} order by b.fecha_reg DESC limit 1")
+	public Expediente findByNroExpNroSol(@Param("nro_expediente") String nro_expediente, @Param("nro_solicitud") String nro_solicitud) throws Exception;
+	
+	
+	/*@Select("select ex.*, es.descripcion as des_estado  from t_expediente ex inner join t_estado es on ex.id_estado = es.id_estado  where ex.nro_expediente = #{nro_expediente} and ex.nro_solicitud = #{nro_solicitud} and ex.id_estado = 3 order by ex.fecha_reg desc limit 1")
+	public Expediente findByNroExpedientePrepToDigi(@Param("nro_expediente") String nroexpediente, @Param("nro_solicitud") String nro_solicitud) throws Exception;*/
+	
+	@Select("select ex.*, es.descripcion as des_estado  from t_expediente ex inner join t_estado es on ex.id_estado = es.id_estado  where ex.nro_expediente = #{nro_expediente} and ex.id_estado = 2 order by ex.fecha_reg desc limit 1")
+	public Expediente findByNroExpedientePrepToDigi(@Param("nro_expediente") String nroexpediente) throws Exception;
+		
+	@Select("select ex.*, es.descripcion as des_estado  from t_expediente ex inner join t_estado es on ex.id_estado = es.id_estado  where ex.nro_expediente = #{nro_expediente} "
+			//+ "	and ex.id_estado = 4 "
+			+ "order by ex.fecha_reg")
+	public Expediente findByNroExpedientePrepToCalidad(@Param("nro_expediente") String nroexpediente) throws Exception;
+	
+	@Select("select ex.*, es.descripcion as des_estado  from t_expediente ex inner join t_estado es on ex.id_estado = es.id_estado  where ex.nro_expediente = #{nro_expediente} and ex.nro_solicitud = #{nro_solicitud}"
+			//+ "	and ex.id_estado = 4 "
+			+ "order by ex.fecha_reg desc limit 1")
+	public Expediente findByNroExpedienteNroSolicitudPrepToCalidad(@Param("nro_expediente") String nroexpediente, @Param("nro_solicitud") String nrosolicitud) throws Exception;	
+	
+	@Update("update t_expediente set id_estado = #{id_estado} where expediente_id =#{expediente_id}")
+	public void updateEstadoExpedientebyId(@Param("id_estado") Integer id_estado,@Param("expediente_id") Integer expediente_id) throws Exception;
+	
+	@Update("update t_expediente set id_estado = #{id_estado}, id_lote = #{id_lote}, cod_lote = #{cod_lote} where expediente_id =#{expediente_id}")
+	public void updateEstados(@Param("id_estado") Integer id_estado, @Param("expediente_id") Integer expediente_id, @Param("id_lote") Integer id_lote, @Param("cod_lote") String cod_lote) throws Exception;
+	
+	@Update("update t_expediente set ruta_carpeta = #{ruta_carpeta} where expediente_id =#{expediente_id}")
+	public void updateRutaCarpetaExpedientebyId(Expediente exp) throws Exception;
+	
+	public List<Expediente> buscarExpedientes(@Param("id_oficina") Integer id_oficina) throws Exception;
+
+	@Delete("delete from t_expediente where expediente_id = #{expediente_id}")
+	@Options(flushCache = true)
+	public void eliminarExpediente(@Param("expediente_id") Integer expediente_id) throws Exception;
+	
+	
+	public List<Expediente> buscarExpedienteTransferencia(Expediente filter)throws Exception;
+	
+	
+
+}

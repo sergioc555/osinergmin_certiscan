@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+	
+				<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: -5px">  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Negocio" url="#" />
+    				<p:menuitem value="Gestion de Producto" url="producto" /> 
+    				<p:menuitem value="Añadir Sub Producto a Producto" url="#" />     
+				</p:breadCrumb>	
+		
+		<p:messages showDetail="false" showSummary="true" id="msgGeneral" closable="true" />		
+			
+		<h:panelGrid columns="2">
+				#{"Producto Seleccionado:"}
+				<h:outputText value=" #{subProductoMB.producto.descripcion}" 
+					style="font-weight:bold;font-size: 1.2em;" />
+		</h:panelGrid>
+		
+		<br/>		
+		<!-- toolbar -->
+		
+		<h:form>
+			<h:panelGrid columns="2">
+				
+					<p:commandButton value="Nuevo Sub-Producto" icon="icon-add" update=":detSubProductoDialog" oncomplete="PF('subProductoDialog').show();"
+						actionListener="#{subProductoMB.nuevoSubProducto()}"/>
+				
+				<p:commandButton value="Regresar" icon="icon-exit" action="pretty:producto" />
+			</h:panelGrid>
+		</h:form>		
+			
+		<br/>
+		
+		<!-- listado de Sub Producto -->
+		<h:form id="frmListaSubProducto">
+
+    			<p:dataTable id="dataTable" var="sp" value="#{subProductoMB.listaSubProducto}" widgetVar="dtSubproducto" 
+					emptyMessage="No hay Estado Disponibles." rowIndexVar="nro" 
+					 style="FONT-SIZE: 10px; width: 60%">
+					<f:facet name="header">Listado de Sub Productos</f:facet>
+    			
+    			
+    			<p:column headerText="Orden" style="width:3%" >
+    				#{nro+1}
+    			</p:column> 
+    			
+				<p:column style="width:30%" headerText="Codigo Work" filterBy="#{sp.codigoBanco}"  sortBy="#{sp.codigoBanco}" filterStyle="width:95%;" filterMatchMode="contains">
+					<h:outputText value="#{sp.codigoBanco}" />
+				</p:column>	  
+				
+				<p:column style="width:30%" headerText="Descripcion" sortBy="#{sp.descripcion}" filterBy="#{sp.descripcion}"  filterStyle="width:95%;" filterMatchMode="contains">
+					<h:outputText value="#{sp.descripcion}" />
+				</p:column>	  
+				
+				<p:column style="width:5%" headerText="Estado">
+				
+					<p:commandLink update=":frmListaSubProducto :msgGeneral" actionListener="#{subProductoMB.cambiarEstado(sp)}"  > 
+						<h:graphicImage value="#{sp.estado?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}" 
+						title="#{sp.estado?'Activo':'Bloqueado'}" />
+					</p:commandLink>
+					
+				</p:column>				
+    					
+				<p:column headerText="Editar/Elim." style="width:10%;text-align: center">
+				
+					<p:commandButton 
+						actionListener="#{subProductoMB.editarSubProducto(sp)}" update=":detSubProductoDialog"
+						oncomplete="PF('subProductoDialog').show();" title="Editar" icon="icon-edit" />
+
+
+					<p:commandButton
+							actionListener="#{subProductoMB.eliminarSubProducto(sp)}"
+							oncomplete="PF('dlgEliminar').show();" title="Eliminar"
+							icon="icon-delete" update=":dlgDetEliminar" />
+		
+				</p:column>
+    			
+    		</p:dataTable>
+   		</h:form>				
+		
+				
+				
+		<!-- dialogo nuevo perfil -->
+		<p:dialog header="Sub Producto" widgetVar="subProductoDialog" appendTo="@(body)"
+					resizable="false" id="detSubProductoDialog" modal="true">
+				
+			<h:form>
+				<p:messages showDetail="false" showSummary="true" id="mgsNuevo" />
+				<h:panelGrid columns="2">
+					Código Workflow:	
+					<p:inputText value="#{subProductoMB.subProductoSelec.codigoBanco}"
+						required="true" maxlength="50" requiredMessage="Se necesita un código de Workflow"
+						style="width:120px;" />	
+						
+					#{"Sub Producto:"}	
+					<p:inputText value="#{subProductoMB.subProductoSelec.descripcion}"
+						required="true" maxlength="50" requiredMessage="Se necesita un nombre de Sub Producto"
+						style="width:200px;" />	
+						
+					#{"Estado:"}
+					<p:selectOneMenu style="width:200px" value="#{subProductoMB.subProductoSelec.estado}" required="true" requiredMessage="Seleccione un Estado">
+						<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+						<f:selectItem itemLabel="ACTIVO" itemValue="TRUE" />
+						<f:selectItem itemLabel="DESACTIVO" itemValue="FALSE" />
+					</p:selectOneMenu>											
+							
+					<p:commandButton value="Grabar" action="#{subProductoMB.insertarSubProducto()}"
+								 oncomplete="validarCampos(xhr, status, args)" update="mgsNuevo :frmListaSubProducto" icon="icon-disk" />
+							
+					<p:commandButton value="Cerrar" onclick="PF('subProductoDialog').hide();" type="button" icon="icon-cancel" />
+							
+				</h:panelGrid>
+			</h:form>
+			<p:messages id="sms" showDetail="true" showSummary="true" />
+		</p:dialog>
+		
+			<!-- dialogo eliminar -->	
+			<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)"
+					message="¿Desea eliminar este SubProducto" header="Eliminar Sub Producto"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+				Sub-Producto a eliminar: 
+				<h:outputText value="#{subProductoMB.subProductoSelec.descripcion}" style="font-size:12px;font-weight: bold;" /> 
+					<br/>
+					<br/>
+					<p:commandButton value="Eliminar"
+						update=":frmListaSubProducto :msgGeneral"
+						actionListener="#{subProductoMB.confirmaEliminar()}"
+						oncomplete="PF('dlgEliminar').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgEliminar').hide()" icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>		
+		
+		<!-- js  -->		
+		<script>
+
+			function validarCampos(xhr, status, args) {  
+    			if(args.validationFailed) {  
+      				jQuery('#detSubProductoDialog').effect("shake", { times:3 }, 100);  
+    			} else {  
+    				PF('subProductoDialog').hide();  
+    			}  
+			}  
+
+		</script>
+				
+
+	</ui:define>
+
+</ui:composition>
+</html>

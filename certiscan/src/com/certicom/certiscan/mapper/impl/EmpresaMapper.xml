@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.EmpresaMapper">
+
+<resultMap id="estadoResult" type="com.certicom.certiscan.domain.Empresa">
+	<id column="id_empresa" property="id_empresa" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="razon_social" property="razon_social" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="ruc" property="ruc" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="estado" property="estado" javaType="java.lang.Boolean" jdbcType="BOOLEAN"/>
+
+</resultMap>
+
+
+</mapper>	

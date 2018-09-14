@@ -1,0 +1,58 @@
+package com.certicom.certiscan.domain;
+
+import java.util.Date;
+
+public class Lote {
+	
+	private Integer id_lote;
+	private String cod_lote;
+	private Date fecha_registro;
+	private Integer cantidad_expedientes;
+	private String estado;
+
+	
+	public Lote(){
+		
+	}
+
+	public Integer getId_lote() {
+		return id_lote;
+	}
+
+	public void setId_lote(Integer id_lote) {
+		this.id_lote = id_lote;
+	}
+
+	public String getCod_lote() {
+		return cod_lote;
+	}
+
+	public void setCod_lote(String cod_lote) {
+		this.cod_lote = cod_lote;
+	}
+
+	public Date getFecha_registro() {
+		return fecha_registro;
+	}
+
+	public void setFecha_registro(Date fecha_registro) {
+		this.fecha_registro = fecha_registro;
+	}
+
+	public Integer getCantidad_expedientes() {
+		return cantidad_expedientes;
+	}
+
+	public void setCantidad_expedientes(Integer cantidad_expedientes) {
+		this.cantidad_expedientes = cantidad_expedientes;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+	
+}

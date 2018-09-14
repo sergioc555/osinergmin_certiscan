@@ -1,0 +1,421 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido" >
+		
+		<style>
+			.ui-picklist-list 
+			.ui-tabs-nav
+			{width:160px!important;}
+			.ui-tabs-selected
+			{background-color:#E6E6E6!important;}
+			.ui-tabs-panels{
+				float:left!important;
+			}
+		</style>
+		
+		<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: -5px">  
+  				<p:menuitem value="Home" url="#" />  
+  				<p:menuitem value="Digitalizacíon" url="#" />
+  				<p:menuitem value="Digitalizacíon Expediente" url="digitalizacionExpediente" />   
+		</p:breadCrumb>	
+	
+		<pe:blockUI   widgetVar="BlockUIWidget">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Registrando Expediente, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    <pe:blockUI   widgetVar="BlockUIWidgetSelect">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Seleccionando espere..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    <pe:blockUI   widgetVar="BlockUIWidgetFileUpLoad">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Cargando Archivos, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+		
+		<p:tabView id="tvDigExp" style="border:none;" >
+					<p:tab title="Digitalizar Expediente">
+					
+				
+		
+					<h:form id="frmAsignacion">
+						<p:messages showDetail="false" showSummary="true" id="msgNuevo" style="font-size:11px;" closable="true" />
+						<p:panel column="8" header="1.- Ingrese el Numero de expediente:" >
+							<h:panelGrid columns="8">
+								
+								
+								
+								Nro Expediente:
+								<p:inputText id="txtNroExpediente" value="#{regExp._nro_expediente}" disabled="#{regExp.renderedBusqueda}"  styleClass="actBusqueda" required="true" requiredMessage="Se necesita un numero de expediente" />
+								Nro Solicitud
+								<p:inputText id="txtNroSolicitud" value="#{regExp._nro_solicitud}" disabled="#{regExp.renderedBusqueda}"  styleClass="actBusqueda" required="true" requiredMessage="Se necesita un numero de solicitud" >
+								<p:ajax event = "blur"></p:ajax>
+								</p:inputText>
+								
+								
+								<p:commandButton value="Buscar Expediente" icon="icon-search" action="#{regExp.registrarExpediente()}" id="cmdConsultar"  style="margin-left: 20px;" styleClass="actBusqueda" disabled="#{regExp.renderedBusqueda}"
+										update=":tvDigExp:frmAsignacion msgNuevo @(.actBusqueda)"  process="@this,txtNroExpediente"   oncomplete="PF('BlockUIWidget').unblock()" onstart="PF('BlockUIWidget').block();"/>
+										
+								<p:commandButton value="Nueva Busqueda" icon="icon-add" action="#{regExp.nuevaBusqueda()}"   style="margin-left: 20px;" disabled=""
+										update=":tvDigExp:frmAsignacion :tvDigExp:fmdt @(.actBusqueda)"  process="@this"   oncomplete="PF('BlockUIWidget').unblock()" onstart="PF('BlockUIWidget').block();"/>		
+										
+								
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<h:outputText  value="Estado:" style="font-weight:bold;font-size: 1.1em;"  />
+								<h:outputText  value="#{regExp.estado_exp_busqueda}"   style="font-weight:bold;font-size: 1.2em;color:blue;"/>
+							</h:panelGrid>
+						</p:panel>
+						
+						<p:panel id="pnSeleccion" header="2.- Proceda a subir uno o varios archivos:"    rendered="#{regExp.renderedRegistro}" >
+							<h:panelGrid columns="9">
+							
+							
+							<p:fileUpload fileUploadListener="#{regExp.cargarDocumentos}"  disabled="#{regExp.renderedFilUp}"  mode="advanced" oncomplete="PF('BlockUIWidgetFileUpLoad').unblock()" onstart="PF('BlockUIWidgetFileUpLoad').block();"
+								update="btnSaveFiles txtTotalFiles msgNuevo cmdLimpiar" allowTypes="/(\.|\/)(pdf)$/" description="Seleccione varios archivos pdf" label="Seleccionar" 
+								id="uploadFile" process="@this" uploadLabel="Subir" cancelLabel="Cancelar" multiple="true" style="font-size:11px; min-width:400px !important;" >
+							</p:fileUpload>
+								
+								<p:commandButton value="Guardar y Subir Archivos" actionListener="#{regExp.subirRegistrarDocumentos()}"   id="btnSaveFiles" widgetVar="wbtnSaveFiles"
+												icon="ui-icon-search"  process="@this" update=":tvDigExp:frmAsignacion :tvDigExp:fmdt"  disabled="#{regExp.renderedFileUpload}"  oncomplete="PF('BlockUIWidget').unblock()" onstart="PF('BlockUIWidget').block();"/>
+								
+								<p:commandButton value="Cancelar " icon="ui-icon-unlocked"  id="cmdLimpiar"  actionListener="#{regExp.cancelarCarga}"  
+									style="margin-left: 20px;" update=":tvDigExp:frmAsignacion @form" disabled="#{regExp.renderedFileUpload}" />
+									
+							<h:panelGrid columns="1">
+									
+							<h:outputText id="txtTotalFiles" style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:green" value="Nro de Archivos A Subir : #{regExp.nro_archivos_subidos}"></h:outputText>
+							<h:outputText id="txtTotalFilesG" style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue" value="Nro de Archivos Subidos : #{regExp.nro_archivos_guardados}"></h:outputText>
+							</h:panelGrid>
+
+							</h:panelGrid>
+							
+							
+							<br/>
+											
+							
+					</p:panel>
+					
+				
+					        
+				</h:form>
+				
+				<h:form id="fmdt">
+					
+				
+												
+					<p:panel id="pnGrilla" header="3.- Archivos cargados del expediente:"  style="width: 70%"  rendered="#{regExp.renderedTablaDocumento}" >
+					
+					<p:dataTable rendered="#{regExp.renderedTablaDocumento}" id="dataTable2" var="p" value="#{regExp.listaDocumentosRegistrados}" widgetVar="dtNegocio" 
+					filteredValue="#{regExp.listaDocumentosRegistradosF}"
+					emptyMessage="No hay Documentos Disponibles" rowIndexVar="nro" 
+					paginator="true" rows="10" paginatorPosition="bottom" style="FONT-SIZE: 10px; width:70% "
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,50,100,300,500,1000">
+										 
+					<f:facet name="header">Lista Documentos Cargados</f:facet>
+					
+					<p:column headerText="Nro."  style="width:15px" >
+						#{nro+1}
+					</p:column>
+
+					<p:column style="width:70%" headerText="Descripcion de la Imagen" filterBy="#{p.nombre_archivo}"  filterStyle="width:90%;" filterMatchMode="contains">
+						<h:outputText value="#{p.nombre_archivo}" />
+					</p:column>						
+					
+					<p:column style="width:10%" headerText="Nro Hojas" filterBy="#{p.nro_paginas}"  filterStyle="width:90%;" filterMatchMode="contains">
+						<h:outputText value="#{p.nro_paginas}" />
+					</p:column>
+					
+					<p:column style="width:10%" headerText="Orden" filterBy="#{p.orden_expediente}" sortBy="#{p.orden_expediente}"  filterStyle="width:90%;" filterMatchMode="contains">
+						<h:outputText value="#{p.orden_expediente}" />
+					</p:column>
+					
+					<p:column style="width:10%" headerText="Peso" >
+						<h:outputText value="#{p.descripcion_peso}" />
+					</p:column>
+					<p:column style="width:25%" headerText="Fecha Subida" >
+						<h:outputText value="#{p.fecha_subida}" >
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" type="date" dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:10%" headerText="Ver Archivo" >
+						<p:commandButton 
+							update=":dlgDetDocumento" actionListener="#{regExp.selecccionarDocumento(p)}"
+							oncomplete="PF('dlgDocumento').show();" title="Ver Documento" icon="icon-search" />
+					</p:column>
+					
+					<p:column style="width:10%" headerText="Ver Páginas" >
+						<p:commandButton 
+							update=":dlgDetPagina" actionListener="#{regExp.buscarPaginas(p)}"
+							oncomplete="PF('dlgPagina').show();" title="Ver Paginas" icon="icon-mant" />
+					</p:column>
+
+				</p:dataTable>
+					</p:panel>
+					</h:form>
+					
+					
+						</p:tab>
+				<p:tab title="Lista de Expedientes">
+				<p:messages showDetail="false" showSummary="true" id="msgLE" style="font-size:11px;" closable="true" />
+				
+				<h:form id="fmBusListExpe">
+				
+				<h:panelGrid columns="3">
+					<h:outputLabel value="Oficina"/>
+					<p:selectOneMenu  value="#{regExp.f_idoficina}" filter="true" filterMatchMode="contains" disabled="#{!loginMB.admin}">	
+						<f:selectItem itemLabel="--TODOS--" itemValue="0"/>
+						<f:selectItems value="#{regExp.listaOficinas}" var="o" itemLabel="#{o.nombre}" itemValue="#{o.id_oficina}" />
+					</p:selectOneMenu>
+					
+					<p:commandButton value="Buscar" icon="icon-search"	update=":tvDigExp:fmListExpe" actionListener="#{regExp.buscarExpedientes}"  />
+											
+				</h:panelGrid>
+				
+				</h:form>
+				
+				<h:form id="fmListExpe">
+				
+				<p:dataTable widgetVar="dtListaExpediente" var="p"
+					value="#{regExp.listaExpedientes}"
+					filteredValue="#{regExp.listaExpedientesFilter}"
+					emptyMessage="No hay Expediente Disponibles." rowIndexVar="nro"
+					paginator="true" rows="20" paginatorPosition="bottom"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,100,200,500,1000" style="FONT-SIZE: 10px; ">
+					<f:facet name="header">Lista de Expedientes Registrados</f:facet>
+
+					<p:column headerText="Orden" width="25" style="width:10px">
+						#{nro+1}
+					</p:column>
+
+					<p:column style="width:70px" headerText="Nro Expediente"
+						filterBy="#{p.nro_expediente}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.nro_expediente}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Nro Solicitud"
+						filterBy="#{p.nro_solicitud}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.nro_solicitud}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Fec. Recepción">
+						<h:outputText value="#{p.fecha_recepcion}">
+							<f:convertDateTime pattern="dd/MM/yyyy" type="date"
+								dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:80px" headerText="Condición"
+						filterBy="#{p.condicion}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.condicion}" />
+					</p:column>
+					
+					<p:column style="width:80px" headerText="Estado"
+						filterBy="#{p.desestado}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.desestado}" />
+					</p:column>
+					
+
+					<p:column style="width:150px" headerText="Usuario"
+						filterBy="#{p.usuario}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.usuario}" />
+					</p:column>
+					
+					<p:column style="width:150px" headerText="Oficina"
+						filterBy="#{p.desOficina}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.desOficina}" />
+					</p:column>
+
+					
+					<p:column headerText="Eliminar" style="width:50px;text-align: center">
+						<p:commandButton rendered="#{p.id_estado eq 3}" actionListener="#{regExp.setearEliminar(p)}" update=":dlgDetEliminar" 
+							oncomplete="PF('dlgEliminar').show();" title="Eliminar"
+							icon="icon-delete" />
+					</p:column> 
+
+				</p:dataTable>
+				
+				
+				</h:form>
+						
+						</p:tab>
+					</p:tabView>
+		
+		<p:dialog header="Visualizacíon de Archivo" widgetVar="dlgDocumento" appendTo="@(body)" position="center" 
+					resizable="false" id="dlgDetDocumento" modal="true" >
+					<h:form id="formDocumento">
+					
+						<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="Archivo : #{regExp.expDocSelected.nombre_archivo}"></h:outputText>
+						
+						
+							<h:panelGrid  style="width:100%" rendered="#{regExp.pnGVisualizar}">
+								<iframe  id="pdfiframe"  name="pdfiframe" height="450px" width="500px" frameborder="0" scrolling="auto" src="http://#{regExp.ipcertiscan}:8080/PDF/web/visor.html?var1=certiscan$#{regExp.expDocSelected.id_expediente_documento}"/>
+							</h:panelGrid>
+						
+						
+						<p:commandButton value="Cerrar" type="button" onclick="PF('dlgDocumento').hide()" icon="icon-cancel" />
+						
+					</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Paginas del Archivo" widgetVar="dlgPagina" appendTo="@(body)" position="center" 
+					resizable="false" id="dlgDetPagina" modal="true" >
+					<h:form id="formPaginas">
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="Archivo : #{regExp.expDocSelected.nombre_archivo}"></h:outputText>
+						
+					<p:dataTable  id="dataTable3" var="p" value="#{regExp.listaPaginas}" widgetVar="wvdataTable3" 
+				
+					emptyMessage="No hay Paginas disponibles" rowIndexVar="nro" 
+					paginator="true" rows="10" paginatorPosition="bottom" style="FONT-SIZE: 10px; width:300px ">
+										 
+					<f:facet name="header">Lista de Páginas</f:facet>
+					
+					<p:column headerText="Ord."  style="width:10%;" >
+						#{nro+1}
+					</p:column>
+					
+					<p:column style="width:30%;" headerText="Pagina" >
+						<h:outputText value="#{p.nro_pagina}" />
+					</p:column>
+					
+					<p:column style="width:30%;" headerText="Peso" >
+						<h:outputText value="#{p.descripcion_peso}" />
+					</p:column>
+					
+					<p:column style="width:30%;" headerText="Flag Pagina " >
+						<h:outputText value="#{p.flag?'Dentro Rango':'Fuera Rango'}" />
+					</p:column>
+					
+
+				</p:dataTable>
+						<p:commandButton value="Cerrar" type="button" onclick="PF('dlgPagina').hide()" icon="icon-cancel" />
+					</h:form>
+		</p:dialog>
+		
+		
+		<p:dialog header="Operación Exitosa" widgetVar="dlgSuccess" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetSucces" modal="true" >
+					<h:form id="fmSucces">
+					
+					<h:panelGrid columns="2">
+					<p:graphicImage url="/resources/img/accept.png" height="50" />
+					
+					<h:panelGroup>
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Proceso de Digitalización correctamente registrado"/>
+					<h:panelGrid columns="4">
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;" value="Expediente:"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{regExp.nuevoExpediente.nro_expediente}"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;" value="Solicitud:"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{regExp.nuevoExpediente.nro_solicitud}"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;;" value="Nro Archivos:"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{regExp.nuevoExpediente.nro_archivos_reg}"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;;" value="Tamaño:"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{regExp.desPeso}"/>
+					</h:panelGrid>
+					</h:panelGroup>
+					</h:panelGrid>
+					
+					<p:commandButton value="Aceptar" type="button" onclick="PF('dlgSuccess').hide()"  />
+					</h:form>
+		</p:dialog>
+		
+		<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)" message="¿Desea eliminar este Expediente?" header="Eliminar Expediente"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					<p:commandButton value="Eliminar"
+						update=":tvDigExp:fmListExpe :tvDigExp:msgLE"
+						actionListener="#{regExp.eliminar}"
+						oncomplete="PF('dlgEliminar').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgEliminar').hide()" icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>
+		
+		<p:confirmDialog id="cdlPesoArchivos" appendTo="@(body)" message="#{regExp.msj_peso_archivo}" header="Archivos cuyos peso de pagina estan fuera de rango" 
+			severity="alert" widgetVar="wcdlPesoArchivos">
+
+				<h:form id="formOmiso" style="text-algin:center">
+				<p:commandButton value="Aceptar" oncomplete="PF('wcdlPesoArchivos').hide();" icon="icon-cancel" />
+				
+			</h:form>
+		</p:confirmDialog>
+		
+		<pe:blockUI  widgetVar="BlockUIWidgetSave">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Guardando Asignación, espere porfavor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    <pe:blockUI  widgetVar="BlockUIWidgetToogle">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Buscando, espere porfavor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    
+	    
+	    <script >  
+	function handleComplete(xhr, status, args) {  
+	    if(args.validationFailed) {  
+	        alert("Validation Failed");  
+	    } else {  
+	        alert("Save:" + args.saved);  
+	    }  
+	}  
+	
+	function justNumbers(e) {
+		var keynum = window.event ? window.event.keyCode : e.which;
+		if ( keynum == 8 ) return true;
+		return /\d/.test(String.fromCharCode(keynum));
+	}
+	
+	function mostrar(ndoc){
+		//if(valida=='0'){
+		//alert("codigo imagen:"+imgId);
+		console.log('ndoc ', ndoc);
+		var cadena = 'DisplayImage?codigo='+ndoc;
+		//alert('imagen cadena'+cadena);
+		//jQuery('#img01').show();
+		jQuery('#img01').attr('data',cadena);
+		//jQuery('#img01').attr('data',cadena);
+		//}				
+	}
+	
+	function deshabilitar(status, args){
+		if(!args.valido) {  
+			PF('wbtnSaveFiles').enable;
+		}
+	}
+	
+</script>
+
+
+
+	</ui:define>
+	
+	
+  
+	
+</ui:composition>
+</html>

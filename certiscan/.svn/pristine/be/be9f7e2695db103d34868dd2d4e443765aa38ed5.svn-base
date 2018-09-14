@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.ClienteMapper">
+
+<resultMap id="clienteResult" type="com.certicom.certiscan.domain.Cliente">
+	<id column="ruc_cliente" property="ruc_cliente" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="razonsocial_cliente" property="razonsocial_cliente" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="direccion_cliente" property="direccion_cliente" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="contacto_cliente" property="contacto_cliente" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="telefono_cliente" property="telefono_cliente" javaType="java.lang.String" jdbcType="VARCHAR"/>
+</resultMap>
+
+
+</mapper>	

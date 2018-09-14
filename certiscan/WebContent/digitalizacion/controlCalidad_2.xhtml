@@ -1,0 +1,978 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	>
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido" >
+		
+		<style>
+			.ui-picklist-list 
+			.ui-tabs-nav
+			{width:160px!important;}
+			.ui-tabs-selected
+			{background-color:#E6E6E6!important;}
+			.ui-tabs-panels{
+				float:left!important;
+			}
+			
+			.column1{width: 15%;height:auto;vertical-align: top;}
+  			.column2{width: 85%;height:auto;vertical-align: top;}
+  			
+  			.column3{width: 10%;height:auto;vertical-align: top;}
+  			.column4{width: 90%;height:auto;vertical-align: top;}
+  			
+  			.et_Subtotales{
+  				font-weight:bold;
+  				font-size: 1.28em;
+  			}
+  			
+  			.et_SubtotalesV{
+  				font-weight:bold;
+  				font-size: 1.28em;
+  				color:blue;
+  			}
+  			
+  			.nombre_Rojo{
+  				font-weight:bold;
+  				font-size: 1.10em;
+  				color:red;
+  			}
+		</style>
+		
+		<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: -5px">  
+  				<p:menuitem value="Home" url="#" />  
+  				<p:menuitem value="Digitalizacíon" url="#" />
+  				<p:menuitem value="Control de Calidad" url="controlCalidad" />   
+		</p:breadCrumb>	
+	
+		<pe:blockUI widgetVar="BlockUIWidget">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Buscando Expediente, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    <pe:blockUI   widgetVar="BlockUIWidgetSelect">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Seleccionando espere..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>	    
+		
+				<p:messages showDetail="false" showSummary="true" id="smsGeneralCC" style="font-size:11px;" closable="true" />				
+				
+				<p:tabView id="tvContCal" style="border:none;" >
+					<p:tab title="Control de Calidad">					
+				
+				<h:form id="fmdt">
+				<p:messages showDetail="false" showSummary="true" id="msgPrinc" style="font-size:11px;" closable="true" />
+					
+				<h:panelGrid columns="2" columnClasses="column1,column2">
+					
+					<h:panelGrid columns="1">
+					<h:panelGrid columns="2">					
+					
+						<p:commandButton value="Nueva Busqueda" icon="icon-add" action="#{controlCalidad.nuevaBusqueda('NB')}" widgetVar="btnNuevo"  disabled="#{controlCalidad.renderedNuevoCancelar}"
+										update="@(.actBusqueda) :tvContCal:fmdt"  process="@this"   oncomplete="PF('BlockUIWidget').unblock()" onstart="PF('BlockUIWidget').block();"/>
+										
+						<p:commandButton value="Cancelar" icon="icon-close" action="#{controlCalidad.nuevaBusqueda('CB')}"  disabled="#{!controlCalidad.renderedNuevoCancelar}"
+										update="@(.actBusqueda) :tvContCal:fmdt"  process="@this"   oncomplete="PF('BlockUIWidget').unblock();" onstart="PF('BlockUIWidget').block();"/>				
+					</h:panelGrid>
+						
+					<h:panelGrid columns="4" id="pnlBusqueda">
+							Nro Exp.:
+						<p:inputText id="txtNroExpediente" value="#{controlCalidad.nuevoExpediente.nro_expediente}" required="true" requiredMessage="Se necesita un numero de expediente" 
+							style="width:100px;" disabled="#{controlCalidad.renderedPnlBusqueda}" styleClass="actBusqueda"/>
+								
+						<p:commandButton value="Buscar" icon="icon-search" action="#{controlCalidad.listarArchivosRegistrado()}"  disabled="#{controlCalidad.renderedPnlBusqueda}" styleClass="actBusqueda"
+										 process="@form" update="fmdt:treeDocumentos pngdd fmdt:info_estado pnlGroupedInfo @(.tc_infoEstado,.actBusqueda) pnlBusqueda"  oncomplete="PF('BlockUIWidget').unblock()" onstart="PF('BlockUIWidget').block();" />
+						<p:commandButton value="Descargar Files" actionListener="#{controlCalidad.descargarArchivos()}" id="downFile" styleClass="actBusqueda" disabled="#{controlCalidad.renderedPnlDescargar}" onclick="PrimeFaces.monitorDownload(start, stop);" ajax="false">
+							<p:fileDownload value="#{controlCalidad.fileExp}" />
+						</p:commandButton>	
+					</h:panelGrid>
+					
+					<h:panelGrid columns="2" id="info_estado" rendered="false">
+						<h:outputText  value="Estado:" style="font-weight:bold;font-size: 1.1em;"  />
+						<h:outputText  value="#{controlCalidad.estado_exp_busqueda}"   style="font-weight:bold;font-size: 1.1em;color:blue;"/>
+						<h:outputText  value="Nro. Archivo Digitalizados:" style="font-weight:bold;font-size: 1.1em;"  />
+						<h:outputText  value="#{controlCalidad.listaDocumentosRegistrados.size()}"   style="font-weight:bold;font-size: 1.1em;color:blue;"/>
+						<h:outputText  value="Archivos Agrupados:"  style="font-weight:bold;font-size: 1.1em;"  />
+						<h:outputText  value="#{controlCalidad._totalAgrupadas}"   style="font-weight:bold;font-size: 1.1em;color:blue;" />
+					</h:panelGrid>					
+					
+					<h:panelGroup id="pngdd">
+					<h:panelGrid columns="2"  rendered="#{controlCalidad.renderedPnlGroup}" >
+						<p:commandButton value="Agrupar" icon="icon-add" action="#{controlCalidad.setearAgruparArchivos()}"  rendered="#{not controlCalidad.renderedBtnAgrup}"
+							process="@this,pg_treeDocumentosGroup" update="pg_treeDocumentos pg_treeDocumentosGroup pngdd pnlBusqueda"  oncomplete="PF('BlockUIWidget').unblock()" onstart="PF('BlockUIWidget').block();"/>
+						
+						<p:commandButton id="btnFGroup" rendered="#{controlCalidad.renderedBtnAgrup}" value="Finalizar Agrupación" icon="icon-search" update=":dlgDetGroupArchivos"
+						actionListener="#{controlCalidad.finalizarAgrupacion(controlCalidad.nodo_archivosSelected)}" 
+							/>
+						<p:commandButton id="btnFCroup" rendered="#{controlCalidad.renderedBtnAgrup}" value="Cancelar Agrupación" icon="icon-cancel" action="#{controlCalidad.cancelarAgruparArchivo()}" 
+							process="@this" update="pngdd pnlBusqueda pg_treeDocumentos pg_treeDocumentosGroup" />								
+						
+						<ui:remove>
+						<p:commandButton value="Seleccionar Todo" icon="ui-icon-check" action="#{controlCalidad.setearAgruparArchivos()}"  rendered="#{not controlCalidad.renderedBtnAgrup}"
+							process="@this,pg_treeDocumentosGroup" update="pg_treeDocumentosGroup pngdd pnlBusqueda"  oncomplete="PF('BlockUIWidget').unblock()" onstart="PF('BlockUIWidget').block();"/>
+						</ui:remove>
+						
+						 <p:selectBooleanButton  rendered="#{controlCalidad.renderedBtnAgrup}" id="value2" value="#{controlCalidad.renderedSelectAllCheckBox}" onLabel="Desmarcar Todos" offLabel="Marcar Todo" onIcon="ui-icon-close" offIcon="ui-icon-check" >
+            				  <p:ajax update="treeDocumentosGroup" listener="#{controlCalidad.marcarOrDesmarcarCheckBox}" />
+        				</p:selectBooleanButton>	
+							
+					</h:panelGrid>
+							</h:panelGroup>
+				
+				<h:panelGroup id="pg_treeDocumentos">
+				<h:panelGrid>				
+				
+				<p:tree id="treeDocumentos"  selectionMode="single" dynamic="true" var="node" value="#{controlCalidad.root}"  selection="#{controlCalidad.nodoSelect}"
+					style="height: 550px;overflow: auto;display: block;width:200px;" rendered="#{controlCalidad.renderedTree}">
+					<p:ajax event="select"  listener="#{controlCalidad.onNodeSelect}" update=":tvContCal:fmdt:pnlFrame :tvContCal:fmdt:info_estado_es"   />
+					<ui:remove>
+					<p:ajax event="contextMenu" listener="#{controlCalidad.onNodeSelect}" oncomplete="PF('ctxMenu').show(currentEvent);"  />
+					</ui:remove>
+					
+					<p:treeNode expandedIcon="icon-open" collapsedIcon="icon-close" >
+						<h:outputText value="#{node.nombre_archivo}" id="lblNode"/> 
+					</p:treeNode>
+				</p:tree>
+				</h:panelGrid>
+				</h:panelGroup>
+				
+				 <p:contextMenu for="treeDocumentos" beforeShow="return true;" widgetVar="ctxMenu" >
+        			<p:menuitem value="Eliminar"   icon="icon-delete"  actionListener="#{controlCalidad.eliminarArchivo}" update="@(.tc_infoEstado)"/>
+        			<p:menuitem value="Reemplazar" icon="icon-replace" actionListener="#{controlCalidad.setearArchivoReem}" oncomplete="PF('dlgReemArchivo').show();"
+        			 update=":dlgDetReemArchivo"/>
+        			 <p:menuitem value="Cambiar Nombre" icon="icon-replace" actionListener="#{controlCalidad.setearCambioNombre}" oncomplete="PF('dlgCNArchivo').show();"
+        			 update=":dlgDetCNArchivo"/>
+        			 <p:menuitem value="Descargar" icon="icon-replace" actionListener="#{controlCalidad.exportarArchivo}" ajax="false"/>
+        			 <p:menuitem value="Insertar Anterior"  icon="ui-icon-circle-arrow-n" actionListener="#{controlCalidad.setearNuevoArchivo('Anterior')}" oncomplete="PF('dlgUploadFile').show();" 
+        			 update=":dlgDetUploadFile"/>
+        			 <p:menuitem value="Insertar Despues"   icon="ui-icon-circle-arrow-s" actionListener="#{controlCalidad.setearNuevoArchivo('Despues')}"  oncomplete="PF('dlgUploadFile').show();" 
+        			 update=":dlgDetUploadFile"/>
+        			 
+        			 <p:menuitem value="Desagrupar"   icon="ui-icon-circle-arrow-s" actionListener="#{controlCalidad.setearDesagrupar}"  oncomplete="PF('dlgDesagrupar').show();" rendered="false" 
+        			 update=":dlgDetDesagrupar"/>
+    			</p:contextMenu>    			
+    			
+    			<h:panelGroup id="pg_treeDocumentosGroup">
+    			<h:panelGrid>
+    			<p:tree id="treeDocumentosGroup" selectionMode="checkbox"  var="node" value="#{controlCalidad.root}" selection="#{controlCalidad.nodo_archivosSelected}" 
+					style="height: 550px;overflow: auto;display: block;width:200px;" rendered="#{controlCalidad.renderedTreeGroup}">
+					<p:ajax event="select"  listener="#{controlCalidad.onNodeSelect}" update=":tvContCal:fmdt:pnlFrame"/>
+					<p:treeNode expandedIcon="icon-open" collapsedIcon="icon-close">
+						<h:outputText value="#{node.nombre_archivo}" id="lblNode"/> 
+					</p:treeNode>
+				</p:tree>
+				</h:panelGrid>
+				</h:panelGroup>
+				
+				</h:panelGrid>				
+				
+				<h:panelGrid columns="1" style="width:100%">
+				
+					
+    			<h:panelGrid columns="13" id="info_estado_es" styleClass="tc_infoEstado">
+    					
+    					<h:panelGrid id="pgCerrarToAppens" rendered="#{controlCalidad.renderedPgCerrar}">
+							<p:commandButton oncomplete="PF('dlgEliminar').show();" update=":dlgDetEliminar"
+								title="Cerrar Expediente" icon="icon-add" value="Cerrar Expediente"/>
+						</h:panelGrid>
+    					
+    					<p:commandButton  rendered="#{controlCalidad.listaDocumentosAgrupados.size() >0}" process="@this"  title="Ver Archivos Agrupados"  icon="icon-search" update=":dlgDetFilesGrouped" oncomplete="PF('dlgFilesGrouped').show();"
+    						actionListener="#{controlCalidad.setearVerFilesGrouped()}"/>
+    					
+    					<!-- <h:panelGrid columns="1" style="margin-top:0px"> -->
+    					
+						<h:panelGrid columns="11" style="margin-top:-20px">
+						<p:graphicImage url="/resources/img/archivosdigitalizados.png" height="20" width="25" title="Número de archivos digitalizados"/>
+						<h:outputText  value="Nro. Archivo Digitalizados:" styleClass="et_Subtotales"  />
+						<h:outputText  value="#{controlCalidad._totalDigitalizados}"   styleClass="et_SubtotalesV" />
+						
+						<p:graphicImage url="/resources/img/archivosagrupados.png" height="20" width="25" title="Número de archivos agrupados"/>
+						<h:outputText  value="Archivos Agrupados:"  styleClass="et_Subtotales"   />
+						<h:outputText  value="#{controlCalidad._totalAgrupadas}"   styleClass="et_SubtotalesV" />
+						
+						<p:graphicImage url="/resources/img/archivospendientesporagrupar.png" height="20" width="25" title="Número de archivos pendientes x agrupar"/>
+						<h:outputText  value="Pendientes x Agrupar:"  styleClass="et_Subtotales"  />
+						<h:outputText  value="#{controlCalidad._totalxAgrupar}"   styleClass="et_SubtotalesV" />
+						
+						<h:outputText  value="Estado:" style="font-weight:bold;font-size: 1.2em;"  />
+						<h:outputText  value="#{controlCalidad.estado_exp_busqueda}"   style="font-weight:bold;font-size: 1.2em;color:blue;"/>
+												
+						<p:graphicImage url="/resources/img/iconfilereplaced.png" height="20" width="25" title="Número de archivos Reemplazados"/>
+						<h:outputText  value="Archivos Reemplazados:" styleClass="et_Subtotales"   />
+						<h:outputText  value="#{controlCalidad._totalDigitalizadosReempl}"  styleClass="et_SubtotalesV"/>
+						
+						<p:graphicImage url="/resources/img/archivoeliminado.png" height="20" width="25" title="Número de archivos Eliminados"/>
+						<h:outputText  value="Archivos Eliminados:"  styleClass="et_Subtotales"   />
+						<h:outputText  value="#{controlCalidad._totalDigitalizadosElim}"   styleClass="et_SubtotalesV" />
+						
+						<p:spacer></p:spacer>
+						
+						<h:panelGrid columns="5" id="navegacion">
+	    					<p:commandButton id="btnAnt" dir="rtr" actionListener="#{controlCalidad.anterior()}" icon="ui-icon-circle-triangle-w" process="@this" update=":tvContCal:fmdt:pnlFrame :tvContCal:fmdt:info_estado_es :tvContCal:fmdt:treeDocumentos" disabled="#{controlCalidad.btnAnterior}"></p:commandButton>
+	    					<p:inputText disabled="#{controlCalidad.txtNumeroPagina}" style="width:18px" id="txtNumero" dir="rtl" value="#{controlCalidad.numero_documento}">
+	    						<p:ajax event="keyup" listener="#{controlCalidad.ingresarNumero}" update=":tvContCal:fmdt:pnlFrame :tvContCal:fmdt:info_estado_es :tvContCal:fmdt:treeDocumentos"/>
+	    					</p:inputText>
+	    					<p:commandButton id="btnSig" dir="rtr" actionListener="#{controlCalidad.siguiente()}" icon="ui-icon-circle-triangle-e" process="@this" update=":tvContCal:fmdt:pnlFrame :tvContCal:fmdt:info_estado_es :tvContCal:fmdt:treeDocumentos" disabled="#{controlCalidad.btnSiguiente}"></p:commandButton>
+	    					<p:remoteCommand name="callRemoteAnterior" actionListener="#{controlCalidad.anterior()}" process="@this" update=":tvContCal:fmdt:pnlFrame :tvContCal:fmdt:info_estado_es :tvContCal:fmdt:treeDocumentos" disabled="#{controlCalidad.btnAnterior}"/>
+	    					<p:remoteCommand name="callRemoteSiguiente" actionListener="#{controlCalidad.siguiente()}" process="@this" update=":tvContCal:fmdt:pnlFrame :tvContCal:fmdt:info_estado_es :tvContCal:fmdt:treeDocumentos" disabled="#{controlCalidad.btnSiguiente}"/>
+    					
+    					</h:panelGrid>
+						<p:spacer></p:spacer>
+						
+							<h:outputLabel value="Documento Actual: " styleClass="nombre_Rojo"/>
+							<h:outputLabel  style="text-align: center" id="txtInformativo" value="#{controlCalidad.nombreArchivo}" styleClass="nombre_Rojo" />
+						
+						</h:panelGrid>						
+						
+						<!-- </h:panelGrid>		-->				
+						
+						<!-- <h:panelGrid columns="2">
+						
+    					</h:panelGrid> -->
+    					
+    					
+				</h:panelGrid>
+								
+				<h:panelGroup id="pnlFrame">
+					<h:panelGrid rendered="#{controlCalidad.renderedFrame}" style="width:100%">
+					<iframe  id="pdfiframe"  name="pdfiframe" height="560px" width="100%" frameborder="0" scrolling="auto" src="http://#{controlCalidad.ipcertiscan}:8080/PDF/web/visor.html?var1=#{controlCalidad.expDocumentoSelected.id_expediente_documento}"/>
+					</h:panelGrid>
+				</h:panelGroup>				
+				
+				<h:panelGroup id="pnlGroupedInfo">
+				
+				<h:panelGrid columns="2" columnClasses="column1,column2">
+				
+				</h:panelGrid>				
+				
+				</h:panelGroup>
+				
+				</h:panelGrid>
+
+				</h:panelGrid>
+				
+					</h:form>
+					
+				</p:tab>
+					
+				<p:tab title="Lista de Expedientes">
+				
+				<p:messages showDetail="false" showSummary="true" id="msgLE" style="font-size:11px;" closable="true" />
+				
+				<h:form id="fmBusListExpe">
+				
+				<h:panelGrid columns="3">
+					<h:outputLabel value="Oficina"/>
+					<p:selectOneMenu  value="#{controlCalidad.f_idoficina}" filter="true" filterMatchMode="contains" disabled="#{!loginMB.admin}">	
+						<f:selectItem itemLabel="--TODOS--" itemValue="0"/>
+						<f:selectItems value="#{controlCalidad.listaOficinas}" var="o" itemLabel="#{o.nombre}" itemValue="#{o.id_oficina}" />
+					</p:selectOneMenu>
+					
+					<p:commandButton value="Buscar" icon="icon-search"	update=":tvContCal:fmListExpe" actionListener="#{controlCalidad.buscarExpedientes}"  />
+						
+				</h:panelGrid>
+				
+				</h:form>
+				
+				<h:form id="fmListExpe">
+				
+				<p:dataTable widgetVar="dtListaExpediente" var="p"
+					value="#{controlCalidad.listaExpedientes}"
+					filteredValue="#{controlCalidad.listaExpedientesFilter}"
+					emptyMessage="No hay Expediente Disponibles." rowIndexVar="nro"
+					paginator="true" rows="20" paginatorPosition="bottom"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,100,200,500,1000" style="FONT-SIZE: 10px; ">
+					<f:facet name="header">Lista de Expedientes Registrados</f:facet>
+
+					<p:column headerText="Orden" width="25" style="width:10px">
+						#{nro+1}
+					</p:column>
+
+					<p:column style="width:70px" headerText="Nro Expediente"
+						filterBy="#{p.nro_expediente}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.nro_expediente}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Fec. Recepción">
+						<h:outputText value="#{p.fecha_recepcion}">
+							<f:convertDateTime pattern="dd/MM/yyyy" type="date"
+								dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:80px" headerText="Condición"
+						filterBy="#{p.condicion}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.condicion}" />
+					</p:column>
+					
+					<p:column style="width:80px" headerText="Estado"
+						filterBy="#{p.desestado}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.desestado}" />
+					</p:column>
+					
+
+					<p:column style="width:150px" headerText="Usuario"
+						filterBy="#{p.usuario}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.usuario}" />
+					</p:column>
+					
+					<p:column style="width:150px" headerText="Oficina"
+						filterBy="#{p.desOficina}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.desOficina}" />
+					</p:column>
+
+					<p:column width="50" headerText="Descargar">
+						<p:commandButton value="DESCARGAR" actionListener="#{controlCalidad.descargarArchivos2(p)}" onclick="PrimeFaces.monitorDownload(start, stop);" ajax="false">
+							<p:fileDownload value="#{controlCalidad.fileExp}" />
+						</p:commandButton>								
+					</p:column>
+					
+					<p:column headerText="Eliminar" style="width:50px;text-align: center">
+						<p:commandButton rendered="#{p.id_estado eq 3}" actionListener="#{controlCalidad.setearEliminar(p)}" update=":dlgDetEliminarExp" 
+							oncomplete="PF('dlgEliminarExp').show();" title="Eliminar"
+							icon="icon-delete" />
+					</p:column>
+					
+				</p:dataTable>
+				
+				
+				</h:form>
+				
+				
+				</p:tab>
+					
+				
+				</p:tabView>
+				
+				<p:confirmDialog id="dlgDetEliminarExp" appendTo="@(body)" message="¿Desea eliminar este Expediente?" header="Eliminar Expediente"
+					severity="alert" widgetVar="dlgEliminarExp">
+				<h:form>
+					<p:commandButton value="Eliminar" 
+						update=":tvContCal:fmListExpe :tvContCal:msgLE"
+						actionListener="#{controlCalidad.eliminar}"
+						oncomplete="PF('dlgEliminarExp').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgEliminarExp').hide()" icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>
+                
+             
+		<p:dialog header="Reemplazar Archivo" widgetVar="dlgReemArchivo" appendTo="@(body)" position="center" resizable="true" id="dlgDetReemArchivo" modal="true">
+			<h:form id="fmReemArchivo">
+			
+			<h:panelGrid columns="2">
+			<h:outputText value="Archivo a Reemplazar:" style="font-weight:bold;font-size: 1.2em;"></h:outputText>
+			<h:outputText  value="#{controlCalidad.expDocumentoSelected.nombre_archivo}" style="font-weight:bold;font-size: 1.2em;color:blue;"></h:outputText>
+			</h:panelGrid>
+			
+			<p:fileUpload fileUploadListener="#{controlCalidad.cargarDocumentosReemplazo}"  
+					update="btnSaveFiles" allowTypes="/(\.|\/)(pdf)$/" description="Seleccione un archivo" label="Seleccionar" 
+					id="uploadFile" process="@this" uploadLabel="Subir" cancelLabel="Cancelar" multiple="true" style="font-size:11px; min-width:400px !important;" >
+			</p:fileUpload>
+			
+			<h:panelGrid columns="2">
+			<p:commandButton value="Guardar y Reemplazar" actionListener="#{controlCalidad.subirArchivoReemplazo()}"   id="btnSaveFiles" update="@(.tc_infoEstado)"
+							 icon="ui-icon-search"  process="@this"  disabled="#{controlCalidad.renderedBtnSave}"  oncomplete="PF('BlockUIWidget').unblock();PF('dlgReemArchivo').hide();" onstart="PF('BlockUIWidget').block();"/>
+								
+			<p:commandButton value="Cancelar " icon="icon-cancel"  type="button"
+						id="cmdLimpiar"  onclick="PF('dlgReemArchivo').hide();"/>
+			</h:panelGrid>				
+			
+			</h:form>	
+		</p:dialog>
+		
+		<p:dialog header="Cambiar Nombre Archivo" widgetVar="dlgCNArchivo" appendTo="@(body)" position="center" resizable="true" id="dlgDetCNArchivo" modal="true">
+			<h:form id="fmCNArchivo">
+			
+			<h:panelGrid columns="2">
+			<h:outputText value="Nombre Actual del Archivo:" style="font-weight:bold;font-size: 1.2em;"></h:outputText>
+			<h:outputText  value="#{controlCalidad.expDocumentoSelected.nombre_archivo}" style="font-weight:bold;font-size: 1.2em;color:blue;"></h:outputText>
+			</h:panelGrid>
+			<h:panelGrid columns="2">
+			#{'Nombre Archivo:'}
+			<p:inputText value="#{controlCalidad.nuevoNombre}" style="width:260px">
+			<p:ajax event="blur"></p:ajax>
+			</p:inputText>
+			</h:panelGrid>
+			<h:panelGrid columns="2">
+			<p:commandButton value="Cambiar Nombre" actionListener="#{controlCalidad.cambiarNombreArchivo()}"   id="btnSaveFiles" update=":tvContCal:fmdt @(.tc_infoEstado)"
+							 icon="ui-icon-search"  process="@this" oncomplete="PF('BlockUIWidget').unblock();PF('dlgCNArchivo').hide();" onstart="PF('BlockUIWidget').block();"/>
+								
+			<p:commandButton value="Cancelar " icon="icon-cancel"  type="button"
+						id="cmdLimpiar"  onclick="PF('dlgCNArchivo').hide();"/>
+			</h:panelGrid>				
+			
+			</h:form>	
+		</p:dialog>
+		
+		
+		<p:dialog header="Insertar #{controlCalidad.tipOperacion_NewFile}" widgetVar="dlgUploadFile" appendTo="@(body)" position="center" resizable="true" id="dlgDetUploadFile" modal="true">
+			<h:form id="fmUploadFile">
+			
+			<h:panelGrid columns="2">
+			<h:outputText value="Archivo a Cargar #{controlCalidad.tipOperacion_NewFile}:" style="font-weight:bold;font-size: 1.2em;"></h:outputText>
+			<h:outputText  value="#{controlCalidad.expDocumentoSelected.nombre_archivo}" style="font-weight:bold;font-size: 1.2em;color:blue;"></h:outputText>
+			</h:panelGrid>
+			
+			<p:fileUpload fileUploadListener="#{controlCalidad.cargarDocumentosNuevoArchivo}"  
+					update="btnSaveFileUF" allowTypes="/(\.|\/)(pdf)$/" description="Seleccione un archivo" label="Seleccionar" 
+					id="uploadFileUF" process="@this" uploadLabel="Subir" cancelLabel="Cancelar" multiple="true" style="font-size:11px; min-width:400px !important;" >
+			</p:fileUpload>
+			
+			<h:panelGrid columns="2">
+			<p:commandButton value="Guardar y Reemplazar" actionListener="#{controlCalidad.subirNuevoArchivo()}"   id="btnSaveFileUF" update="@(.tc_infoEstado)"
+							 icon="ui-icon-search"  process="@this"    disabled="#{controlCalidad.renderedBtnSave}"  oncomplete="PF('BlockUIWidget').unblock();PF('dlgUploadFile').hide();" onstart="PF('BlockUIWidget').block();"/>
+								
+			<p:commandButton value="Cancelar " icon="icon-cancel"  type="button"
+						id="btnCancelarUF"  onclick="PF('dlgUploadFile').hide();"/>
+			</h:panelGrid>				
+			
+			</h:form>	
+		</p:dialog>
+		
+		
+		<p:dialog header="Archivos Agrupados" widgetVar="dlgFilesGrouped" appendTo="@(body)" position="center" resizable="true" id="dlgDetFilesGrouped" modal="true">
+			<h:form id="fmFilesGrouped">
+			
+			<h:panelGrid columns="2" columnClasses="column1,column2">
+			
+			<p:dataTable value="#{controlCalidad.listaDocumentosAgrupados}" var="p"  rowIndexVar="nro"  style="width:400px;font-size:10px" 
+				selection="#{controlCalidad.selectedExpDocGropuped}" selectionMode="single" rowKey="#{p.id_expediente_documento}" emptyMessage="No hay archivos Agrupados">
+				<p:ajax event="rowSelect" listener="#{controlCalidad.onRowSelect1}"  update=":fmFilesGrouped:pnlFrameGrouped"/>
+       			 <f:facet name="header">
+            		Archivos Agrupados
+        		</f:facet>
+					<p:column headerText="Ord."  style="width:5%" >
+						#{nro+1}
+					</p:column>
+
+					<p:column style="width:60%" headerText="Archivo" >
+						<h:outputText value="#{p.nombre_archivo}" />
+					</p:column>	
+					
+					<p:column style="width:20%" headerText="Nro Hojas" >
+						<h:outputText value="#{p.nro_paginas}" />
+					</p:column>	
+					
+					<p:column style="width:15%" headerText="Desagrupar" >
+					<p:commandButton  process="@this"  actionListener="#{controlCalidad.setearDesagrupar(p)}"  oncomplete="PF('dlgDesagrupar').show();" 
+        			 update=":dlgDetDesagrupar"  title="Desagrupar" icon="icon-delete" />
+					</p:column>	
+        		
+    			</p:dataTable>
+    			
+    			
+    			<h:panelGroup  id="pnlFrameGrouped">
+				<h:panelGrid rendered="#{controlCalidad.renderedVisorGrouped}" style="width:700px">
+					<iframe  id="pdfiframe4"  name="pdfiframe4" height="400px" width="700px" frameborder="0" scrolling="auto" src="http://#{controlCalidad.ipcertiscan}:8080/PDF/web/visor.html?var1=#{controlCalidad.selectedExpDocGropuped.id_expediente_documento}"/>
+				</h:panelGrid>
+				</h:panelGroup>
+    			
+    			</h:panelGrid>
+			
+			
+			
+			<h:panelGrid columns="2">
+			<p:commandButton value="Cerrar" icon="icon-cancel"  type="button" id="btnCancelarFlG"  onclick="PF('dlgFilesGrouped').hide();"/> 
+			</h:panelGrid>				
+			
+			</h:form>	
+		</p:dialog>
+
+		
+		<p:dialog header="Desagrupar Archivos" widgetVar="dlgDesagrupar" appendTo="@(body)" position="center" resizable="true" id="dlgDetDesagrupar" modal="true">
+			<h:form id="fmDesagrupar">
+			
+			<h:panelGrid columns="2">
+			<h:outputText value="Archivo a Desagrupar:" style="font-weight:bold;font-size: 1.2em;"></h:outputText>
+			<h:outputText  value="#{controlCalidad.expDocumentoSelected.nombre_archivo}" style="font-weight:bold;font-size: 1.2em;color:blue;"></h:outputText>
+			</h:panelGrid>
+			
+			<h:panelGrid columns="2" columnClasses="column3,column4">
+			
+			<p:dataTable value="#{controlCalidad.listArchivosHijos}" id="dtListArchivosSelected" var="p"  rowIndexVar="nro"  style="width:400px;" 
+				selection="#{controlCalidad.selectedExpDocHijo}" selectionMode="single" rowKey="#{p.id_expediente_documento}"	>
+				<p:ajax event="rowSelect" listener="#{controlCalidad.onRowSelectHijo}" update=":fmDesagrupar:pnlFrameDSGroup" />
+       			 <f:facet name="header">
+            		Archivos que se Agruparon
+        		 </f:facet>
+					<p:column headerText="Orden"  style="width:7px" >
+						#{nro+1}
+					</p:column>
+
+					<p:column style="width:50px" headerText="Archivos" >
+						<h:outputText value="#{p.nombre_archivo}" />
+					</p:column>
+					
+					<p:column style="width:40px" headerText="Descripción del Archivo" >
+						<h:outputText value="#{p.descripcion_archivo}" />
+					</p:column>
+					
+					<p:column style="width:7px" headerText="Eliminar" >
+						<p:commandButton  process="@this" actionListener="#{controlCalidad.removerArchivoSeleccionado(p)}" 
+						update=":fmDesagrupar:dtListArchivosSelected :fmDesagrupar:pnlFrameDSGroup :fmFilesGrouped
+								:tvContCal:fmdt:pg_treeDocumentos :tvContCal:fmdt:pg_treeDocumentosGroup :tvContCal:fmdt:pnlBusqueda :tvContCal:fmdt:info_estado :tvContCal:fmdt:pnlGroupedInfo @(.tc_infoEstado)"
+							 title="Eliminar" icon="icon-delete" />
+					</p:column>		
+        		
+    		</p:dataTable>
+    		
+    		<h:panelGroup  id="pnlFrameDSGroup">
+    			<h:panelGrid columns="7" id="navegacion3">
+				
+	    					<p:commandButton id="btnAntDesAgr" dir="rtr" actionListener="#{controlCalidad.anteriorDesAgr()}" icon="ui-icon-circle-triangle-w" process="@this" update=":fmDesagrupar:pnlFrameDSGroup" disabled="#{controlCalidad.btnAnteriorDesAgr}"></p:commandButton>
+	    					<p:inputText disabled="#{controlCalidad.txtNumeroPaginaDesAgr}" style="width:18px" id="txtNumeroDesAgr" dir="rtl" value="#{controlCalidad.numero_documentoDesAgr}">
+	    						<p:ajax event="keyup" listener="#{controlCalidad.ingresarNumeroDesAgr}" update=":fmDesagrupar:pnlFrameDSGroup"/>
+	    					</p:inputText>
+	    					<p:commandButton id="btnSigDesAgr" dir="rtr" actionListener="#{controlCalidad.siguienteDesAgr()}" icon="ui-icon-circle-triangle-e" process="@this" update=":fmDesagrupar:pnlFrameDSGroup" disabled="#{controlCalidad.btnSiguienteDesAgr}"></p:commandButton>
+	    					<h:outputLabel value="Documento Actual: " styleClass="nombre_Rojo"/>
+							<h:outputLabel  style="text-align: center" value="#{controlCalidad.nombreArchivoDesAgr}" styleClass="nombre_Rojo" />    
+							<p:remoteCommand name="callRemoteAnteriorDesAgr" actionListener="#{controlCalidad.anteriorDesAgr()}" update=":fmDesagrupar:pnlFrameDSGroup" process="@this" disabled="#{controlCalidad.btnAnteriorDesAgr}"/>
+	    					<p:remoteCommand name="callRemoteSiguienteDesAgr" actionListener="#{controlCalidad.siguienteDesAgr()}"  update=":fmDesagrupar:pnlFrameDSGroup" process="@this" disabled="#{controlCalidad.btnSiguienteDesAgr}"/>					
+    			</h:panelGrid>
+				<h:panelGrid rendered="#{controlCalidad.renderedVisorHijo}" style="width:700px">
+					<iframe  id="pdfiframe3"  name="pdfiframe3" height="400px" width="700px" frameborder="0" scrolling="auto" src="http://#{controlCalidad.ipcertiscan}:8080/PDF/web/visor.html?var1=#{controlCalidad.selectedExpDocHijo.id_expediente_documento}"/>
+				</h:panelGrid>
+			</h:panelGroup>
+			
+			</h:panelGrid>
+    		
+			<h:panelGrid columns="2">
+			<p:commandButton value="Desagrupar" actionListener="#{controlCalidad.desagruparArchivo()}"   id="btnSaveFileUF" update="@(.tc_infoEstado) :fmFilesGrouped"
+							 icon="ui-icon-search"  process="@this"   oncomplete="PF('BlockUIWidget').unblock();PF('dlgDesagrupar').hide();" onstart="PF('BlockUIWidget').block();"/>
+								
+			<p:commandButton value="Cancelar " icon="icon-cancel"  type="button"
+						id="btnCancelarUF"  onclick="PF('dlgDesagrupar').hide();"/>
+			</h:panelGrid>				
+			
+			</h:form>	
+		</p:dialog>
+		
+		
+		
+		
+		<p:dialog header="Agrupar Archivos" widgetVar="dlgGroupArchivos" appendTo="@(body)" position="center" resizable="true" id="dlgDetGroupArchivos" modal="true">
+			<h:form id="fmGroupArchivo">
+			<p:growl id="msgs" showDetail="true"/>
+			<p:messages showDetail="false" showSummary="true" id="msgGroupArchivo" style="font-size:11px;" closable="true" />
+			
+			<h:panelGrid columns="2">
+				<h:outputText value="Nro Archivos Seleccionados:" style="font-weight:bold;font-size: 1.3em;"></h:outputText>
+				<h:outputText  value="#{controlCalidad.nro_archivos_selected}" style="font-weight:bold;font-size: 1.1em;color:blue;"></h:outputText>
+			</h:panelGrid>
+			
+    		<h:panelGrid columns="2" columnClasses="column3,column4">
+    		
+    		<h:panelGroup>
+    		<h:outputText value="Nombre del Archivo: " style="font-weight:bold;font-size: 1.1em;"/>
+    		
+    		<p:inputText id="txtNameFile" value="#{controlCalidad.nombreArchivoAgrupado}" required="true" requiredMessage="Se necesita un nombre de archivo" style="width:120px;"/>
+    		<h:outputText value=".pdf" style="font-weight:bold;font-size: 1.1em;color:blue"/>	
+			
+			<p:dataTable value="#{controlCalidad.listArchivosSelected}" editMode="cell" editable="true" var="p"  rowIndexVar="nro" id="dtFileToGroup"
+			selection="#{controlCalidad.selectedExpDocGropuped}" selectionMode="single" rowKey="#{p.id_expediente_documento}"
+			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="10,20" rows="10" paginator="true" paginatorPosition="bottom" 
+			style="width:400px;font-size:10px;">
+       			 <f:facet name="header">
+            		Archivos Seleccionados
+        		</f:facet>
+        		<p:ajax event="rowSelect" listener="#{controlCalidad.onRowSelect}" update=":fmGroupArchivo:pnlFrameGropup" />
+        		<p:ajax event="cellEdit" listener="#{controlCalidad.onCellEdit}" update=":fmGroupArchivo:msgs" />
+					<p:column headerText="Ord."  style="width:10%" >
+						#{nro+1}
+					</p:column>
+
+					<p:column style="width:60%" headerText="Archivos" >
+						<h:outputText value="#{p.nombre_archivo}" />
+					</p:column>
+					
+					<p:column style="width:60%" headerText="Descripcion" >
+						<p:cellEditor>
+                  			<f:facet name="output"><h:outputText value="#{p.descripcion_archivo}" /></f:facet>
+                  			<f:facet name="input"><p:inputText id="modelInput" value="#{p.descripcion_archivo}" style="width:96%"/></f:facet>
+              			</p:cellEditor>
+						<!-- <h:outputText value="#{p.descripcion_archivo}" /> -->
+					</p:column>
+					
+					<p:column style="width:20%" headerText="Nro hojas" >
+						<h:outputText value="#{p.nro_paginas}" />
+					</p:column>
+					
+					<p:column style="width:15%" headerText="Eliminar" >
+						<p:commandButton rendered="#{controlCalidad.listArchivosSelected.size() gt 1}" process="@this"   actionListener="#{controlCalidad.removerArchivoAgrupar(p)}" update=":fmGroupArchivo:dtFileToGroup" 
+							 title="Eliminar"
+							icon="icon-delete" />
+					</p:column>
+							
+        		
+    		</p:dataTable>
+    		</h:panelGroup>
+							
+			<h:panelGroup  id="pnlFrameGropup">
+				<h:panelGrid columns="7" id="navegacion2">
+				
+	    					<p:commandButton id="btnAntAgr" dir="rtr" actionListener="#{controlCalidad.anteriorAgr()}" icon="ui-icon-circle-triangle-w" process="@this" update=":fmGroupArchivo:pnlFrameGropup" disabled="#{controlCalidad.btnAnteriorAgr}"></p:commandButton>
+	    					<p:inputText disabled="#{controlCalidad.txtNumeroPaginaAgr}" style="width:18px" id="txtNumeroAgr" dir="rtl" value="#{controlCalidad.numero_documentoAgr}">
+	    						<p:ajax event="keyup" listener="#{controlCalidad.ingresarNumeroAgr}" update=":fmGroupArchivo:pnlFrameGropup"/>
+	    					</p:inputText>
+	    					<p:commandButton id="btnSigAgr" dir="rtr" actionListener="#{controlCalidad.siguienteAgr()}" icon="ui-icon-circle-triangle-e" process="@this" update=":fmGroupArchivo:pnlFrameGropup" disabled="#{controlCalidad.btnSiguienteAgr}"></p:commandButton>
+	    					<h:outputLabel value="Documento Actual: " styleClass="nombre_Rojo"/>
+							<h:outputLabel  style="text-align: center" value="#{controlCalidad.nombreArchivoAgr}" styleClass="nombre_Rojo" />   
+							<p:remoteCommand name="callRemoteAnteriorAgr" actionListener="#{controlCalidad.anteriorAgr()}" process="@this" update=":fmGroupArchivo:pnlFrameGropup" disabled="#{controlCalidad.btnAnteriorAgr}"/>
+	    					<p:remoteCommand name="callRemoteSiguienteAgr" actionListener="#{controlCalidad.siguienteAgr()}" process="@this" update=":fmGroupArchivo:pnlFrameGropup" disabled="#{controlCalidad.btnSiguienteAgr}"/>	 					
+    			</h:panelGrid>
+				<h:panelGrid rendered="#{controlCalidad.renderedVisorGrouped}" style="width:700px">
+					<iframe  id="pdfiframe2"  name="pdfiframe2" height="400px" width="700px" frameborder="0" scrolling="auto" src="http://#{controlCalidad.ipcertiscan}:8080/PDF/web/visor.html?var1=#{controlCalidad.selectedExpDocGropuped.id_expediente_documento}"/>
+				</h:panelGrid>
+			</h:panelGroup>
+			</h:panelGrid>
+						
+			<h:panelGrid columns="2">
+			
+			<p:commandButton value="Agrupar Archivos" actionListener="#{controlCalidad.agruparArchivos()}"   
+							 id="btnSaveFiles" widgetVar="wvSaveFiles" icon="ui-icon-search"  process="@this,txtNameFile"  
+							 update="msgGroupArchivo :tvContCal:fmdt:pg_treeDocumentos :tvContCal:fmdt:pg_treeDocumentosGroup :tvContCal:fmdt:pnlBusqueda :tvContCal:fmdt:info_estado :tvContCal:fmdt:pnlGroupedInfo @(.tc_infoEstado)" 
+							 oncomplete="PF('wvSaveFiles').enable();" 
+							 onstart="PF('wvSaveFiles').disable();"/>
+								
+			<p:commandButton value="Cancelar " icon="icon-cancel"  type="button"
+						id="cmdLimpiar"  onclick="PF('dlgGroupArchivos').hide();"/>
+						
+			</h:panelGrid>				
+			
+			</h:form>	
+		</p:dialog>
+		
+		
+		<p:dialog header="Archivo" widgetVar="dlgDocumento" appendTo="@(body)" position="center"
+					resizable="true" id="dlgDetDocumento" modal="true">
+					<h:form id="formDocumento">
+						<h:panelGrid columns="5">
+						  
+						</h:panelGrid>
+						
+						<h:panelGrid >
+						<object id="img01"  type="application/pdf" data=""  height="700px" width="950px"/>
+						</h:panelGrid>
+						<!--  <h:panelGrid rendered="#{resultadoExpedienteMB.bVisualiza}">
+								
+								
+		        		</h:panelGrid>-->
+						
+					</h:form>
+			</p:dialog>
+			
+			
+		<p:dialog header="Operación Exitosa" widgetVar="dlgSuccessGroup" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetSuccesGroup" modal="true" >
+					<h:form id="fmSucces">
+					
+					<h:panelGrid columns="2">
+					<p:graphicImage url="/resources/img/accept.png" height="50" />
+					
+					<h:panelGroup>
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Proceso de Agrupación correctamente registrado"/>
+					<h:panelGrid columns="2">
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;" value="Nombre del Archivo:"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{controlCalidad.resultMessage.nombre_archivo}"/>
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;;" value="Nro Hojas:"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{controlCalidad.resultMessage.nro_hojas}"/>
+					</h:panelGrid>
+					</h:panelGroup>
+					</h:panelGrid>
+					
+					<p:commandButton value="Aceptar" type="button" onclick="PF('dlgSuccessGroup').hide()"  />
+					</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Operación Exitosa" widgetVar="dlgSuccessCerrarExp" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetSuccesCerrarExp" modal="true" >
+					<h:form id="fmSuccesCE">
+					
+					<h:panelGrid columns="2">
+					<p:graphicImage url="/resources/img/accept.png" height="50" />
+					
+					<h:panelGroup>
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Expediente Cerrado Correctamente"/>
+					<h:panelGrid columns="2">
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;" value="Expediente:"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{controlCalidad.resultMessage.nro_expediente}"/>
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;;" value="Nro de Archivos Agrupados:"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{controlCalidad.resultMessage.nro_archivos_agrupados}"/>
+					</h:panelGrid>
+					</h:panelGroup>
+					</h:panelGrid>
+					
+					<p:commandButton value="Aceptar" type="button" onclick="PF('dlgSuccessCerrarExp').hide()"  />
+					</h:form>
+		</p:dialog>
+		
+		
+		<p:dialog header="Operación Exitosa" widgetVar="dlgSuccessDesG" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetSuccesDesG" modal="true" >
+					<h:form id="fmSuccesDG">
+					
+					<h:panelGrid columns="2">
+					<p:graphicImage url="/resources/img/accept.png" height="50" />
+					
+					<h:panelGroup>
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Proceso de Desagrupación exitosa"/>
+					<h:panelGrid columns="2">
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;" value="Archivo Editado:"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{controlCalidad.resultMessage.nombre_archivo}"/>
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;;" value="Nro de Hojas:"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{controlCalidad.resultMessage.nro_hojas}"/>
+					</h:panelGrid>
+					</h:panelGroup>
+					</h:panelGrid>
+					
+					<p:commandButton value="Aceptar" type="button" onclick="PF('dlgSuccessDesG').hide()"  />
+					</h:form>
+		</p:dialog>
+		
+		
+		<p:dialog header="Operación Exitosa" widgetVar="dlgSuccessEl" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetSuccesEl" modal="true" >
+					<h:form id="fmSuccesEL">
+					
+					<h:panelGrid columns="2">
+					<p:graphicImage url="/resources/img/accept.png" height="50" />
+					
+					<h:panelGroup>
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Documento Elimando Correctamente"/>
+					<h:panelGrid columns="2">
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;" value="Archivo:"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{controlCalidad.resultMessage.nombre_archivo}"/>
+					
+					</h:panelGrid>
+					</h:panelGroup>
+					</h:panelGrid>
+					
+					<p:commandButton value="Aceptar" type="button" onclick="PF('dlgSuccessEl').hide()"  />
+					</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Operación Exitosa" widgetVar="dlgSuccessRE" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetSuccesRE" modal="true" >
+					<h:form id="fmSuccesRE">
+					
+					<h:panelGrid columns="2">
+					<p:graphicImage url="/resources/img/accept.png" height="50" />
+					
+					<h:panelGroup>
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Documento Reemplazado Correctamente"/>
+					<h:panelGrid columns="2">
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;" value="Archivo:"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{controlCalidad.resultMessage.nombre_archivo}"/>
+					
+					</h:panelGrid>
+					</h:panelGroup>
+					</h:panelGrid>
+					
+					<p:commandButton value="Aceptar" type="button" onclick="PF('dlgSuccessRE').hide()"  />
+					</h:form>
+		</p:dialog>
+		
+		
+		<p:dialog header="Operación Exitosa" widgetVar="dlgSuccessDesGT" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetSuccesDesGT" modal="true" >
+					<h:form id="fmSuccesDGT">
+					
+					<h:panelGrid columns="2">
+					<p:graphicImage url="/resources/img/accept.png" height="50" />
+					
+					<h:panelGroup>
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Proceso de Desagrupación exitosa"/>
+					<h:panelGrid columns="2">
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;" value="Archivo Editado:"/>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{controlCalidad.resultMessage.nombre_archivo}"/>
+					
+					
+					</h:panelGrid>
+					</h:panelGroup>
+					</h:panelGrid>
+					
+					<p:commandButton value="Aceptar" type="button" onclick="PF('dlgSuccessDesGT').hide()"  />
+					</h:form>
+		</p:dialog>
+		
+		
+
+			
+			
+		<p:confirmDialog id="dlgDetAviso" appendTo="@(body)" message="Nro de Expediente no existe" header="Aviso" 
+			severity="alert" widgetVar="dlgAviso" >
+
+				<h:form id="formOmiso" style="text-algin:center">
+				<p:commandButton value="Aceptar" oncomplete="PF('dlgAviso').hide();" icon="icon-cancel" />
+			</h:form>
+		</p:confirmDialog>
+
+		<p:confirmDialog id="dlgDetAvisoExp" appendTo="@(body)" message="#{controlCalidad.msjeExpNoPCC}" header="Expediente no esta PREPARADO PARA CONTROL DE CALIDAD" 
+			severity="alert" widgetVar="dlgAvisoExp" >
+
+				<h:form  style="text-algin:center">
+				<p:commandButton value="Aceptar" oncomplete="PF('dlgAvisoExp').hide();" icon="icon-cancel" />
+			</h:form>
+		</p:confirmDialog>
+
+		  
+		  
+		  
+		  <p:confirmDialog id="dlgDetNotSelected" appendTo="@(body)" message="Seleccione por lo menos un archivos" header="Aviso" 
+			severity="alert" widgetVar="dlgNotSelected" >
+
+				<h:form id="formSelected" style="text-algin:center">
+			
+				<p:commandButton value="Aceptar" oncomplete="PF('dlgNotSelected').hide();" icon="icon-cancel" />
+			</h:form>
+		</p:confirmDialog>
+		
+		
+		<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)"
+					message="Desea cerrar el Expediente" header="Preparado para enviar a Appens"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					<p:commandButton value="Cerrar Expediente" widgetVar="btnCerExp"
+						update=":smsGeneralCC @(.tc_infoEstado)" onstart="PF('btnCerExp').disable();"
+						actionListener="#{controlCalidad.cerrarExpediente}"
+						oncomplete="PF('btnCerExp').enable();PF('dlgEliminar').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgEliminar').hide()" icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>
+		
+		<pe:blockUI  widgetVar="BlockUIWidgetSave">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Guardando Asignación, espere porfavor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    <pe:blockUI  widgetVar="BlockUIWidgetToogle">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Buscando, espere porfavor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    
+	    <script type="text/javascript">  
+	    
+	    var gValor;
+	    
+	    function inicia(){
+	    	gValor=1;
+	    }
+	    
+	    function desagrupado(){
+	    	gValor=2;
+	    }
+	    
+	    function agrupado(){
+	    	gValor=3;
+	    }
+	    
+	    
+	    $(document).keydown(function(e) {
+	        switch(e.which) {
+	            case 37: // left
+	            	console.log('37: '+gValor);
+	            	if(gValor==1){
+	            		callRemoteAnterior();	
+	            	}
+	            	if(gValor==2){
+	            		callRemoteAnteriorDesAgr();	
+	            	}
+	            	if(gValor==3){
+	            		callRemoteAnteriorAgr();	
+	            	}
+	            	//callRemoteAnterior();
+	            break;
+
+	            case 38: // up
+	            break;
+
+	            case 39: // right
+	            	console.log('39: '+gValor);
+	            	if(gValor==1){
+	            		callRemoteSiguiente();
+	            	}
+	            	if(gValor==2){
+	            		callRemoteSiguienteDesAgr();	
+	            	}
+	            	if(gValor==3){
+	            		callRemoteSiguienteAgr();	
+	            	}
+	            break;
+
+	            case 40: // down
+	            break;
+
+	            default: return; // exit this handler for other keys
+	        }
+	        e.preventDefault(); // prevent the default action (scroll / move caret)
+	    });
+	    
+	    
+	function handleComplete(xhr, status, args) {  
+	    if(args.validationFailed) {  
+	        alert("Validation Failed");  
+	    } else {  
+	        alert("Save:" + args.saved);  
+	         
+	    }  
+	}  
+	
+	function justNumbers(e) {
+		var keynum = window.event ? window.event.keyCode : e.which;
+		if ( keynum == 8 ) return true;
+		return /\d/.test(String.fromCharCode(keynum));
+		}
+	
+	function mostrar(ndoc){
+		//if(valida=='0'){
+		//alert("codigo imagen:"+imgId);
+		console.log('ndoc ', ndoc);
+		var cadena = 'DisplayImage?codigo='+ndoc;
+		//alert('imagen cadena:'+cadena);
+		
+		//jQuery('#img01').show();
+		jQuery('#img01').attr('data',cadena);
+		var abc = jQuery('#img01').attr('data');
+		//alert('imagen cadena:'+abc);
+		//jQuery('#img01').attr('data',cadena);
+		//}				
+	}
+</script>
+
+	</ui:define>
+	
+	
+  
+	
+</ui:composition>
+</html>

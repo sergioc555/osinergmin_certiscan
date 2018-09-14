@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.ObservacionContactoMapper">
+
+<resultMap id="observacionContactoResult" type="com.certicom.certiscan.domain.ObservacionesContacto">
+
+	<id column="observacioncontactoid" property="observacioncontactoid" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	
+	<result column="id_indicadores_call" property="id_indicadores_call" />
+	<result column="observacion" property="observacion" />
+
+
+</resultMap>
+
+
+</mapper>	

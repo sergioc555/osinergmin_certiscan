@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="srptTableroComisionesProducto" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="19cb4634-57c6-4fc6-a700-eabd89226a55">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="167"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<field name="funcion" class="java.lang.String"/>
+	<field name="ubigeo" class="java.lang.String"/>
+	<field name="meta_inicio" class="java.lang.Double"/>
+	<field name="meta_fin" class="java.lang.Double"/>
+	<field name="por_cuarta" class="java.lang.Double"/>
+	<field name="por_quintaparcial" class="java.lang.Double"/>
+	<field name="por_quintatotal" class="java.lang.Double"/>
+	<field name="periodo" class="java.lang.String"/>
+	<field name="meta" class="java.lang.Double"/>
+	<field name="des_cargo" class="java.lang.String"/>
+	<group name="ComisionxUbigeo">
+		<groupExpression><![CDATA[$F{ubigeo}]]></groupExpression>
+		<groupHeader>
+			<band height="24">
+				<textField>
+					<reportElement uuid="c4236a6e-eb58-4a45-af65-be3059e987bc" x="0" y="0" width="595" height="24"/>
+					<textElement>
+						<font size="13" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ubigeo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="0cd034b4-ada6-4158-8853-b86b4470bd58" mode="Opaque" x="322" y="0" width="62" height="20"/>
+				<textElement/>
+				<text><![CDATA[4TA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f26f3984-e12d-4deb-8a38-0d04bd388933" mode="Opaque" x="384" y="0" width="81" height="20"/>
+				<textElement/>
+				<text><![CDATA[5TA PARCIAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="45f0b236-77f7-4a12-8a33-2d9c3492d2ac" mode="Opaque" x="465" y="0" width="67" height="20"/>
+				<textElement/>
+				<text><![CDATA[5TA TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="804181e7-ba6f-44a9-84ed-f228dd582a08" mode="Opaque" x="100" y="0" width="73" height="20"/>
+				<textElement/>
+				<text><![CDATA[FUNCION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="15e43113-95d8-4b93-986f-0915a2e5ce75" mode="Opaque" x="173" y="0" width="79" height="20"/>
+				<textElement/>
+				<text><![CDATA[META INICIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cad710c5-b415-4418-80e2-3438fbf188f3" x="532" y="0" width="63" height="20"/>
+				<textElement/>
+				<text><![CDATA[META]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e849157b-57f8-4a86-9c71-da371f83d777" x="0" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="15" isBold="true"/>
+				</textElement>
+				<text><![CDATA[%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="149ab51c-37a2-4901-a3e9-209737037feb" mode="Opaque" x="252" y="0" width="70" height="20"/>
+				<textElement/>
+				<text><![CDATA[META FIN]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField>
+				<reportElement uuid="eb31a75e-2244-42e9-b94b-baeb60b3215e" x="0" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_cargo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.000">
+				<reportElement uuid="1d881351-aba2-468a-9890-8e8397d2cd4f" x="322" y="0" width="62" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{por_cuarta}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.000">
+				<reportElement uuid="f0c5285d-6f62-495e-8855-8554ade877b4" x="465" y="0" width="67" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{por_quintatotal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b9daaf96-f120-4c68-9620-56a57c4bceff" x="100" y="0" width="73" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{funcion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f0e83513-8fb7-42f7-85f6-e2efe851501e" x="173" y="0" width="79" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{meta_inicio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="84a36c74-14f7-4745-8cfc-3a2315121934" x="252" y="0" width="70" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{meta_fin}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.000">
+				<reportElement uuid="f3435ff3-06d1-4429-aa62-5003647adc1f" x="384" y="0" width="81" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{por_quintaparcial}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b25cda59-490e-4598-b38e-f12a78d02d6a" x="532" y="0" width="63" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{meta}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

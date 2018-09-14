@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+	
+			<h:form>
+				<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: 0px">  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Configuracion" url="#" />
+    				<p:menuitem value="Gestion de Estados" url="estados" />   
+				</p:breadCrumb>	
+			</h:form>
+			
+			
+			<br/>
+			<!-- growl general -->			
+			<p:messages  id="msgGeneral" showDetail="false" showSummary="true" closable="true" />		
+			
+			<h:form id="formConsulta">
+			<p:panel>
+				 <h:panelGrid columns="7">
+				 			#{"Negocio:"}
+			           		<p:selectOneMenu style="width:200px" value="#{estadosMB.negocio.id_negocio}" required="true" requiredMessage="Seleccione un Negocio" filter="true">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+							<f:selectItems value="#{estadosMB.listaNegocios}" var="n" itemLabel="#{n.descripcion}" itemValue="#{n.id_negocio}"/> 
+ 							<f:ajax event="valueChange" listener="#{estadosMB.listarProducto()}" render="@form" execute="@this" />
+							</p:selectOneMenu>
+						
+							#{"Producto:"}
+			           		<p:selectOneMenu style="width:200px" value="#{estadosMB.estadosSelec.idProducto}" required="true" requiredMessage="Seleccione un Negocio" filter="true">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+							<f:selectItems value="#{estadosMB.listaProductos}" var="p" itemLabel="#{p.descripcion}" itemValue="#{p.id_producto}"/> 
+							</p:selectOneMenu>
+					     
+						<p:commandButton value="Consultar" icon="icon-search" update=":formLista:dtCatEst" 
+							actionListener="#{estadosMB.buscarEstados()}"/>
+						<h:commandLink   id="imprimir" value="Imprimir"   style="padding: 6px 30px;background: #C0C0C0; text-decoration: none; border: solid 1px #624B1E; font-weight: bold;
+    								 color: #1C190A;" actionListener="#{estadosMB.imprimirXLS}" ajax="false">   
+						</h:commandLink>
+							
+					</h:panelGrid>
+			</p:panel>
+			</h:form>
+			
+			<!-- tootlbar -->
+			<h:form style="margin-bottom: 8px">
+				<p:toolbarGroup align="top">
+					<p:commandButton value="Nuevo Estado" icon="icon-add" update=":dlgDetNuevo :formConsulta :formLista" oncomplete="PF('dlgNuevo').show();"
+						actionListener="#{estadosMB.nuevoEstados()}"/>
+				</p:toolbarGroup>
+			</h:form>
+			
+				<!-- listado de Estados -->
+			<h:form id="formLista">
+				<p:dataTable id="dtCatEst" var="p" value="#{estadosMB.listCategoriaEstados}" widgetVar="dtCatEst" 
+					emptyMessage="No hay Estado Disponibles." rowIndexVar="nro" 
+					 style="FONT-SIZE: 10px; width: 70%">
+					 
+					 <p:ajax event="rowToggle" listener="#{estadosMB.onRowToggle}" />
+					 
+					<f:facet name="header">Lista Categorias de Estado</f:facet>
+					
+					<p:column style="width:1%">  
+			            <p:rowToggler />  
+			        </p:column> 
+					
+					<p:column style="width:30%" headerText="Descripción">
+						<h:outputText value="#{p.descripcion}" />
+					</p:column>
+					
+			
+			<p:rowExpansion>
+				<p:dataTable id="dataTable" var="p" value="#{estadosMB.listaEstados}" widgetVar="dtEstado" 
+					emptyMessage="No hay Estado Disponibles." rowIndexVar="nro" 
+					 style="FONT-SIZE: 10px; width: 80%">
+					<f:facet name="header">Lista Estados</f:facet>
+					
+					<p:column headerText="Orden"  style="width:3%" >
+						#{nro+1}
+					</p:column>
+					
+					<p:column style="width:30%" headerText="Descripción">
+						<h:outputText value="#{p.descripcion}" />
+					</p:column>
+					
+					<p:column style="width:2%" headerText="Estado">
+						<p:commandLink update="@form :msgGeneral" actionListener="#{estadosMB.cambiarEstado(p)}"  > 
+							<h:graphicImage value="#{p.estado?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}" 
+							title="#{p.estado?'Activo':'Bloqueado'}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="Editar/Elim." style="width:10%;text-align: center">
+						<p:commandButton 
+							actionListener="#{estadosMB.editarEstados(p)}" update=":dlgDetNuevo"
+							oncomplete="PF('dlgNuevo').show();" title="Editar" icon="icon-edit" />
+
+						<p:commandButton
+							actionListener="#{estadosMB.eliminarEstados(p)}"
+							oncomplete="PF('dlgEliminar').show();" title="Eliminar"
+							icon="icon-delete" />
+							
+						<p:commandButton
+							actionListener="#{estadosMB.asociarEstados(p)}" update=":dlgDetAsociar"
+							oncomplete="PF('dlgAsociar').show();" title="Asociar"
+							icon="icon-configuration" />			
+							
+					</p:column>
+
+				</p:dataTable>
+				</p:rowExpansion>
+				
+			</p:dataTable>	
+			</h:form>
+			
+			<!-- #############    Dialogos      ################ -->
+			
+			<!-- dialogo nuevo/editar Producto -->
+			
+			<p:dialog header="Estados" widgetVar="dlgNuevo"  appendTo="@(body)"
+					resizable="false" id="dlgDetNuevo" modal="true">
+					
+					<h:form>
+					<p:messages showDetail="false" showSummary="true" id="msgNuevo" closable="true"/>
+					
+					<h:panelGrid columns="2">
+						
+						#{"Negocio:"}
+			           		<p:selectOneMenu style="width:200px" value="#{estadosMB.negocio.id_negocio}" required="true" requiredMessage="Seleccione un Negocio" filter="true">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+							<f:selectItems value="#{estadosMB.listaNegocios}" var="n" itemLabel="#{n.descripcion}" itemValue="#{n.id_negocio}"/> 
+ 							<f:ajax event="valueChange" listener="#{estadosMB.listarProducto()}" render="@form" execute="@this" />
+							</p:selectOneMenu>
+						
+						#{"Producto:"}
+			           		<p:selectOneMenu style="width:200px" value="#{estadosMB.estadosSelec.idProducto}" required="true" requiredMessage="Seleccione un Negocio">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+							<f:selectItems value="#{estadosMB.listaProductos}" var="p" itemLabel="#{p.descripcion}" itemValue="#{p.id_producto}"/> 
+							</p:selectOneMenu>
+						
+						#{"Categoria:"}
+						<p:selectOneMenu style="width:200px" value="#{estadosMB.estadosSelec.id_categoria_estado}" required="true" requiredMessage="Seleccione una Categoria" filter="true">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+							<f:selectItems value="#{estadosMB.listaCategoriaEstados}" var="p" itemLabel="#{p.descripcion}" itemValue="#{p.id_categoria_estado}"/> 
+						</p:selectOneMenu>				
+
+						#{"Descripción:"}
+						<p:inputText value="#{estadosMB.estadosSelec.descripcion}" id="descripcion"
+							required="true" maxlength="50" label="nombre" requiredMessage="Se necesita un nombre de descripcion"
+							style="width:190px;" >
+							</p:inputText>
+							
+						#{"Estado:"}
+						<p:selectOneMenu style="width:200px" value="#{estadosMB.estadosSelec.estado}" required="true" requiredMessage="Seleccione un Estado">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+							<f:selectItem itemLabel="ACTIVO" itemValue="TRUE" />
+							<f:selectItem itemLabel="DESACTIVO" itemValue="FALSE" />
+						</p:selectOneMenu>
+						
+						#{"Flag:"}
+						<p:selectOneMenu style="width:200px" value="#{estadosMB.estadosSelec.flag_banco}" required="true" requiredMessage="Seleccione un Estado">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+							<f:selectItem itemLabel="FAMILIA" itemValue="FAMILIA" />
+							<f:selectItem itemLabel="SUBFAMILIA" itemValue="SUBFAMILIA" />
+						</p:selectOneMenu>							
+
+					</h:panelGrid>
+					<br/>
+					<p:commandButton value="Guardar" actionListener="#{estadosMB.guardarEstados()}"
+						update=":formLista msgNuevo :formConsulta" oncomplete="validar(xhr, status, args)" icon="icon-disk" />
+					
+					<p:commandButton value="Cancelar" type="button" onclick="PF('dlgNuevo').hide()" icon="icon-cancel" />
+					</h:form>	
+			</p:dialog>
+			
+			<p:dialog header="Estados" widgetVar="dlgAsociar"  appendTo="@(body)"
+					resizable="false" id="dlgDetAsociar" modal="true">
+					
+					<h:form>
+					<p:messages showDetail="false" showSummary="true" id="msgNuevo" closable="true"/>
+					
+					<h:panelGrid columns="2">
+						
+						#{"Tipo de Telefono:"}
+			           		<p:selectOneMenu style="width:200px" value="#{estadosMB.estadoBanco.id_estado_padre}" required="true" requiredMessage="Seleccione un Negocio">
+							<f:selectItem itemLabel=" " itemValue="" />
+							<f:selectItems value="#{estadosMB.listaEstadosBanco}" var="estad"
+							itemLabel="#{estad.descripcion}" itemValue="#{estad.id_estado}" />
+ 							
+							</p:selectOneMenu>
+						
+						#{"Descripción Banco:"}
+						<p:inputText value="#{estadosMB.estadoBanco.descripcion_banco}" id="descripcion"
+							required="true" maxlength="50" label="nombre" requiredMessage="Se necesita un nombre de descripción"
+							style="width:190px;" >
+							</p:inputText>
+						
+													
+
+					</h:panelGrid>
+					<br/>
+					<p:commandButton value="Guardar" actionListener="#{estadosMB.actualizarAsociacion()}"
+						update=":formLista msgNuevo :formConsulta" oncomplete="validarAsociacion(xhr, status, args)" icon="icon-disk" />
+					
+					<p:commandButton value="Cancelar" type="button" onclick="PF('dlgAsociar').hide()" icon="icon-cancel" />
+					</h:form>	
+			</p:dialog>
+			
+
+			<!-- dialogo eliminar -->	
+			<p:confirmDialog id="dlgDetEliminar"  appendTo="@(body)"
+					message="¿Desea eliminar este Estado?" header="Eliminar Estado"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					<p:commandButton value="Eliminar"
+						update=":formLista :msgGeneral"
+						actionListener="#{estadosMB.confirmaEliminar}"
+						oncomplete="PF('dlgEliminar').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgEliminar').hide()" icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>
+		
+		
+		<script>
+			
+		function validar(xhr, status, args) {
+			if (!args.validationFailed) {
+				jQuery('#dlgDetNuevo').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				//limpiando
+				PF('dlgNuevo').hide();
+				console.log("cerro")
+			}
+		}
+		
+		function validarAsociacion(xhr, status, args) {
+			if (!args.validationFailed) {
+				jQuery('#dlgAsociar').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				//limpiando
+				PF('dlgAsociar').hide();
+				console.log("cerro")
+			}
+		}
+
+
+		</script>
+		
+	</ui:define>
+</ui:composition>
+</html>

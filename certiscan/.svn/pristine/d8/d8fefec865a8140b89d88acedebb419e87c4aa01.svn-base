@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.ExpedienteMapper">
+	
+	<resultMap id="expedienteResult" type="com.certicom.certiscan.domain.Expediente">
+	
+		<id column="expediente_id" property="expediente_id" />
+		<id column="id_producto" property="id_producto" />
+		
+		<result column="cod_banco" property="cod_banco" />
+		<result column="tipo_planilla" property="tipo_planilla" />
+		<result column="tipo_cliente" property="tipo_cliente" />
+		<result column="tipo_doc" property="tipo_doc" />
+		<result column="num_doc" property="num_doc" />
+		<result column="departamento" property="departamento" />
+		<result column="provincia" property="provincia" />
+		<result column="distrito" property="distrito" />
+		<result column="direccion" property="direccion" />
+		<result column="nombre_completo" property="nombre_completo" />
+		<result column="apellido_paterno" property="apellido_paterno" />
+		<result column="apellido_materno" property="apellido_materno" />
+		<result column="edad" property="edad" />
+		<result column="numero_telefono1" property="numero_telefono1" />
+		<result column="numero_telefono2" property="numero_telefono2" />
+		<result column="numero_telefono3" property="numero_telefono3" />
+		<result column="celular1" property="celular1" />
+		<result column="celular2" property="celular2" />
+		<result column="celular3" property="celular3" />
+		<result column="prestamo_soles" property="prestamo_soles" />
+		<result column="tca_prestamo" property="tca_prestamo" />
+		<result column="periodo_pago" property="periodo_pago" />
+		<result column="linea_vehicular" property="linea_vehicular" />
+		<result column="tca_vehicular" property="tca_vehicular" />
+		<result column="periodo_vehicular" property="periodo_vehicular" />
+		<result column="nombre_oficina" property="nombre_oficina" />
+		<result column="cod_oficina" property="cod_oficina" />
+		<result column="cod_territorio" property="cod_territorio" />
+		<result column="territorio_ofc" property="territorio_ofc" />
+		<result column="subrogado" property="subrogado" />
+		<result column="periodo" property="periodo" />
+		<result column="observacion" property="observacion" />
+		<result column="tipo_base" property="tipo_base" />
+		<result column="idcabeceraindecopy" property="idCabeceraIndecopy" />
+		<result column="id_expediente_cabecera" property="idExpedienteCabecera" />
+		<result column="id_categoria_call" property="idCategoriaCall" />
+		<result column="nomcompletocliente" property="nomcompletocliente" />
+		<result column="ejecutivoasig" property="ejecutivoasig" />
+		<result column="desestado" property="desestado" />
+		<result column="desproducto" property="desproducto" />
+		<result column="idusuario" property="idusuario" />
+		<result column="id_expediente_producto" property="id_expediente_producto" />
+		<result column="estado_trabajo" property="estadoTrabajo" javaType="java.lang.Boolean" jdbcType="BOOLEAN"/>
+		<result column="estado_nuevo" property="estadoNuevo" javaType="java.lang.Boolean" jdbcType="BOOLEAN"/>
+		<result column="cant_neta" property="cantNeta" />
+		<result column="id_estado_facturacion" property="idEstadoFacturacion"/>
+		<result column="id_indicadores_call" property="id_indicadores_call"/>
+		<result column="importe_dolares" property="importe_dolares"/>
+		<result column="fecha_reg" property="fecha_reg"/>
+		<result column="nro_solicitud" property="nro_solicitud"/>
+		
+		<result column="estado_expediente" property="estadoExpediente"/>
+		<result column="id_estado_expediente" property="idEstadoExpediente"/>
+		<result column="expediente_apellido_paterno" property="expedienteApellidoPaterno" />
+		<result column="expediente_apellido_materno" property="expedienteApellidoMaterno" />
+		<result column="expediente_nombre_completo" property="expedienteNombreCompleto" />
+		<result column="expediente_territorio" property="expedienteTerritorio" />
+		<result column="expediente_codigo_territorio" property="expedienteCodigoTerritorio" />
+		<result column="expediente_oficina" property="expedienteOficina" />
+		<result column="expediente_codigo_oficina" property="expedienteCodigoOficina" />
+		<result column="expediente_prestamo" property="expedientePrestamo" />
+		<result column="expediente_direccion" property="expedienteDireccion" />
+		<result column="expediente_numero" property="expedienteNumero" />
+		<result column="estado_expediente" property="estadoExpediente" />
+		<result column="total_prestamo" property="total_prestamo" />
+		<result column="desc_consulta" property="desc_consulta" />
+		<result column="desc_consulta2" property="desc_consulta2" />
+		<result column="desc_consulta3" property="desc_consulta3" />
+		<result column="estado_ruc" property="estado_ruc" />
+		<result column="tipo_ruc" property="tipo_ruc" />
+		<result column="estado_cobertura" property="estado_cobertura" />
+		<result column="estado_direccion" property="estado_direccion" />
+		<result column="estado_vigencia_ruc" property="estado_vigencia_ruc" />
+		<result column="monto_inicio" property="monto_inicio" />
+		<result column="monto_fin" property="monto_fin" />
+		<result column="tipo_ciiu" property="tipo_ciiu" />
+		<result column="estado_ciiu" property="estado_ciiu" />
+		<result column="expediente_fecha_ingreso" property="expedienteFechaIngreso" />
+		<result column="expediente_fecha_registro" property="expedienteFechaRegistro" />
+		<result column="expediente_subproducto" property="expedienteSubProducto" />
+		
+		 <result column="tipo_telefono1" property="tipo_telefono1" />
+		 <result column="tipo_telefono2" property="tipo_telefono2" />
+		 <result column="tipo_telefono3" property="tipo_telefono3" />
+		 <result column="tipo_celular1" property="tipo_celular1" />
+		 <result column="tipo_celular2" property="tipo_celular2" />
+		 <result column="tipo_celular3" property="tipo_celular3" />
+		
+		<result column="PREMIUM_VIP" property="PREMIUM_VIP" />
+		<result column="POTENCIAL_VIP" property="POTENCIAL_VIP" />
+		<result column="PASIVOS" property="PASIVOS" />
+		<result column="NO_CLIENTE" property="NO_CLIENTE" />
+		<result column="NO_PH" property="NO_PH" />
+		<result column="MS" property="MS" />
+		<result column="comentario_contacto" property="comentario_contacto" />
+		
+		<result column="expediente_id_supervisor_call" property="expedienteIdSupervisorCall" />
+		<result column="expediente_id_ejecutivo_call" property="expedienteIdEjecutivoCall" />
+		<result column="expediente_id_supervisor_campo" property="expedienteIdSupervisorCampo" />
+		<result column="expediente_id_ejecutivo_campo" property="expedienteIdEjecutivoCampo" />
+		
+		<result column="prioridad_cliente" property="prioridad_cliente" />
+		<result column="producto_ofrecido" property="producto_ofrecido" />
+		<result column="numero_productos_faltantes" property="numero_productos_faltantes" />
+		<result column="productos_faltantes" property="productos_faltantes" />
+		<result column="colectivo" property="colectivo" />
+		<result column="oficina_colectivo" property="oficina_colectivo" />
+		<result column="gestor_colectivo" property="gestor_colectivo" />
+		<result column="gni" property="gni" />
+		<result column="rango_sueldo" property="rango_sueldo" />
+		<result column="prioridad_tc" property="prioridad_tc" />
+		<result column="sueldo_requerido_tc" property="sueldo_requerido_tc" />
+		<result column="oferta_efectivo_plus" property="oferta_efectivo_plus" />
+		<result column="accion_subrogado_plus" property="accion_subrogado_plus" />
+		<result column="oferta_subrogado_plus" property="oferta_subrogado_plus" />
+		<result column="oferta_subrogacion_pld" property="oferta_subrogacion_pld" />
+		<result column="oferta_subrogacion_hipotecaria" property="oferta_subrogacion_hipotecaria" />
+		<result column="saldo_hipo_otro" property="saldo_hipo_otro" />
+		<result column="oferta_retencion_hipotecaria" property="oferta_retencion_hipotecaria" />
+		<result column="contrato1" property="contrato1" />
+		<result column="contrato2" property="contrato2" />
+		<result column="oferta_retanqueo_hipotecaria" property="oferta_retanqueo_hipotecaria" />
+		<result column="desembolso_original" property="desembolso_original" />
+		<result column="saldo_pendiente" property="saldo_pendiente" />
+		<result column="avance" property="avance" />
+		<result column="rd_total" property="rd_total" />
+		<result column="rd_no_bbva" property="rd_no_bbva" />
+		<result column="max_linea_otro_banco" property="max_linea_otro_banco" />
+		<result column="max_saldo_tc_otro_banco" property="max_saldo_tc_otro_banco" />
+		<result column="max_saldo_pld_otro_banco" property="max_saldo_pld_otro_banco" />
+		<result column="max_saldo_vehicular_otro_banco" property="max_saldo_vehicular_otro_banco" />
+		<result column="max_saldo_hipotecaria_otro_banco" property="max_saldo_hipotecaria_otro_banco" />
+		
+
+		<result column="des_estado" property="des_estado" />
+		<result column="estado_t1" property="estado_t1" />
+		<result column="com_t1" property="com_t1" />
+		<result column="estado_t2" property="estado_t2" />
+		<result column="com_t2" property="com_t2" />
+		<result column="estado_t3" property="estado_t3" />
+		<result column="com_t3" property="com_t3" />
+		<result column="estado_c1" property="estado_c1" />
+		<result column="com_c1" property="com_c1" />
+		<result column="estado_c2" property="estado_c2" />
+		<result column="com_c2" property="com_c2" />
+		<result column="estado_c3" property="estado_c3" />
+		<result column="com_c3" property="com_c3" />
+		<result column="des_resultado" property="des_resultado" />
+		<result column="nom_supervisor" property="nom_supervisor" />
+		<result column="estado_general" property="estado_general" />
+		<result column="contactos_cliente" property="contactos_cliente" />
+
+		<result column="tipo_tc" property="tipo_tc" />
+		<result column="deuda_tc" property="deuda_tc" />
+		<result column="cuota1" property="cuota1" />
+		<result column="oferta_pld" property="oferta_pld" />
+		<result column="modalidad" property="modalidad" />
+		<result column="id_exclusion_dni_cabecera" property="id_exclusion_dni_cabecera" />
+		<result column="prioridad" property="prioridad" />
+		
+		
+		<!-- nuevo -->
+		<result column="estado_ban_t1" property="estado_ban_t1" />
+		<result column="estado_padre_t1" property="estado_padre_t1" />
+		
+		<result column="estado_ban_t2" property="estado_ban_t2" />
+		<result column="estado_padre_t2" property="estado_padre_t2" />
+		
+		<result column="estado_ban_t3" property="estado_ban_t3" />
+		<result column="estado_padre_t3" property="estado_padre_t3" />
+		
+		<result column="estado_ban_c1" property="estado_ban_c1" />
+		<result column="estado_padre_c1" property="estado_padre_c1" />
+		
+		<result column="estado_ban_c2" property="estado_ban_c2" />
+		<result column="estado_padre_c2" property="estado_padre_c2" />
+		
+		<result column="estado_ban_c3" property="estado_ban_c3" />
+		<result column="estado_padre_c3" property="estado_padre_c3" />
+		
+		<result column="ventasdj" property="ventasdj" />
+		
+		
+		
+		<result column="tipo_planilla_b" property="tipo_planilla_b" />
+		<result column="estado_trabajo_b" property="estadoTrabajo" javaType="java.lang.Boolean" jdbcType="BOOLEAN"/>
+		<result column="cant_neta_b" property="cantNetaExcluida" />
+		
+		<result column="nombres_personal_contacto" property="nombres_personal_contacto" />
+		<result column="APaterno_personal_contacto" property="APaterno_personal_contacto" />
+		<result column="AMaterno_personal_contacto" property="AMaterno_personal_contacto" />
+		<result column="aniv_empresa" property="aniv_empresa" />
+		<result column="cargo" property="cargo" />	
+		
+		<result column="moneda_empresa" property="moneda_empresa" />
+		
+		<result column="fecha_envio_calidad" property="fecha_envio_calidad" />
+		<result column="fecha_envio_banco" property="fecha_envio_banco" />
+		
+		<result column="nombrecompleto_supervisor" property="nombrecompleto_supervisor" />
+		<result column="nombreCompleto_ejecutivo" property="nombreCompleto_ejecutivo" />
+		
+		<result column="estado_contribuyente" property="estado_contribuyente" />
+		<result column="condicion_contribuyente" property="condicion_contribuyente" />
+		
+		
+		<result column="descripcion_producto" property="descripcion_producto" />
+
+		<result column="nro_trabajadores" property="nro_trabajadores" />
+		<result column="ruc" property="ruc" />
+		<result column="nombre_empresa" property="nombre_empresa" />
+		<result column="ciiu" property="ciiu" />
+		
+		<result column="id_sub_producto" property="id_sub_producto" />
+		
+		
+		<result column="estado_de_producto" property="estado_de_producto" />
+		<result column="constructora" property="constructora" />
+		<result column="tipo_cambio" property="tipo_cambio" />
+		
+		<result column="estado_civil"  property="estado_civil"/>
+		
+		<result column="fecha_de_nacimiento"  property="fecha_de_nacimiento"/>
+		<result column="precio_inmueble"  property="precio_inmueble"/>
+		
+		<result column="cantidad_total"  property="cantidad_total"/>
+		<result column="resultado_back"  property="resultado_back"/>
+		<result column="estado_prefacturacion"  property="estado_prefacturacion"/>
+		<result column="condicion_base"  property="condicion_base"/>
+		
+		<result column="id_expediente_exclusion_previa"  property="id_expediente_exclusion_previa"/>
+		
+		<result column="id_estado_back" property="id_estado_back"/>
+		<result column="id_estado_categoria_back" property="id_estado_categoria_back"/>
+		<result column="codigo" property="codigo"/>
+		<result column="monto" property="monto"/>
+		
+		
+		<result column="estado_planilla" property="estado_planilla"/>
+		
+		<result column="requiere_verf_laboral" property="requiere_verf_laboral"/>
+		<result column="requiere_verf_domiciliaria" property="requiere_verf_domiciliaria"/>
+		
+		<result column="cantidad_empresas" property="cantidad_empresas"/>
+		<result column="avance_empresas" property="avance_empresas"/>
+		<result column="empresas_aperturadas" property="empresas_aperturadas"/>
+		
+		<result column="aperturas_ph" property="aperturas_ph" />
+		<result column="aperturas_cts" property="aperturas_cts" />
+		<result column="rechazos_ph" property="rechazos_ph" />
+		<result column="rechazos_cts" property="rechazos_cts" />
+		
+		<result column="avan_ctas_cts" property="avan_ctas_cts" />
+		<result column="avan_ctas_ph" property="avan_ctas_ph" />
+		
+		<result column="circuito" property="circuito" />
+		<result column="acc_com_tact" property="acc_com_tact" />
+		<result column="segmento_py" property="segmento_py" />
+		
+		<result column="proceso" property="proceso" />
+		<result column="fecha_documento" property="fecha_documento" />
+		<result column="hora_documento" property="hora_documento" />
+		<result column="minuto_documento" property="minuto_documento" />
+		<result column="tipo_prioridad" property="tipo_prioridad" />
+		<result column="voluminoso" property="voluminoso" />
+		<result column="planos" property="planos" />
+		<result column="cantidad_cd" property="cantidad_cd" />
+		<result column="cantidad_otro_medio" property="cantidad_otro_medio" />
+		<result column="archivadores" property="archivadores" />
+		<result column="vinifiles" property="vinifiles" />
+		<result column="pioner" property="pioner" />
+		<result column="sobre" property="sobre" />
+		<result column="paquete" property="paquete" />
+		<result column="anillados" property="anillados" />
+		<result column="file" property="file" />
+		<result column="carta_fianza" property="carta_fianza" />
+		<result column="flg_facturas" property="flg_facturas" />
+		<result column="flg_voluminoso" property="flg_voluminoso" />
+		<result column="otro" property="otro" />
+		<result column="observaciones_osi" property="observaciones_osi" />
+		<result column="oficina_origen" property="oficina_origen" />
+		
+		
+	</resultMap>
+	
+	
+	<resultMap id="vGenericTotal" type="src.com.certicom.certiscan.utils.VGeneric">
+		<result column="dou01" property="val01" />
+		<result column="dou02" property="val02" />
+	</resultMap>
+	
+	
+	<insert id="crearExpedienteONE" parameterType="com.certicom.certiscan.domain.Expediente" 
+			useGeneratedKeys="true" keyProperty="expediente_id" >
+	    <selectKey resultType="java.lang.Integer"  keyProperty="expediente_id" order="AFTER">
+	        SELECT max(t_expediente.expediente_id) from t_expediente where 
+	         t_expediente.idusuario=#{idusuario} and t_expediente.id_producto=#{id_producto} and t_expediente.periodo=#{periodo}  and t_expediente.tipo_base=#{tipo_base} 
+	    </selectKey>
+	   
+		insert into t_expediente ( cod_banco, tipo_planilla,tipo_cliente,tipo_doc,num_doc,departamento,
+		provincia,distrito,direccion,nombre_completo,apellido_paterno,apellido_materno,numero_telefono1,numero_telefono2,
+		numero_telefono3,nombre_oficina,cod_oficina,cod_territorio,territorio_ofc,periodo,prestamo_soles,subrogado,
+		celular1,celular2,celular3,tca_prestamo,tca_vehicular,observacion,edad,periodo_pago,periodo_vehicular,cod_cliente, cod_telefono1,
+		cod_telefono2, cod_telefono3, tasa1, tasa2, tasa3, tasa4, cuota1, cuota2, cuota3, nombre_promotor, cliente, porc_consumo, bcp, interbank, scotiabank,
+		comercio, citibank, banbif, ripley, financiero, mibanco, hsbc, azteca, falabella, linea_solo_tarjeta, tipo_tarjeta, dependiente, centro_de_trabajo, cod_telefono4,
+		numero_telefono4, nombre_empresa, prestamo_50001_amas, cod_campaa2, monto_10001, cod_campaa4, tiene_tarjeta, codigo_gestor, deuda_tc, deuda_consumo,
+		cta_vip, tc_alto_valor, seguro_vip, tipo_tc, nombre_gestor, cod_campaa1, monto_50001, cod_campaa3, monto_5001, id_producto, idcabeceraindecopy, id_expediente_cabecera, id_estado, id_categoria_call, estado_trabajo, 
+		cliente_negocio,clasificacion,grupo_efectividad,pnn,ruc,sector_economico,ciiu,rl_tipo_doc,rl_num_doc,rl_nombre,condicion,condicion_referido,oferta_pld, 
+		fuente_ubigeo,email,rl_fuente_ubigeo,rl_direccion,rl_distrito,rl_provincia,rl_departamento,rl_numero_telefono1,rl_numero_telefono2,rl_numero_telefono3, 
+		rl_celular1,rl_celular2,rl_celular3,rango_deuda,bbva,ibk,caja_piura,caja_trujillo,caja_aqp,caja_hyo,caja_cusco,caja_maynas,caja_pisco,caja_sullana, 
+		caja_tacna,sf_fianza,bbva_fianza,bcp_fianza,mibanco_fianza,scotiabank_fianza,ibk_fianza,garantia_hipotecaria,garantia_hipotecaria_banco, tipo_base,
+		situacion, fecha_envio, segmento, seguimiento, idusuario, estado_nuevo, estado_expediente, estado_general, nro_trabajadores , condicion_ph, tipo_empresa, estado_de_producto ,constructora, tipo_cambio,importe_dolares,id_sub_producto, nombres_personal_contacto, tipo_telefono1, estado_civil,
+		expediente_direccion, fecha_de_nacimiento, precio_inmueble, moneda_empresa,status,tipo_operacion,idusuario_referente,nombre_vendedor,email_contacto,id_proceso
+		circuito,acc_com_tact,segmento_py,ventasdj,fecha_reg, id_indicadores_call
+		) 
+		values (#{cod_banco},#{tipo_planilla},#{tipo_cliente},#{tipo_doc},#{num_doc},
+		#{departamento},#{provincia},#{distrito},#{direccion},#{nombre_completo},#{apellido_paterno},#{apellido_materno},
+		#{numero_telefono1},#{numero_telefono2},#{numero_telefono3},#{nombre_oficina},#{cod_oficina},#{cod_territorio},#{territorio_ofc},
+		#{periodo},#{prestamo_soles},#{subrogado},#{celular1},#{celular2},#{celular3},#{tca_prestamo},#{tca_vehicular},
+		#{observacion},#{edad},#{periodo_pago},#{periodo_vehicular}, #{cod_cliente}, #{cod_telefono1}, #{cod_telefono2}, #{cod_telefono3}, #{tasa1},
+		#{tasa2}, #{tasa3}, #{tasa4}, #{cuota1}, #{cuota2}, #{cuota3}, #{nombre_promotor}, #{cliente}, #{porc_consumo}, #{bcp}, #{interbank},
+		#{scotiabank}, #{comercio}, #{citibank}, #{banbif}, #{ripley}, #{financiero}, #{mibanco}, #{hsbc}, #{azteca}, #{falabella}, #{linea_solo_tarjeta},
+		#{tipo_tarjeta}, #{dependiente}, #{centro_de_trabajo}, #{cod_telefono4}, #{numero_telefono4}, #{nombre_empresa}, #{prestamo_50001_amas}, #{cod_campaa2},
+		#{monto_10001}, #{cod_campaa4}, #{tiene_tarjeta}, #{codigo_gestor}, #{deuda_tc}, #{deuda_consumo}, #{cta_vip}, #{tc_alto_valor}, #{seguro_vip},
+		#{tipo_tc}, #{nombre_gestor}, #{cod_campaa1}, #{monto_50001}, #{cod_campaa3}, #{monto_5001}, #{id_producto}, #{idCabeceraIndecopy}, #{idExpedienteCabecera}, #{idEstado}, #{idCategoriaCall}, #{estadoTrabajo}, 
+		#{cliente_negocio}, #{clasificacion}, #{grupo_efectividad}, #{pnn}, #{ruc}, #{sector_economico}, #{ciiu}, #{rl_tipo_doc}, #{rl_num_doc}, #{rl_nombre}, #{condicion}, 
+		#{condicion_referido}, #{oferta_pld}, #{fuente_ubigeo}, #{email}, #{rl_fuente_ubigeo}, #{rl_direccion}, #{rl_distrito}, #{rl_provincia}, #{rl_departamento}, 
+		#{rl_numero_telefono1}, #{rl_numero_telefono2}, #{rl_numero_telefono3}, #{rl_celular1}, #{rl_celular2}, #{rl_celular3}, #{rango_deuda}, #{bbva}, #{ibk}, #{caja_piura},
+		#{caja_trujillo}, #{caja_aqp}, #{caja_hyo}, #{caja_cusco}, #{caja_maynas}, #{caja_pisco}, #{caja_sullana}, #{caja_tacna}, #{sf_fianza}, #{bbva_fianza}, 
+		#{bcp_fianza}, #{mibanco_fianza}, #{scotiabank_fianza}, #{ibk_fianza}, #{garantia_hipotecaria}, #{garantia_hipotecaria_banco}, #{tipo_base},
+		#{situacion}, #{fecha_envio}, #{segmento}, #{seguimiento}, #{idusuario}, #{estadoNuevo}, #{estadoExpediente}, #{estado_general}, #{nro_trabajadores} ,#{condicion_ph},#{tipo_empresa}, #{estado_de_producto}, #{constructora},#{tipo_cambio},#{importe_dolares},#{id_sub_producto},#{nombres_personal_contacto}, #{tipo_telefono1}, #{estado_civil},
+		#{expedienteDireccion} ,#{fecha_de_nacimiento} ,#{precio_inmueble}, #{moneda_empresa},#{status}, #{tipo_operacion}, #{idusuario_referente},#{nombre_vendedor},#{email_contacto},
+		#{circuito},#{acc_com_tact},#{segmento_py},#{ventasdj},#{fecha_reg}, #{id_indicadores_call}, #{id_proceso}
+		)
+
+	</insert>
+	
+	
+	<insert id="crearExpediente" parameterType="com.certicom.certiscan.domain.Expediente" useGeneratedKeys="true"  >
+	 <selectKey keyProperty="expediente_id" resultType="java.lang.Integer" order="AFTER">
+           select max(t_expediente.expediente_id) from t_expediente where t_expediente.nro_expediente = #{nro_expediente} and t_expediente.idusuario = #{idusuario}
+            <!-- or ->  SELECT my_sequence.nextVal from dual   -->
+        </selectKey>
+	    insert into t_expediente (nro_expediente, nro_solicitud, num_doc, nombre_completo, fecha_reg, idusuario, observacion, condicion, fecha_recepcion, id_estado, id_oficina, tipo_doc, 
+	    proceso, fecha_documento, hora_documento, minuto_documento, tipo_prioridad, voluminoso, planos, cantidad_cd, cantidad_otro_medio, archivadores, vinifiles, pioner, sobre, paquete, anillados, file, carta_fianza, flg_facturas, flg_voluminoso, otro, observaciones_osi, oficina_origen,id_proceso,id_tipo_recepcion)
+	    values (#{nro_expediente},#{nro_solicitud},#{num_doc},#{nombre_completo},#{fecha_reg},#{idusuario},#{observacion},#{condicion},#{fecha_recepcion}, #{id_estado}, #{id_oficina}, #{tipo_doc},
+	    #{proceso}, #{fecha_documento}, #{hora_documento}, #{minuto_documento}, #{tipo_prioridad}, #{voluminoso}, #{planos}, #{cantidad_cd}, #{cantidad_otro_medio}, #{archivadores}, #{vinifiles}, #{pioner}, #{sobre}, #{paquete}, #{anillados}, #{file}, #{carta_fianza}, #{flg_facturas}, #{flg_voluminoso}, #{otro}, #{observaciones_osi}, #{oficina_origen}, #{id_proceso}, #{id_tipo_recepcion})  
+	</insert>
+	
+	<select id="consultaMovimientoExpediente" resultMap="expedienteResult"
+		parameterType="com.certicom.certiscan.domain.Expediente">
+		select ex.fecha_reg,ex.fecha_recepcion, e.descripcion as desestado, (u.nombre || ', ' || u.apellido_paterno || ' ' || u.apellido_materno) as usuario, 
+		o.nombre as desOficina, ex.nro_expediente, ex.expediente_id
+		from ((t_expediente ex inner join t_estado e on e.id_estado = ex.id_estado)
+		inner join t_usuario u on ex.idusuario = u.idusuario) left join t_oficina o on o.id_oficina = ex.id_oficina
+		where 
+		<if test="filtradopor==2">
+		cast(ex.fecha_reg as Date) &gt;= #{fec_ini} and cast(ex.fecha_reg as Date) &lt;= #{fec_fin}
+		</if>
+		<if test="filtradopor==1">
+		ex.nro_expediente = #{vfiltradopor}
+		</if>
+		order by ex.fecha_reg asc;
+	</select>
+	
+	<select id="consultaPreparacionExpediente" resultMap="expedienteResult"
+		parameterType="com.certicom.certiscan.domain.Expediente">
+		select ex.fecha_reg,ex.fecha_recepcion, e.descripcion as desestado, (u.nombre || ', ' || u.apellido_paterno || ' ' || u.apellido_materno) as usuario, 
+		o.nombre as desOficina, ex.nro_expediente, ex.expediente_id, ex.oficina_origen, ex.fecha_documento, ex.hora_documento, ex.proceso, ex.tipo_prioridad, ex.id_estado
+		from (((t_expediente ex inner join t_estado e on e.id_estado = ex.id_estado)
+		inner join t_usuario u on ex.idusuario = u.idusuario) left join t_oficina o on o.id_oficina = ex.id_oficina)
+		where 
+		
+		ex.id_estado = 7
+		
+		<if test="filtradopor==2">
+		and cast(ex.fecha_reg as Date) &gt;= #{fec_ini} and cast(ex.fecha_reg as Date) &lt;= #{fec_fin}
+		</if>
+		<if test="filtradopor==1">
+		and ex.nro_expediente = #{vfiltradopor}
+		</if>
+		order by ex.fecha_reg asc;
+	</select>
+	
+	<select id="consultaDigitalizacionExpediente" resultMap="expedienteResult"
+		parameterType="com.certicom.certiscan.domain.Expediente">
+		select ex.fecha_reg,ex.fecha_recepcion, e.descripcion as desestado, (u.nombre || ', ' || u.apellido_paterno || ' ' || u.apellido_materno) as usuario, 
+		o.nombre as desOficina, ex.nro_expediente, ex.expediente_id, ex.oficina_origen, ex.fecha_documento, ex.hora_documento, ex.proceso, ex.tipo_prioridad, ex.id_estado
+		from (((t_expediente ex inner join t_estado e on e.id_estado = ex.id_estado)
+		inner join t_usuario u on ex.idusuario = u.idusuario) left join t_oficina o on o.id_oficina = ex.id_oficina)
+		where 
+		
+		ex.id_estado = 3
+		
+		<if test="filtradopor==2">
+		and cast(ex.fecha_reg as Date) &gt;= #{fec_ini} and cast(ex.fecha_reg as Date) &lt;= #{fec_fin}
+		</if>
+		<if test="filtradopor==1">
+		and ex.nro_expediente = #{vfiltradopor}
+		</if>
+		order by ex.fecha_reg asc;
+	</select>
+	
+	<select id="consultaCalidadExpediente" resultMap="expedienteResult"
+		parameterType="com.certicom.certiscan.domain.Expediente">
+			select ex.fecha_reg,ex.fecha_recepcion, e.descripcion as desestado, (u.nombre || ', ' || u.apellido_paterno || ' ' || u.apellido_materno) as usuario, 
+			o.nombre as desOficina, ex.nro_expediente, ex.expediente_id, ex.oficina_origen, ex.fecha_documento, ex.hora_documento, ex.proceso, ex.tipo_prioridad, ex.id_estado
+			from (((t_expediente ex inner join t_estado e on e.id_estado = ex.id_estado)
+			inner join t_usuario u on ex.idusuario = u.idusuario) left join t_oficina o on o.id_oficina = ex.id_oficina)
+			where 
+			
+			ex.id_estado = 4
+			
+			<if test="filtradopor==2">
+			and cast(ex.fecha_reg as Date) &gt;= #{fec_ini} and cast(ex.fecha_reg as Date) &lt;= #{fec_fin}
+			</if>
+			<if test="filtradopor==1">
+			and ex.nro_expediente = #{vfiltradopor}
+			</if>
+			order by ex.fecha_reg asc;
+	</select>
+	
+	<select id="consultaCalidadFedatarioExpediente" resultMap="expedienteResult"
+		parameterType="com.certicom.certiscan.domain.Expediente">
+		select ex.fecha_reg,ex.fecha_recepcion, e.descripcion as desestado, (u.nombre || ', ' || u.apellido_paterno || ' ' || u.apellido_materno) as usuario, 
+		o.nombre as desOficina, ex.nro_expediente, ex.expediente_id, ex.oficina_origen, ex.fecha_documento, ex.hora_documento, ex.proceso, ex.tipo_prioridad, ex.id_estado
+		from (((t_expediente ex inner join t_estado e on e.id_estado = ex.id_estado)
+		inner join t_usuario u on ex.idusuario = u.idusuario) left join t_oficina o on o.id_oficina = ex.id_oficina)
+		where 
+		
+		ex.id_estado IN (10,20)
+		
+		<if test="filtradopor==2">
+		and cast(ex.fecha_reg as Date) &gt;= #{fec_ini} and cast(ex.fecha_reg as Date) &lt;= #{fec_fin}
+		</if>
+		<if test="filtradopor==1">
+		and ex.nro_expediente = #{vfiltradopor}
+		</if>
+		order by ex.fecha_reg asc;
+	</select>
+	
+	<select id="consultaReprocesoExpediente" resultMap="expedienteResult"
+		parameterType="com.certicom.certiscan.domain.Expediente">
+		select ex.fecha_reg,ex.fecha_recepcion, e.descripcion as desestado, (u.nombre || ', ' || u.apellido_paterno || ' ' || u.apellido_materno) as usuario, 
+		o.nombre as desOficina, ex.nro_expediente, ex.expediente_id, ex.oficina_origen, ex.fecha_documento, ex.hora_documento, ex.proceso, ex.tipo_prioridad, ex.id_estado
+		from (((t_expediente ex inner join t_estado e on e.id_estado = ex.id_estado)
+		inner join t_usuario u on ex.idusuario = u.idusuario) left join t_oficina o on o.id_oficina = ex.id_oficina)
+		where 
+		
+		ex.id_estado = 13
+		
+		<if test="filtradopor==2">
+		and cast(ex.fecha_reg as Date) &gt;= #{fec_ini} and cast(ex.fecha_reg as Date) &lt;= #{fec_fin}
+		</if>
+		<if test="filtradopor==1">
+		and ex.nro_expediente = #{vfiltradopor}
+		</if>
+		order by ex.fecha_reg asc;
+	</select>
+	
+	<select id="consultaReagruparExpediente" resultMap="expedienteResult"
+		parameterType="com.certicom.certiscan.domain.Expediente">
+		select ex.fecha_reg,ex.fecha_recepcion, e.descripcion as desestado, (u.nombre || ', ' || u.apellido_paterno || ' ' || u.apellido_materno) as usuario, 
+		o.nombre as desOficina, ex.nro_expediente, ex.expediente_id, ex.oficina_origen, ex.fecha_documento, ex.hora_documento, ex.proceso, ex.tipo_prioridad, ex.id_estado
+		from (((t_expediente ex inner join t_estado e on e.id_estado = ex.id_estado)
+		inner join t_usuario u on ex.idusuario = u.idusuario) left join t_oficina o on o.id_oficina = ex.id_oficina)
+		where 
+		
+		ex.id_estado = 14
+		
+		<if test="filtradopor==2">
+		and cast(ex.fecha_reg as Date) &gt;= #{fec_ini} and cast(ex.fecha_reg as Date) &lt;= #{fec_fin}
+		</if>
+		<if test="filtradopor==1">
+		and ex.nro_expediente = #{vfiltradopor}
+		</if>
+		order by ex.fecha_reg asc;
+	</select>
+	
+	<select id="buscarExpedientes" resultMap="expedienteResult">
+		select ex.fecha_reg,ex.nro_solicitud, ex.fecha_recepcion, e.descripcion as desestado, (u.nombre || ', ' || u.apellido_paterno || ' ' || u.apellido_materno) as usuario, 
+		o.nombre as desOficina, ex.nro_expediente, ex.expediente_id, ex.id_estado , ex.condicion, ex.ruta_carpeta, ex.oficina_origen, ex.fecha_documento, ex.hora_documento, ex.proceso,
+		ex.tipo_prioridad
+		from ((t_expediente ex inner join t_estado e on e.id_estado = ex.id_estado)
+		inner join t_usuario u on ex.idusuario = u.idusuario) left join t_oficina o on o.id_oficina = ex.id_oficina
+		where
+		 1=1
+		 <if test="id_oficina !=0">
+		 	and ex.id_oficina = #{id_oficina}
+		 </if>
+		order by ex.fecha_reg desc;
+	</select>
+	
+	
+	<select id="buscarExpedienteTransferencia" resultMap="expedienteResult" 
+		parameterType="com.certicom.certiscan.domain.Expediente">
+		select ex.fecha_reg,ex.fecha_recepcion, e.descripcion as desestado, (u.nombre || ', ' || u.apellido_paterno || ' ' || u.apellido_materno) as usuario, 
+		o.nombre as x, ex.nro_expediente, ex.expediente_id, ex.condicion, ex.id_oficina
+		from ((t_expediente ex inner join t_estado e on e.id_estado = ex.id_estado)
+		inner join t_usuario u on ex.idusuario = u.idusuario) left join t_oficina o on o.id_oficina = ex.id_oficina
+		where 
+		cast(ex.fecha_reg as Date) &gt;= #{fec_ini} 
+		and cast(ex.fecha_reg as Date) &lt;= #{fec_fin}
+		and ex.id_estado = 5
+		<if test="id_oficina !=0">
+			and ex.id_oficina =#{id_oficina}
+		</if>
+		order by ex.fecha_reg desc;
+	</select>
+	
+	
+	<select id="procesaFacturacion" resultMap="expedienteResult"
+		parameterType="com.certicom.certiscan.domain.Expediente">
+		select e.expediente_id,o.nombre as desOficina, es.descripcion as desestado, e.tipo_doc,e.nro_expediente,e.fecha_recepcion,e.fecha_reg, tr.id_expediente_tracking as id_tracking, e.idusuario, u.dni as num_doc, (u.nombre || ', ' || u.apellido_paterno || ' ' ||u.apellido_materno) as usuarioAsignado,e.id_oficina,
+			(select sum(ed.nro_paginas) from t_expediente_documento ed where ed.expediente_id = e.expediente_id and ed.estado_accion in ('AG','R','D') and ed.estado = true and ed.id_padre_group is null and 
+			ed.orden_expediente is null) as cantidadHojas
+			from ((t_expediente e inner join t_expediente_tracking tr on e.expediente_id = tr.expediente_id)
+			inner join t_estado es on tr.id_estado = es.id_estado) inner join t_usuario u on u.idusuario = e.idusuario
+			inner join t_oficina o on e.id_oficina = o.id_oficina
+			where cast(tr.fecha_registro as date) &gt;= #{fec_ini} and cast(tr.fecha_registro as date) &lt;= #{fec_fin} <!--  and e.id_estado = tr.id_estado  -->
+			and tr.id_estado = #{id_estado}
+	</select>
+	
+	<select id="procesaPlanilla" resultMap="expedienteResult"
+		parameterType="com.certicom.certiscan.domain.Expediente">
+		select e.expediente_id,o.nombre as desOficina, es.descripcion as desestado, e.tipo_doc, e.tipo_doc, e.nro_solicitud, e.nro_expediente,e.fecha_recepcion,e.fecha_reg, tr.id_expediente_tracking as id_tracking, e.idusuario, u.dni as num_doc, (u.nombre || ', ' || u.apellido_paterno || ' ' ||u.apellido_materno) as usuarioAsignado,e.id_oficina,
+			(select sum(ed.nro_paginas) from t_expediente_documento ed where ed.expediente_id = e.expediente_id and ed.estado_accion in ('AG','R','D') and ed.estado = true and ed.id_padre_group is null and ed.orden_expediente is null) as cantidadHojas
+			from ((t_expediente e inner join t_expediente_tracking tr on e.expediente_id = tr.expediente_id)
+			inner join t_estado es on tr.id_estado = es.id_estado) inner join t_usuario u on u.idusuario = e.idusuario
+			inner join t_oficina o on e.id_oficina = o.id_oficina
+			where cast(tr.fecha_registro as date) &gt;= #{fec_ini} and cast(tr.fecha_registro as date) &lt;= #{fec_fin} <!-- and e.id_estado = tr.id_estado  -->
+			and tr.id_estado = #{id_estado} 
+			<!-- group by e.expediente_id, es.descripcion, tr.id_expediente_tracking, e.idusuario,u.nombre ,  u.apellido_paterno ,u.apellido_materno,e.id_oficina, u.dni, e.nro_expediente,e.fecha_recepcion,e.tipo_doc,o.nombre,e.fecha_reg -->
+	</select>
+    						
+</mapper>	

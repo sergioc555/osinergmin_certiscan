@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.FacturacionPlanillaDetalleMapper">
+
+<resultMap id="facturacionPlanillaDetalleResult" type="com.certicom.certiscan.domain.FacturacionPlanillaDetalle">
+	<id column="id_facturacion_planilla_detalle" property="id_facturacion_planilla_detalle"/>
+	<result column="id_facturacion_planilla_cabecera" property="id_facturacion_planilla_cabecera"/>
+	<result column="cod_expediente" property="cod_expediente"/>
+	<result column="cod_exp_tracking" property="cod_exp_tracking"/>
+	<result column="costo_planilla_facturacion" property="costo_planilla_facturacion"/>
+	<result column="idusuario" property="idusuario"/>
+	<result column="flgexistearchivo" property="flgexistearchivo"/>
+	<result column="codConcepto" property="codConcepto"/>
+	<result column="desConcepto" property="desConcepto"/>
+	<result column="cantidadEmpresa" property="cantidadEmpresa"/>
+	<result column="cantidadPersona" property="cantidadPersona"/>
+	<result column="cantidadReniec" property="cantidadReniec"/>
+	<result column="id_tarifa" property="id_tarifa"/>
+	<result column="flgcomisionado" property="flgcomisionado"/>
+</resultMap>
+
+
+	<select id="obtenerFueraPlanilla" resultMap="facturacionPlanillaDetalleResult"
+		parameterType="com.certicom.certiscan.domain.FacturacionPlanillaDetalle">
+		
+		select distinct 0 as id_facturacion_planilla_cabecera, car.descripcion as desCargo, '' as desTipo_Planilla, u.cod_quality as cod_quality, u.idusuario as idusuario, u.dni as dni, (u.nombre || ' ' || u.apellido_paterno || ' ' || u.apellido_materno) as usuarioAsignado, 
+			0.0 as montoComision, 0.0 as montoComisionOperativo 
+			from (t_usuario u inner join t_cargo car on u.idcargo = car.idcargo) inner join t_bono b on u.idusuario = b.idusuario where u.idcargo in (1,2,3,5) and u.estado = true
+			and u.idusuario not in <foreach item="resultados" index="index" collection="resultados"
+					open="(" separator="," close=")">
+					#{resultados}
+				</foreach>
+			
+		
+	</select>
+	
+</mapper>	

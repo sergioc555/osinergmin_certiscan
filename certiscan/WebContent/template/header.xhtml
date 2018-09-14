@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:panelGroup style="float:left;margin-left:10px;">
+	<h:outputText value="Proyecto: " />
+	<h:outputText value="#{loginMB.centroAtencion}" styleClass="strong" />
+
+	<h:outputText value="  |  " styleClass="textSplit" />
+
+	<h:outputText value="Negocio: " />
+	<h:outputText value="#{loginMB.negocio}" styleClass="strong" />
+
+	<br />
+	<h:outputText value="Fecha de Último Acceso: " />
+	<h:outputText value="#{loginMB.fechaAcceso}" styleClass="strong" />
+</h:panelGroup>
+<h:form style="height:100% ; float: right;width:66px">
+	<h:commandButton value="Salir" styleClass="btnSalir"
+		action="#{loginMB.efectuarLogoff}" />
+
+</h:form>
+<h:panelGroup style="float:right;margin-right:10px; text-align:right;">
+	<h:outputText value="Usuario: " />
+	<h:outputText
+		value="#{loginMB.usuario.nombre}	#{loginMB.usuario.apellido_paterno} 	
+						#{loginMB.usuario.apellido_materno}"
+		styleClass="strong" />
+	<h:outputText value="  |  " />
+	<h:outputText value="Código: " />
+	<h:outputText value="#{loginMB.usuario.codigoBanco}"
+		styleClass="strong" />
+	<br />
+	<h:outputText value="Perfil: " />
+	<h:outputText value="#{loginMB.perfilUsuario.descripcion}"
+		styleClass="strong" />
+</h:panelGroup>
+
+
+</html>

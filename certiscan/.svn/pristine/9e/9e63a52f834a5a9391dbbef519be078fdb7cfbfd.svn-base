@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+			<h:form>
+				<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: 0px">  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Configuracion" url="#" />
+    				<p:menuitem value="Gestion de Negocio" url="negocio" />   
+				</p:breadCrumb>	
+			</h:form>
+			
+			
+			<br/>
+			<!-- growl general -->			
+			<p:messages  id="msgGeneral" showDetail="false" showSummary="true" closable="true" />		
+			<!-- listado de Negocio -->
+			<h:form id="formLista" style="width:1200px;">
+				<p:commandButton value="Nuevo Negocio" icon="icon-add" update=":dlgDetNuevo" oncomplete="PF('dlgNuevo').show();"
+						actionListener="#{negocioMB.nuevoNegocio()}"/>
+				<p:dataTable id="dataTable" var="p" value="#{negocioMB.listaNegocios}" widgetVar="dtNegocio" filteredValue="#{negocioMB.listaNegociosFilter}"
+					emptyMessage="No hay Cargo Disponibles." rowIndexVar="nro" 
+					paginator="true"
+					rows="10" paginatorPosition="bottom" 
+					 style="FONT-SIZE: 10px; width:70% ">
+										 
+					<f:facet name="header">Lista Negocios</f:facet>
+					
+					<p:column headerText="Orden"  style="width:12px" >
+						#{nro+1}
+					</p:column>
+
+					<p:column style="width:30%" headerText="Nombre de Proyecto" filterBy="#{p.des_proyecto}"  filterStyle="width:215px;" filterMatchMode="contains">
+						<h:outputText value="#{p.des_proyecto}" />
+					</p:column>						
+					
+					<p:column style="width:30%" headerText="Nombre de Negocio" filterBy="#{p.descripcion}"  filterStyle="width:215px;" filterMatchMode="contains">
+						<h:outputText value="#{p.descripcion}" />
+					</p:column>
+					
+					<p:column style="width:5%" headerText="Estado">
+					
+						<p:commandLink update="@form :msgGeneral" actionListener="#{negocioMB.cambiarEstado(p)}"  > 
+							<h:graphicImage value="#{p.estado?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}" 
+							title="#{p.estado?'Activo':'Bloqueado'}" />
+						</p:commandLink>
+						
+					</p:column>
+
+					<p:column headerText="Editar/Elim." style="width:15%;text-align: center">
+					
+						<p:commandButton 
+							actionListener="#{negocioMB.editarNegocio(p)}" update=":dlgDetNuevo"
+							oncomplete="PF('dlgNuevo').show();" title="Editar" icon="icon-edit" />
+					
+						<ui:remove>
+						<p:commandButton
+							actionListener="#{negocioMB.eliminarNegocio(p)}"
+							oncomplete="PF('dlgEliminar').show();" title="Eliminar"
+							icon="icon-delete" />
+						</ui:remove>	
+							
+						<p:commandButton title="Asociar" action="#{negocioMB.configurarResponables(p)}" 
+							icon="icon-configuration"/>	
+							
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+			
+			<!-- #############    Dialogos      ################ -->
+			
+			<!-- dialogo nuevo/editar Negocio -->
+			
+			<p:dialog header="Negocio" widgetVar="dlgNuevo" appendTo="@(body)"
+					resizable="false" id="dlgDetNuevo" modal="true">
+					
+					<h:form>
+					<p:messages showDetail="false" showSummary="true" id="msgNuevo" closable="true"/>
+					
+					<h:panelGrid columns="2">
+					
+						#{"Proyecto:"}
+						<p:selectOneMenu style="width:200px" value="#{negocioMB.negocioSelec.id_centro_atencion}" required="true" requiredMessage="Seleccione un Proyecto">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+							<f:selectItems value="#{negocioMB.listaCentro_Atencion}" var="p" itemLabel="#{p.descripcion}" itemValue="#{p.id_centro_atencion}"/> 
+						</p:selectOneMenu>					
+
+						#{"Descripción:"}
+						<p:inputText value="#{negocioMB.negocioSelec.descripcion}" id="nombre"
+							required="true" maxlength="50" label="nombre" requiredMessage="Se necesita un nombre"
+							style="width:200px;" />
+							
+						#{"Estado:"}
+						<p:selectOneMenu style="width:200px" value="#{negocioMB.negocioSelec.estado}" required="true" requiredMessage="Seleccione un Negocio">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+							<f:selectItem itemLabel="ACTIVO" itemValue="TRUE" />
+							<f:selectItem itemLabel="DESACTIVO" itemValue="FALSE" />
+						</p:selectOneMenu>							
+
+					</h:panelGrid>
+					<br/>
+					<p:commandButton value="Guardar" actionListener="#{negocioMB.guardarNegocio()}"
+						update=":formLista msgNuevo" oncomplete="validar(xhr, status, args)" icon="icon-disk" />
+					
+					<p:commandButton value="Cancelar" type="button" onclick="PF('dlgNuevo').hide()" icon="icon-cancel" />
+					</h:form>	
+			</p:dialog>
+			
+
+			<!-- dialogo eliminar -->	
+			<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)"
+					message="¿Desea eliminar este Negocio?" header="Eliminar Negocio"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					<p:commandButton value="Eliminar"
+						update=":formLista :msgGeneral"
+						actionListener="#{negocioMB.confirmaEliminar}"
+						oncomplete="PF('dlgEliminar').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgEliminar').hide()" icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>
+		
+		<script>
+			
+		function validar(xhr, status, args) {
+			if (!args.esValido) {
+				jQuery('#dlgDetNuevo').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				//limpiando
+				PF('dlgNuevo').hide();
+				console.log("cerro")
+			}
+		}
+
+
+		</script>
+		
+	</ui:define>
+</ui:composition>
+</html>

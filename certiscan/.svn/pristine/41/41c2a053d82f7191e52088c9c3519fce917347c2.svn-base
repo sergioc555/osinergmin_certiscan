@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+		<h:form>
+			<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: 0px">
+				<p:menuitem value="Home" url="#" />
+				<p:menuitem value="Administracion" url="#" />
+				<p:menuitem value="Gestión de Oficina" url="oficina" />
+			</p:breadCrumb>
+		</h:form>
+
+
+		<br />
+		<!-- sms general -->
+		<p:messages id="sms" showDetail="false" showSummary="true"
+			closable="true" />
+
+		<!-- toolbar -->
+		<h:form style="margin-bottom: 8px">
+			<p:toolbarGroup align="top">
+
+			</p:toolbarGroup>
+		</h:form>
+
+		<!-- listado de OFICINA -->
+		<h:form id="formListaOficina">
+			<h:panelGrid columns="6">
+				<p:commandButton value="Nueva Oficina" icon="icon-add"
+					update=":dlgDetNuevo :frmMensajeBlock" oncomplete="PF('dlgNuevo').show();"
+					actionListener="#{oficinaMB.nuevoOficina()}" />
+				#{"Negocio:"}
+			<p:selectOneMenu style="width:200px" value="#{oficinaMB._negocio}" disabled="#{oficinaMB.view}"
+					required="true" requiredMessage="Seleccione un Negocio" filter="true">
+					<f:selectItem itemLabel="Seleccione" itemValue="0" />
+					<f:selectItems value="#{oficinaMB.listaNegocio}" var="n"
+						itemLabel="#{n.descripcion}" itemValue="#{n.id_negocio}" />
+				</p:selectOneMenu>
+				<p:commandButton value="Buscar" icon="icon-search"
+					update=":formListaOficina:dtOffice"
+					actionListener="#{oficinaMB.listarOficina}" 
+					oncomplete="PF('BlockUIWidgetE').unblock()"
+					onstart="PF('BlockUIWidgetE').block()" />
+					
+				<h:commandLink   id="imprimir" value="Imprimir"   style="padding: 6px 30px;background: #C0C0C0; text-decoration: none; border: solid 1px #624B1E; font-weight: bold;
+    								 color: #1C190A;" actionListener="#{oficinaMB.imprimirXLS}" ajax="false">   
+				</h:commandLink>
+				
+			</h:panelGrid>
+			<pe:blockUI widgetVar="BlockUIWidgetE">
+				<h:graphicImage library="resources/img"
+					value="/resources/img/ajax-loader1.gif"
+					style="margin-right: 12px; vertical-align: middle;" />
+				<h:outputText value="Cargando, espere por favor..."
+					style="white-space: nowrap; font-weight:bold; color: #036fab" />
+			</pe:blockUI>
+			<p:dataTable widgetVar="dtOficina" var="p" 
+				value="#{oficinaMB.listaOficina}" id="dtOffice" 
+				filteredValue="#{oficinaMB.listaFiltroOficina}"
+				emptyMessage="No hay Oficinas Disponibles." rowIndexVar="nro"
+				paginator="true" rows="10" paginatorPosition="bottom"
+				style="FONT-SIZE: 10px; width:800px">
+				<f:facet name="header">Lista de Oficinas</f:facet>
+
+				<p:column headerText="Ord." style="width:5px">
+						#{nro+1}
+					</p:column>
+
+				<p:column style="width:50px" headerText="Oficina"
+					filterBy="#{p.nombre}" sortBy="#{p.nombre}"
+					filterMatchMode="contains" filterStyle="width:95%;">
+					<h:outputText value="#{p.nombre}" />
+				</p:column>
+				
+				<p:column style="width:50px" headerText="Negocio"
+					filterBy="#{p.desNegocio}" sortBy="#{p.desNegocio}"
+					filterMatchMode="contains" filterStyle="width:95%;">
+					<h:outputText value="#{p.desNegocio}" />
+				</p:column>
+
+				<p:column style="width:100px" headerText="Gerente" rendered="false">
+					<h:outputText value="#{p.gerente}" />
+				</p:column>
+
+				<p:column style="width:70px" headerText="Cargo Gerente"
+					rendered="false">
+					<h:outputText value="#{p.cargo_gerente}" />
+				</p:column>
+
+				<p:column style="width:70px" headerText="Fecha Cumpleaños"
+					rendered="false">
+					<h:outputText value="#{p.fecha_cumpleanos}">
+						<f:convertDateTime pattern="dd/MM/yyyy" type="date"
+							dateStyle="short" />
+					</h:outputText>
+				</p:column>
+
+				<p:column style="width:15px" headerText="Estado">
+					<p:commandLink update="@form :sms"
+						actionListener="#{oficinaMB.cambiarEstado(p)}">
+						<h:graphicImage
+							value="#{p.estado?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}"
+							title="#{p.estado?'Activo':'Bloqueado'}" />
+					</p:commandLink>
+				</p:column>
+
+
+				<p:column headerText="Editar/Elim."
+					style="width:30px;text-align: center">
+
+					<p:commandButton title="Editar" update=":dlgDetNuevo :frmMensajeBlock"
+						actionListener="#{oficinaMB.editarOficina(p)}"
+						oncomplete="PF('dlgNuevo').show();" icon="icon-edit">
+					</p:commandButton>
+
+					<p:commandButton title="Eliminar"
+						oncomplete="PF('dlgEliminar').show();" update=":dlgDetEliminar"
+						icon="icon-delete">
+						<f:setPropertyActionListener target="#{oficinaMB.oficina}"
+							value="#{p}" />
+					</p:commandButton>
+
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+
+
+		<!-- #############    Dialogos      ################ -->
+
+		<!-- dialogo nuevo/editar perfil -->
+		<pe:blockUI css="{top: '10px', left: '10px'}" widgetVar="BlockUIWidget2" id="mensajeBlockDet" >   
+			<h:form id="frmMensajeBlock">     
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="#{oficinaMB.mensajeBlock}" style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	        </h:form>
+	    </pe:blockUI>
+		<p:dialog header="Datos de Oficina" widgetVar="dlgNuevo"
+			appendTo="@(body)" resizable="false" id="dlgDetNuevo" modal="true">
+
+			<h:form>
+				<p:messages showDetail="false" showSummary="true" id="msgNuevo"
+					closable="true" />
+
+				<h:panelGrid columns="2">  
+							            #{"Nombre: "}
+										<p:inputText style="width:200px"
+						value="#{oficinaMB.oficina.nombre}" required="true"
+						requiredMessage="Se necesita un nombre" />
+										#{"Código: "}
+										<p:inputText style="width:200px"
+						value="#{oficinaMB.oficina.codigo_oficina}" required="true"
+						requiredMessage="Se necesita un código de oficina" />
+										#{"Direccion:"}
+										<p:inputText style="width:200px"
+						value="#{oficinaMB.oficina.direccion}" maxlength="30"
+						 />
+										
+										#{"Encargado:"}
+										<p:inputText style="width:200px"
+						value="#{oficinaMB.oficina.encargado}" maxlength="30"
+						 />
+										#{"Negocio:"}
+						<p:selectOneMenu style="width:200px"
+						value="#{oficinaMB.oficina.id_negocio}" required="true"
+						requiredMessage="Seleccione un Negocio" disabled="#{oficinaMB.view}" filter="true">
+						<f:selectItem itemLabel="Seleccione..." itemValue="" />
+						<f:selectItems value="#{oficinaMB.listaNegocio}" var="n"
+							itemLabel="#{n.descripcion}" itemValue="#{n.id_negocio}" />
+							
+					</p:selectOneMenu>  							           
+		
+										
+											#{"Estado:"}
+										<p:selectOneMenu style="width:200px"
+						value="#{oficinaMB.oficina.estado}" required="true"
+						requiredMessage="Seleccione un Estado">
+						<f:selectItem itemLabel="Seleccione..." itemValue="" />
+						<f:selectItem itemLabel="ACTIVO" itemValue="TRUE" />
+						<f:selectItem itemLabel="DESACTIVO" itemValue="FALSE" />
+					</p:selectOneMenu>
+
+
+
+				</h:panelGrid>
+
+
+				<p:commandButton value="Guardar"
+					actionListener="#{oficinaMB.guardarOficina()}"
+					update=":formListaOficina msgNuevo"
+					onstart="PF('BlockUIWidget2').block()"
+					oncomplete="validar(xhr, status, args); PF('BlockUIWidget2').unblock()" icon="icon-disk" />
+
+				<p:commandButton value="Cancelar" type="button"
+					onclick="PF('dlgNuevo').hide();" icon="icon-cancel" />
+
+			</h:form>
+
+
+		</p:dialog>
+
+
+		<!-- dialogo eliminar -->
+		<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)"
+			message="¿Desea eliminar esta Oficina?" header="Eliminar Oficina"
+			severity="alert" widgetVar="dlgEliminar">
+			<h:form>
+					Oficina a eliminar: <h:outputText
+					value="#{oficinaMB.oficina.nombre}"
+					style="font-size:12px;font-weight: bold;" />
+				<br />
+				<p:commandButton value="Eliminar" update=":formListaOficina :sms"
+					actionListener="#{oficinaMB.confirmaEliminar()}"
+					oncomplete="PF('dlgEliminar').hide();" icon="icon-delete" />
+
+				<p:commandButton value="Cancelar" type="button"
+					onclick="PF('dlgEliminar').hide();" icon="icon-cancel" />
+
+			</h:form>
+		</p:confirmDialog>
+
+		<script>
+			function validar(xhr, status, args) {
+				if (!args.esValido) {
+					jQuery('#dlgDetNuevo').effect("shake", {
+						times : 1
+					}, 100);
+				} else {
+					//limpiando
+
+					PF('dlgNuevo').hide();
+				}
+			}
+		</script>
+
+	</ui:define>
+</ui:composition>
+</html>

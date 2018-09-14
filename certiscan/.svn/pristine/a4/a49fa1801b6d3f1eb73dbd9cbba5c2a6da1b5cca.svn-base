@@ -1,0 +1,516 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+		<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: -5px">  
+  				<p:menuitem value="Home" url="#" />  
+  				<p:menuitem value="Gestión de Evaluación" url="#" />
+  				<p:menuitem value="Evaluación de Morosidad" url="centralRiesgo" />   
+		</p:breadCrumb>	
+		<pe:blockUI   widgetVar="BlockUIWidget">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Consultando SBS, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+		<h:form id="form">
+			
+			<p:panel header="CONSULTA ESTADO DE MOROSIDAD" style="width: 85%; margin-top: 10px;">
+				<p:messages showDetail="false" showSummary="true" id="msgNuevo" style="font-size:11px;" closable="true" />
+				<p:panelGrid styleClass="companyHeaderGrid2" style="background: transparent;">
+					<p:row>
+						<p:column>
+							Tipo de Documento
+						</p:column>
+						<p:column>
+							<p:selectOneMenu  value="#{centralRiesgoMB.tipoDocumento}">
+								<f:selectItem itemValue="0" itemLabel="RUC" />
+								<f:selectItem itemValue="1" itemLabel="DNI" />
+								<f:selectItem itemValue="2" itemLabel="CARNET EXTRANJERIA / CARTA INDENTIDAD" />
+								<f:selectItem itemValue="5" itemLabel="PASAPORTE" />
+							</p:selectOneMenu>
+						</p:column>
+						<p:column>
+							Número
+						</p:column>
+						<p:column>
+							<p:inputText value="#{centralRiesgoMB.numeroDocumento}" style="width: 160px;"/>
+						</p:column>
+						<p:column style="text-align: center;">
+							<p:commandButton value="CONSULTAR" icon="ui-icon-circle-zoomout" style="font-size: 14px; font-weight:bold;"
+									action="#{centralRiesgoMB.buscarEstadoMorosidad}" update=":form"
+									onstart="PF('BlockUIWidget').block();" oncomplete="PF('BlockUIWidget').unblock();"/>
+							<p:commandButton value="IMPRIMIR" type="button" icon="ui-icon-print" style="font-size: 14px; font-weight:bold;">
+				              <p:printer target="@form" />
+				       		</p:commandButton>
+						</p:column>
+						<p:column >
+							<p:graphicImage url="/resources/img/logo-sbs.png" height="50"/>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:panel>		
+			
+				
+			
+			
+			
+			
+			
+			<h:panelGrid id="pngResultado" rendered="#{centralRiesgoMB.renderedResultado}" style="width:80%">
+				
+				
+				<p:panel header="DIRECTORIO DE PERSONAS" rendered="#{centralRiesgoMB.renderedResultadoPersona}">
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Nombre Completo:" style="font-weight: bold;"/>
+						<h:outputText value="#{centralRiesgoMB.personaSBS.nombreCompleto}"/>
+						<h:outputLabel value="Fecha Nacimiento:" style="font-weight: bold;"/>
+						<h:outputText value="#{centralRiesgoMB.personaSBS.fechaNac}"/>
+						<h:outputLabel value="Origen:" style="font-weight: bold;"/>
+						<h:outputText value="#{centralRiesgoMB.personaSBS.origen}"/>
+						<h:outputLabel value="Nivel Educacion:" style="font-weight: bold;"/>
+						<h:outputText value="#{centralRiesgoMB.personaSBS.nivelEducacion}"/>
+						<h:outputLabel value="Ubigeo:" style="font-weight: bold;"/>
+						<h:outputText value="#{centralRiesgoMB.personaSBS.ubigeo}"/>
+					</h:panelGrid>
+				</p:panel>
+				
+				<p:dataTable id="dirReportada" var="dirRep" value="#{centralRiesgoMB.listDireccionesReportadas}" 
+								rowIndexVar="nro" emptyMessage="No se encontraron resultados" rendered="#{not empty centralRiesgoMB.listDireccionesReportadas}">
+					<f:facet name="header">
+						Cantidad Direcciones Reportadas
+					</f:facet>
+					<p:column headerText="Nro"  style="width: 3%">
+						#{nro+1}
+					</p:column>
+					<p:column headerText="Fecha nacimiento"  style="width: 8%">
+						#{dirRep.fecha}
+					</p:column>
+					<p:column headerText="Direccion"  style="width: 25%">
+						#{dirRep.direccion}
+					</p:column>
+					<p:column headerText="Distrito">
+						#{dirRep.distrito}
+					</p:column>
+					<p:column headerText="Departamento">
+						#{dirRep.departamento}
+					</p:column>
+					<p:column headerText="Telefono">
+						#{dirRep.telefono}
+					</p:column>
+					<p:column headerText="Fuente">
+						#{dirRep.fuente}
+					</p:column>
+					<p:column headerText="Direccion De.">
+						#{dirRep.tipo}
+					</p:column>
+				</p:dataTable>
+				
+				
+				
+				<p:dataTable id="calPonderada" var="calPond" value="#{centralRiesgoMB.listCalificacionPonderada}" style="width: 720px"
+								rowIndexVar="nro" emptyMessage="No se encontraron resultados" rendered="#{not empty centralRiesgoMB.listCalificacionPonderada}">
+					<f:facet name="header" >
+						<h:outputLabel style="width: 720px" value="Calificación Ponderada (% de calificacion)"/>
+					</f:facet>
+					<p:column headerText="CALIFICACIÓN"  style="width: 200px">
+						#{calPond.calificacion}
+					</p:column>
+					<p:column style="width: 55px">
+						<f:facet name="header">
+							<h:outputText value="#{centralRiesgoMB.mes1}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{calPond.mes1}
+					</p:column>
+					<p:column style="width: 60px">
+						<f:facet name="header">
+							<h:outputText value="#{centralRiesgoMB.mes2}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{calPond.mes2}
+					</p:column>
+					<p:column style="width: 55px">
+						<f:facet name="header">
+							<h:outputText value="#{centralRiesgoMB.mes3}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{calPond.mes3}
+					</p:column>
+					<p:column style="width: 60px">
+						<f:facet name="header">
+							<h:outputText value="#{centralRiesgoMB.mes4}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{calPond.mes4}
+					</p:column>
+					<p:column style="width: 35px">
+						<f:facet name="header">
+							<h:outputText value="#{centralRiesgoMB.mes5}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{calPond.mes5}
+					</p:column>
+					<p:column style="width: 35px">
+						<f:facet name="header">
+							<h:outputText value="#{centralRiesgoMB.mes6}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{calPond.mes6}
+					</p:column>
+					<p:column style="width: 35px">
+						<f:facet name="header">
+							<h:outputText value="#{centralRiesgoMB.mes7}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{calPond.mes7}
+					</p:column>
+					<p:column style="width: 35px">
+						<f:facet name="header">
+							<h:outputText value="#{centralRiesgoMB.mes8}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{calPond.mes8}
+					</p:column>
+					<p:column style="width: 35px">
+						<f:facet name="header">
+							<h:outputText value="#{centralRiesgoMB.mes9}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{calPond.mes9}
+					</p:column>
+					<p:column style="width: 35px">
+						<f:facet name="header">
+							<h:outputText value="#{centralRiesgoMB.mes10}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{calPond.mes10}
+					</p:column>
+					<p:column style="width: 40px">
+						<f:facet name="header">
+							<h:outputText value="#{centralRiesgoMB.mes11}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{calPond.mes11}
+					</p:column>
+					<p:column style="width: 35px">
+						<f:facet name="header">
+							<h:outputText value="#{centralRiesgoMB.mes12}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{calPond.mes12}
+					</p:column>
+					
+				</p:dataTable>
+				
+				 
+				<p:dataTable id="calCredS" var="cred" value="#{centralRiesgoMB.listReporteCrediticioSoles}" style="width: 955px"
+								rowIndexVar="nro" emptyMessage="No se encontraron resultados" rendered="#{not empty centralRiesgoMB.listReporteCrediticioSoles}">
+					<f:facet name="header">
+						Reporte Crediticio Consolidado Soles
+					</f:facet>
+					<p:column headerText="Nombre Cuenta" style="width: 260px">
+						#{cred.nombreCuenta}
+					</p:column>
+					<p:column style="width: 75px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes1}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto1}
+					</p:column>
+					<p:column style="width: 80px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes2}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto2}
+					</p:column>
+					<p:column style="width: 65px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes3}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto3}
+					</p:column>
+					<p:column style="width: 80px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes4}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto4}
+					</p:column>
+					<p:column style="width: 50px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes5}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto5}
+					</p:column>
+					<p:column style="width: 45px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes6}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto6}
+					</p:column>
+					<p:column style="width: 45px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes7}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto7}
+					</p:column>
+					<p:column style="width: 45px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes8}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto8}
+					</p:column>
+					<p:column style="width: 45px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes9}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto9}
+					</p:column>
+					<p:column style="width: 50px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes10}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto10}
+					</p:column>
+					<p:column style="width: 55px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes11}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto11}
+					</p:column>
+					<p:column style="width: 45px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes12}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto12}
+					</p:column>
+				</p:dataTable>
+				
+				<p:dataTable id="calCredD" var="cred" value="#{centralRiesgoMB.listReporteCrediticioDolares}" style="width: 955px"
+								rowIndexVar="nro" emptyMessage="No se encontraron resultados" rendered="#{not empty centralRiesgoMB.listReporteCrediticioDolares}">
+					<f:facet name="header">
+						Reporte Crediticio Consolidado Dolares
+					</f:facet>
+					<p:column headerText="Nombre Cuenta" style="width: 260px">
+						#{cred.nombreCuenta}
+					</p:column>
+					<p:column style="width: 75px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes1}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto1}
+					</p:column>
+					<p:column style="width: 80px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes2}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto2}
+					</p:column>
+					<p:column style="width: 65px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes3}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto3}
+					</p:column>
+					<p:column style="width: 80px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes4}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto4}
+					</p:column>
+					<p:column style="width: 50px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes5}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto5}
+					</p:column>
+					<p:column style="width: 45px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes6}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto6}
+					</p:column>
+					<p:column style="width: 45px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes7}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto7}
+					</p:column>
+					<p:column style="width: 45px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes8}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto8}
+					</p:column>
+					<p:column style="width: 45px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes9}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto9}
+					</p:column>
+					<p:column style="width: 50px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes10}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto10}
+					</p:column>
+					<p:column style="width: 55px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes11}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto11}
+					</p:column>
+					<p:column style="width: 45px">
+						<f:facet name="header">
+							<h:outputLabel value="Monto S/."/>
+							<h:outputText value="#{centralRiesgoMB.mes12}" >
+								<f:convertDateTime pattern="MMMM yyyy" />
+							</h:outputText>
+						</f:facet>
+						#{cred.monto12}
+					</p:column>
+					
+				</p:dataTable>
+				
+				<p:dataTable id="detEntS" var="ent" value="#{centralRiesgoMB.listDetalleEntidadSoles}" 
+								rowIndexVar="nro" emptyMessage="No se encontraron resultados" rendered="#{not empty centralRiesgoMB.listDetalleEntidadSoles}">
+					<f:facet name="header">
+						Detalle por Entidad Soles
+					</f:facet>
+					<p:column headerText="Nombre Entidad"  style="width: 30%">
+						#{ent.nombreEntidad}
+					</p:column>
+					<p:column headerText="Calificación"  style="width: 10%">
+						#{ent.calificacion}
+					</p:column>
+					<p:column headerText="Credito Vigente S/.">
+						#{ent.creditoVigente}
+					</p:column>
+					<p:column headerText="Credito Refinanciado S/.">
+						#{ent.creditoRefinanciado}
+					</p:column>
+					<p:column headerText="Credito Vencido S/.">
+						#{ent.creditoVencido}
+					</p:column>
+					<p:column headerText="Credito Cobro Judicial S/.">
+						#{ent.creditoCobroJudicial}
+					</p:column>
+				</p:dataTable>
+				
+				<p:dataTable id="detEntD" var="ent" value="#{centralRiesgoMB.listDetalleEntidadDolares}" 
+								rowIndexVar="nro" emptyMessage="No se encontraron resultados"  rendered="#{not empty centralRiesgoMB.listDetalleEntidadDolares}">
+					<f:facet name="header">
+						Detalle por Entidad Dolares
+					</f:facet>
+					<p:column headerText="Nombre Entidad"  style="width: 30%">
+						#{ent.nombreEntidad}
+					</p:column>
+					<p:column headerText="Calificación"  style="width: 10%">
+						#{ent.calificacion}
+					</p:column>
+					<p:column headerText="Credito Vigente $.">
+						#{ent.creditoVigente}
+					</p:column>
+					<p:column headerText="Credito Refinanciado $.">
+						#{ent.creditoRefinanciado}
+					</p:column>
+					<p:column headerText="Credito Vencido $.">
+						#{ent.creditoVencido}
+					</p:column>
+					<p:column headerText="Credito Cobro Judicial $.">
+						#{ent.creditoCobroJudicial}
+					</p:column>
+				</p:dataTable>
+				
+			</h:panelGrid>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

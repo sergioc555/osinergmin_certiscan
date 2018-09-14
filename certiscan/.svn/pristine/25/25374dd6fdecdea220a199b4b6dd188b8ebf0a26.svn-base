@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.NegocioResponsablesMapper">
+
+<resultMap id="negocioResponsableResult" type="com.certicom.certiscan.domain.NegocioResponsables">
+	<id column="id_negocio_responsable" property="id_negocio_responsable"/>
+	<result column="des_negocio" property="des_negocio"/>
+	<result column="estado" property="estado" />
+	<result column="idusuario" property="idusuario"/>
+	<result column="id_cargo" property="id_cargo"/>
+	<result column="des_cargo" property="des_cargo"/>
+	<result column="nom_promotor" property="nom_promotor"/>
+	<result column="app_promotor" property="app_promotor"/>
+	<result column="apm_promotor" property="apm_promotor"/>
+	<result column="dni_promotor" property="dni_promotor"/>
+	<result column="fecha_ingreso" property="fecha_ingreso"/>
+	<result column="email" property="email"/>
+	<result column="outsourcing" property="outsourcing"/>
+	<result column="producto" property="producto"/>
+	<result column="supervisor" property="supervisor"/>
+	<result column="dni_supervisor" property="dni_supervisor"/>
+	<result column="oficina" property="oficina"/>
+	<result column="territorio" property="territorio"/>
+	<result column="status" property="status"/>
+	<result column="dni_responsable" property="dni_responsable"/>
+	<result column="fecha_cese" property="fecha_cese"/>
+	<result column="motivo_cese" property="motivo_cese"/>
+	<result column="texto_pdf" property="texto_pdf"/>
+	<result column="fecha_registro_lectura" property="fecha_registro_lectura"/>
+	<result column="estado_lectura" property="estado_lectura"/>
+	<result column="estado_examen" property="estado_examen"/>
+	<result column="ncorrectas" property="ncorrectas"/>
+	<result column="nincorrectas" property="nincorrectas"/>
+	<result column="dias_vacaciones" property="dias_vacaciones"/>
+	<result column="dias_descanso" property="dias_descanso"/>
+	<result column="des_tplanilla" property="des_tplanilla"/>
+	
+	<result column="des_oficina" property="des_oficina"/>
+	<result column="producto_principal" property="producto_principal"/>
+	<result column="otros_productos" property="otros_productos"/>
+	<result column="negocio_asignado" property="negocio_asignado"/>
+	
+	
+</resultMap>
+
+<select id="rptRelacionPromotores"   resultMap="negocioResponsableResult">
+	select  
+<!--        n.descripcion as des_negocio,  -->
+       u.idusuario,
+       u.id_cargo, 
+       u.estado,
+       c.descripcion as des_cargo,
+       u.nombre  as nom_promotor, u.apellido_paterno as app_promotor,u.apellido_materno as apm_promotor,
+       u.dni as dni_promotor,u.fecha_ingreso,u.email, 'CERTICOM' as outsourcing,u.fecha_cese, u.motivo_cese, 
+     
+       (sp.nombre || ' ' || sp.apellido_paterno  || ' ' ||  sp.apellido_materno) as supervisor ,sp.dni as dni_supervisor,
+        t.descripcion as territorio,
+       (case when u.estado_planilla then 'Activo' else 'Cesado' end) as status,
+       u.dias_vacaciones, u.dias_descanso, p.descripcion as des_tplanilla,
+        u.producto_principal as producto,
+        u.otros_productos, 
+        u.des_oficina as oficina,
+        u.negocio_asignado as des_negocio
+	from (((((t_usuario u LEFT JOIN t_negocio n on u.id_negocio = n.id_negocio) 
+		LEFT join t_cargo c on c.id_cargo = u.id_cargo)
+		LEFT JOIN t_usuario sp on sp.idusuario = u.id_supervisor and sp.id_supervisor != 2154 )
+		left join t_oficina o on o.id_oficina = u.id_oficina)
+		left join t_territorio t on t.id_territorio = o.id_territorio) 
+		LEFT JOIN t_tipo_planilla p on p.id_planilla = u.id_planilla
+		WHERE 1 = 1 
+		and  c.id_cargo not in (1,2)
+<!-- 		where nr.id_cargo == 4  -->
+		<if test="id_negocio !=0">
+			and u.id_negocio =#{id_negocio} 
+		</if>
+		
+		and u.negocio_asignado != 'BBVA CONSUMER'
+		and u.fecha_ingreso != '1900-01-01'
+		and u.idusuario not in (1987,1773,2844,2099,1780,2834,2303,2020,1768,2514)
+		and u.dotacion
+</select>
+
+
+<select id="rptReporteLectura"   resultMap="negocioResponsableResult">
+		select  
+       u.idusuario,
+       u.id_cargo, 
+       u.estado,
+       c.descripcion as des_cargo,
+       u.nombre  as nom_promotor, u.apellido_paterno as app_promotor,u.apellido_materno as apm_promotor,
+       u.dni as dni_promotor,u.fecha_ingreso,u.email, 'CERTICOM' as outsourcing,u.fecha_cese, u.motivo_cese, 
+       
+       (sp.nombre || ' ' || sp.apellido_paterno  || ' ' ||  sp.apellido_materno) as supervisor ,sp.dni as dni_supervisor,
+       (case when u.estado then 'Activo' else 'Cesado' end) as status,
+       	cl.fec_registro as fecha_registro_lectura, cl.texto_pdf,
+       	n.descripcion as  des_negocio,
+       	case when  cl.id_comprension_lectura is null then 'NO LEIDO' else 'LEIDO' END   as estado_lectura,
+       	case when  re.id is null then 'NO DIO EXAMEN' else 'DIO EXAMEN' END   as estado_examen,
+       	re.ncorrectas, re.nincorrectas
+	from ((((t_usuario u LEFT JOIN t_negocio n on u.id_negocio = n.id_negocio) 
+		LEFT join t_cargo c on c.id_cargo = u.id_cargo)
+		LEFT JOIN t_usuario sp on sp.idusuario = u.id_supervisor )
+		LEFT join t_comprension_lectura cl on cl.idusuario = u.idusuario and cl.idlectura = #{id_lectura}  )
+		LEFT JOIN t_resultado_examen re 
+			on re.id_usuario = u.idusuario and re.idlectura = #{id_lectura}
+		WHERE u.estado_planilla = true
+
+		<if test="id_negocio !=0">
+			and u.id_negocio =#{id_negocio} 
+		</if>
+		
+			order by cl.id_comprension_lectura
+		
+</select>
+
+
+
+
+</mapper>	

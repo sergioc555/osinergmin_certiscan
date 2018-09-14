@@ -1,0 +1,19 @@
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+
+
+##CAP CV
+#jdbc.url=jdbc:postgresql://172.17.100.78:5432/CERTISCANOSI
+#jdbc.username=postgres
+#jdbc.password=s0p0rt32015
+
+
+##- oropendolas
+jdbc.url=jdbc:postgresql://10.162.172.240:5432/CERTISCANOSI
+jdbc.username=postgres
+jdbc.password=s0p0rt32017certiscan
+
+##- desarrollo
+#jdbc.url=jdbc:postgresql://10.162.172.86:5432/certiscanDES
+#jdbc.username=postgres
+#jdbc.password=postgres

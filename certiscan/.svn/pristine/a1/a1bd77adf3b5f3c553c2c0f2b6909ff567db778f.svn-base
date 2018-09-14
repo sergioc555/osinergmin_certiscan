@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.PlanillaPersonalMapper">
+
+<resultMap id="cargoResult" type="com.certicom.certiscan.domain.PlanillaPersonal">
+	<id column="id_planilla_personal" property="id_planilla_personal" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<id column="idusuario" property="idusuario" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<id column="id_planilla" property="id_planilla" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<id column="id_cargo" property="id_cargo" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<id column="id_negocio" property="id_negocio" javaType="java.lang.Integer" jdbcType="INTEGER"/>	
+	<result column="fecha_registro" property="fecha_registro" javaType="java.util.Date" jdbcType="DATE"/>
+	<result column="fecha_ingreso" property="fecha_ingreso" javaType="java.util.Date" jdbcType="DATE"/>	
+	<result column="estado" property="estado" javaType="java.lang.Boolean" jdbcType="BOOLEAN"/>
+	
+</resultMap>
+
+
+</mapper>	

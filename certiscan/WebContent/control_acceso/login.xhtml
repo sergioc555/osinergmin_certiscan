@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+      
+<h:head>
+
+	<title>..:: certiscan - SISTEMA DE DIGITALIZACION DE EXPEDIENTES ::..</title>   
+	<link rel="stylesheet" href="#{request.contextPath}/resources/css/reset.css" />
+	 <link rel="stylesheet" href="#{request.contextPath}/resources/css/mnkr_login.css" />
+	
+</h:head>
+<h:body>
+
+<div >
+
+	<!-- Primary Page Layout -->
+	
+	<div class="top">
+		<div class="certicom_logo"></div>
+	
+		<div id="welcomeLogo" >
+	    	<div id="txtSlogan">SISTEMA DE DIGITALIZACION DE EXPEDIENTES</div>
+	    </div>
+	</div>
+
+	<div class="container">
+		
+	
+	<div class="wrap">
+	
+		<h:form id="formLogin">	
+<!-- 		<div class="avatar"> -->
+<!--       		<h:graphicImage  library="img" name="logo_55.png" /> -->
+<!-- 		</div> -->
+		
+		
+		
+		<p:inputText  styleClass="ipUser" id="ipUser" value="#{loginMB.login}"
+								  title="Ingrese el Usuario de Acceso" placeholder="Usuario"/>
+		
+<!-- 		<div class="bar"> -->
+<!-- 			<i></i> -->
+<!-- 		</div> -->
+		
+		<p:password styleClass="ipPass" id="ipPass" value="#{loginMB.password}"
+						 title="Ingrese su Password" placeholder="Password" /> 
+		
+		<a href="#" class="forgot_link"></a>
+		
+		<p:commandButton id="btnIngresar" styleClass="myButton" value="INGRESAR"
+							process="@form" ajax="false"
+							update="@form frmMessage:mensajes"
+							action="#{loginMB.efectuarLogin(request.getRemoteAddr())}" />
+			
+		</h:form>
+		
+		<h:form id="frmMessage">
+			<p:messages id="mensajes" />
+		</h:form>			
+	</div>
+	
+	
+	
+			
+			
+		
+	</div>
+	
+	 
+	
+	
+	
+	
+	
+	<div class="bottom">
+	<span id="copyright">Certicom.  Todos los derechos reservados - Copyright © 2017</span>
+	</div>
+	
+	
+</div>
+<!-- End Document -->
+</h:body>
+
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+		<h:form>
+			<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: 0px">
+				<p:menuitem value="Home" url="#" />
+				<p:menuitem value="Configuracion" url="#" />
+				<p:menuitem value="Gestion de Indices"
+					url="indices" />
+			</p:breadCrumb>
+		</h:form>
+
+
+		<br />
+		<!-- growl general -->
+		<p:messages id="msgGeneral" showDetail="false" showSummary="true"
+			closable="true" />
+
+		<!-- listado de Categoria Indicadores Call -->
+		<h:form id="formLista">
+			<h:panelGrid columns="1">
+			
+			<h:panelGrid columns="6">		
+			#{"Negocio:"}
+			<p:selectOneMenu style="width:200px"
+						value="#{categoriaIndicadoresIndiceMB._negocio}"
+						required="true" requiredMessage="Seleccione un Negocio">
+						<f:selectItem itemLabel="Seleccione..." itemValue="" />
+						<f:selectItems
+							value="#{categoriaIndicadoresIndiceMB.listaNegocios}" var="n"
+							itemLabel="#{n.descripcion}" itemValue="#{n.id_negocio}" />
+						
+					</p:selectOneMenu>					
+					<p:commandButton value="Buscar"
+				icon="icon-search" update=":formLista:dataTable"
+				actionListener="#{categoriaIndicadoresIndiceMB.buscar}" />				
+					</h:panelGrid>
+						
+						<p:commandButton value="Nueva Categoria"
+				icon="icon-add" update=":dlgDetNuevo"
+				oncomplete="PF('dlgNuevo').show();" process="@this"
+				actionListener="#{categoriaIndicadoresIndiceMB.nuevoCategoriaIndicadoresCall()}" />
+				
+			</h:panelGrid>
+			<br> </br>
+			<p:dataTable id="dataTable" var="p"
+				value="#{categoriaIndicadoresIndiceMB.listaCategoriaIndicadoresCall}"
+				widgetVar="dtCategoriaIndicadoresCall"
+				emptyMessage="No hay Categoria Indicadores Call Disponibles."
+				rowIndexVar="nro" paginator="true" rows="10"
+				paginatorPosition="bottom" style="FONT-SIZE: 10px; width: 1000px">
+
+				<f:facet name="header">Lista Categoria Indicadores</f:facet>
+
+				<p:ajax event="rowToggle" update=":formLista:dataTable:dataTable1" />
+
+				<p:column style="width:1%">
+					<p:rowToggler />
+				</p:column>
+
+				<p:column style="width:80px" headerText="Descripción"
+					filterBy="#{p.descripcion}" filterStyle="width:280px;"
+					filterMatchMode="contains">
+					<h:outputText value="#{p.descripcion}" />
+				</p:column>
+
+				<p:column style="width:4px;text-align: center" headerText="Estado">
+
+					<p:commandLink update="@form :msgGeneral"
+						actionListener="#{categoriaIndicadoresIndiceMB.cambiarEstado(p)}">
+						<h:graphicImage
+							value="#{p.estado?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}"
+							title="#{p.estado?'Activo':'Bloqueado'}" />
+					</p:commandLink>
+
+				</p:column>
+
+				<p:column headerText="Opciones"
+					style="width:10px;text-align: center">
+
+					<p:commandButton
+						actionListener="#{categoriaIndicadoresIndiceMB.editarCategoriaIndicadoresCall(p)}"
+						update=":dlgDetNuevo" oncomplete="PF('dlgNuevo').show();"
+						title="Editar" icon="icon-edit" />
+
+					<p:commandButton
+						actionListener="#{categoriaIndicadoresIndiceMB.eliminarCategoriaIndicadoresCall(p)}"
+						oncomplete="PF('dlgEliminar').show();" title="Eliminar"
+						icon="icon-delete" />
+
+				</p:column>
+
+				<p:rowExpansion>
+					<p:dataTable id="dataTable1" var="a" value="#{p.listIndicadorCall}"
+						widgetVar="dtProducto"
+						filteredValue="#{categoriaIndicadoresIndiceMB.listaIndicadorCallFilter}"
+						emptyMessage="No hay Indicadores Call Disponibles."
+						rowIndexVar="nro" rowKey="#{a.id_indicadores_call}"
+						paginator="true" rows="10" paginatorPosition="bottom"
+						style="FONT-SIZE: 10px; width:95%">
+
+						<p:ajax event="rowToggle"
+							update=":formLista:dataTable:dataTable1" />
+
+						<f:facet name="header">Lista Indicadores</f:facet>
+						<f:facet name="footer">
+							<p:commandButton value="Nuevo Indicador" icon="icon-add"
+								update=":dlgDetIndNuevo" oncomplete="PF('dlgIndNuevo').show();"
+								actionListener="#{categoriaIndicadoresIndiceMB.nuevoIndicadorCall(p)}" />
+						</f:facet>
+						
+						<p:column headerText="Orden" style="width:3%">
+						#{nro+1}
+					</p:column>
+
+						<p:column style="width:50%" headerText="Descripción"
+							filterBy="#{a.descripcion}" filterStyle="width:215px;"
+							filterMatchMode="contains">
+							<h:outputText value="#{a.descripcion}" />
+						</p:column>
+						
+						<p:column style="width:40%" headerText="Valor / Tamaño"
+							 filterStyle="width:215px;" filterMatchMode="contains">
+							<h:outputText value="#{a.valor}" />
+						</p:column>
+						
+						<p:column style="width:20%" headerText="Medida"
+							 filterStyle="width:215px;" filterMatchMode="contains">
+							<h:outputText value="#{a.medida}" />
+						</p:column>
+
+						<p:column style="width:6%" headerText="Estado">
+							<p:commandLink update="@form :msgGeneral"
+								actionListener="#{categoriaIndicadoresIndiceMB.cambiarEstado(a)}">
+								<h:graphicImage
+									value="#{a.estado?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}"
+									title="#{a.estado?'Activo':'Bloqueado'}" />
+							</p:commandLink>
+
+						</p:column>
+
+						<p:column headerText="Editar/Elim."
+							style="width:10%;text-align: center">
+
+							<p:commandButton
+								actionListener="#{categoriaIndicadoresIndiceMB.editarIndicadorCall(a)}"
+								update=":dlgDetIndNuevo" oncomplete="PF('dlgIndNuevo').show();"
+								title="Editar" icon="icon-edit" />
+
+							<p:commandButton
+								actionListener="#{categoriaIndicadoresIndiceMB.eliminarIndicadorCall(a)}"
+								oncomplete="PF('dlgIndEliminar').show();" title="Eliminar"
+								icon="icon-delete" />
+
+						</p:column>
+					</p:dataTable>
+				</p:rowExpansion>
+
+			</p:dataTable>
+		</h:form>
+
+	
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido" >
+		
+		<style>
+			.ui-picklist-list 
+			.ui-tabs-nav
+			{width:160px!important;}
+			.ui-tabs-selected
+			{background-color:#E6E6E6!important;}
+			.ui-tabs-panels{
+				float:left!important;
+			}
+		</style>
+		
+		<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: -5px">  
+  				<p:menuitem value="Home" url="#" />  
+  				<p:menuitem value="Digitalizacíon" url="#" />
+  				<p:menuitem value="Recepcionar Expediente" url="recepcionarExpediente" />   
+		</p:breadCrumb>	
+	
+		<pe:blockUI   widgetVar="BlockUIWidget">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Registrando Expediente, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    <pe:blockUI   widgetVar="BlockUIWidgetSelect">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Seleccionando espere..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+				
+				<p:tabView id="tvRecExp" style="border:none;" >
+					<p:tab title="Recepcionar Expediente">
+				
+					<h:form id="frmAsignacion">
+						<p:messages showDetail="false" showSummary="true" id="msgNuevo" style="font-size:11px;" closable="true" />
+						<h:panelGrid columns="2">
+						<p:panel columns="6" header="Ingrese los datos del Expediente" >
+							<h:panelGrid columns="4" >
+								
+								Nro Expediente:
+								<p:inputText disabled="#{recepExp.initFieldsRegistro}" id="txtNroExpediente" value="#{recepExp.nuevoExpediente.nro_expediente}"  required="true" requiredMessage="Se necesita un numero de expediente" >
+									<p:ajax event="keyup"/>
+								</p:inputText>
+								
+								Fecha y Hora del Sistema:
+								<p:clock pattern="dd.MM.yyyy HH:mm:ss" mode="server" />
+								
+								
+								Proceso:
+								<p:inputText disabled="#{recepExp.initFieldsRegistro}" id="txtProceso" value="#{recepExp.nuevoExpediente.proceso}" required="true" style="width:520px" requiredMessage="" >
+									<p:ajax event="keyup"/>
+								</p:inputText>
+								
+								Oficina Origen:
+								
+								<p:selectOneRadio id="idOficina" value="#{recepExp.nuevoExpediente.oficina_origen}" style="width:200px" disabled="#{recepExp.initFieldsRegistro}">
+										<f:selectItem itemLabel="ORL" itemValue="ORL" />
+										<f:selectItem itemLabel="MP" itemValue="MP" />
+										<f:selectItem itemLabel="OD" itemValue="OD" />
+								</p:selectOneRadio>
+								
+								Fecha de Documento:
+								<p:calendar style="width:200px" disabled="#{recepExp.initFieldsRegistro}" value="#{recepExp.nuevoExpediente.fecha_documento}" readonlyInput="true" pattern="dd/MM/yyyy" locale="es" 
+							  		navigator="true"  required="true" requiredMessage="Seleccione una fecha de inicio"></p:calendar>
+								
+								Hora de Documento
+								<p:calendar style="width:200px" disabled="#{recepExp.initFieldsRegistro}" value="#{recepExp.nuevoExpediente.hora_documento}" readonlyInput="true" pattern="hh:mm" locale="es" timeOnly="true"
+							  		navigator="true"  required="true" requiredMessage="Seleccione una fecha de inicio"></p:calendar>
+								
+								Tipo de Prioridad
+								
+								<p:selectOneMenu required="true" disabled="#{recepExp.initFieldsRegistro}" value="#{recepExp.nuevoExpediente.tipo_prioridad}" >	
+									<f:selectItem itemLabel="-- Seleccione -- " itemValue="0"></f:selectItem>
+									<f:selectItem itemLabel="NORMAL" itemValue="NORMAL"></f:selectItem>
+									<f:selectItem itemLabel="PRIORIDAD" itemValue="PRIORIDAD"></f:selectItem>
+									<f:selectItem itemLabel="URGENTE" itemValue="URGENTE"></f:selectItem>
+								</p:selectOneMenu>
+								
+								Voluminoso:
+        						<p:selectBooleanCheckbox disabled="#{recepExp.initFieldsRegistro}" value="#{recepExp.nuevoExpediente.voluminoso}" />
+        						
+        						Planos:
+        						<p:selectBooleanCheckbox disabled="#{recepExp.initFieldsRegistro}" value="#{recepExp.nuevoExpediente.planos}" />
+        						
+        						Cantidad de CD:
+								<p:inputText  id="txtCD" disabled="#{recepExp.initFieldsRegistro}" onkeypress="return justNumbers(event)" value="#{recepExp.nuevoExpediente.cantidad_cd}" style="width:60px" required="true" requiredMessage="" >
+									<p:ajax event="keyup"/>
+								</p:inputText>
+								
+								Cantidad de Otro Medio:
+								<p:inputText  id="txtOM" disabled="#{recepExp.initFieldsRegistro}" onkeypress="return justNumbers(event)" value="#{recepExp.nuevoExpediente.cantidad_otro_medio}" style="width:60px" required="true" requiredMessage="" >
+									<p:ajax event="keyup"/>
+								</p:inputText>
+								
+								Archivadores:
+								<p:inputText  id="txtArchivadores" disabled="#{recepExp.initFieldsRegistro}" onkeypress="return justNumbers(event)" value="#{recepExp.nuevoExpediente.archivadores}" style="width:40px" required="true" requiredMessage="" >
+									<p:ajax event="keyup"/>
+								</p:inputText>
+								
+								Vinifiles:
+								<p:inputText  id="txtVinifiles" disabled="#{recepExp.initFieldsRegistro}" onkeypress="return justNumbers(event)" value="#{recepExp.nuevoExpediente.vinifiles}" style="width:40px" required="true" requiredMessage="" >
+									<p:ajax event="keyup"/>
+								</p:inputText>
+								
+								Pioners:
+								<p:inputText  id="txtPioners" disabled="#{recepExp.initFieldsRegistro}" onkeypress="return justNumbers(event)" value="#{recepExp.nuevoExpediente.pioner}" style="width:40px" required="true" requiredMessage="" >
+									<p:ajax event="keyup"/>
+								</p:inputText>
+								
+								Sobres:
+								<p:inputText  id="txtSobres" disabled="#{recepExp.initFieldsRegistro}" onkeypress="return justNumbers(event)" value="#{recepExp.nuevoExpediente.sobre}" style="width:40px" required="true" requiredMessage="" >
+									<p:ajax event="keyup"/>
+								</p:inputText>
+								
+								Paquetes:
+								<p:inputText  id="txtPaquetes" disabled="#{recepExp.initFieldsRegistro}" onkeypress="return justNumbers(event)" value="#{recepExp.nuevoExpediente.paquete}" style="width:40px" required="true" requiredMessage="" >
+									<p:ajax event="keyup"/>
+								</p:inputText>
+								
+								Anilladores:
+								<p:inputText  id="txtAnilladores" disabled="#{recepExp.initFieldsRegistro}" onkeypress="return justNumbers(event)" value="#{recepExp.nuevoExpediente.anillados}" style="width:40px" required="true" requiredMessage="" >
+									<p:ajax event="keyup"/>
+								</p:inputText>
+								
+								Files:
+								<p:inputText  id="txtFiles" disabled="#{recepExp.initFieldsRegistro}" onkeypress="return justNumbers(event)" value="#{recepExp.nuevoExpediente.file}" style="width:40px" required="true" requiredMessage="" >
+									<p:ajax event="keyup"/>
+								</p:inputText>
+								
+								Carta Fianzas:
+								<p:inputText  id="txtCT" disabled="#{recepExp.initFieldsRegistro}" onkeypress="return justNumbers(event)" value="#{recepExp.nuevoExpediente.carta_fianza}" style="width:40px" required="true" requiredMessage="" >
+									<p:ajax event="keyup"/>
+								</p:inputText>
+								
+								FACTURAS:
+        						<p:selectBooleanCheckbox disabled="#{recepExp.initFieldsRegistro}" value="#{recepExp.nuevoExpediente.flg_facturas}" />
+        						
+        						Otros:
+								<p:inputText  id="txtOtros" disabled="#{recepExp.initFieldsRegistro}" value="#{recepExp.nuevoExpediente.otro}" style="width:450px" required="true" requiredMessage="" >
+									<p:ajax event="keyup"/>
+								</p:inputText>	
+        						
+        						VOLUMINOSOS:
+        						<p:selectBooleanCheckbox  disabled="#{recepExp.initFieldsRegistro}" value="#{recepExp.nuevoExpediente.flg_voluminoso}" />
+        						
+        						Observaciones:
+								<p:inputTextarea  id="txtObservaciones"  disabled="#{recepExp.initFieldsRegistro}" value="#{recepExp.nuevoExpediente.observaciones_osi}" cols="65" rows="5" required="true" requiredMessage="" >
+									<p:ajax event="keyup"/>
+								</p:inputTextarea>							
+								
+								Condición
+								<p:selectOneMenu disabled="#{recepExp.initFieldsRegistro}" value="#{recepExp.nuevoExpediente.condicion}" required="true" requiredMessage="Se necesita una condición">	
+									<f:selectItem itemLabel="ACEPTADO" itemValue="ACEPTADO"></f:selectItem>
+									<f:selectItem itemLabel="RECHAZADO" itemValue="RECHAZADO"></f:selectItem>	
+									<p:ajax event="change" process="@this" listener="#{recepExp.listaIncidencia}" update=":tvRecExp:frmAsignacion"> </p:ajax>							
+								</p:selectOneMenu>		
+								
+								Fecha Recepción:
+								<p:calendar disabled="#{recepExp.initFieldsRegistro}" value="#{recepExp.fecha_recepcion}" pattern="dd MMMM yyyy" style="font-size: 17px; font-weight: bold; color: #007EBD;" navigator="true" 
+									/>
+							</h:panelGrid>
+							
+							<h:panelGrid columns="4">
+								
+								
+								<!-- <h:panelGroup id="pgObs"  >
+								<h:panelGrid rendered="#{recepExp.renderedObs}">
+								<h:outputText value="Observación:"></h:outputText>
+								<p:inputTextarea value="#{recepExp.nuevoExpediente.observacion}" required="true" requiredMessage="Se necesita una observación"
+									rows="2" cols="60" scrollHeight="40"/>
+								</h:panelGrid>
+								</h:panelGroup> -->
+								
+								<h:panelGrid columns="2">
+								<h:outputText value="Estado:" style="font-weight:bold;font-size: 1.1em;"/>
+								<h:outputText value="Pendiente por Recibir" style="font-weight:bold;font-size: 1.2em;color:blue"/>
+								</h:panelGrid>
+								
+								
+							</h:panelGrid>
+							
+										<p:commandButton value="Nuevo" icon="icon-add" id="cmdAct" 
+										update=":tvRecExp:frmAsignacion" process="@this" actionListener="#{recepExp.activarNuevoRegistro}"  >
+										</p:commandButton>	
+							
+										<p:commandButton disabled="#{recepExp.initFieldsRegistro}"  value="Guardar" icon="ui-icon-locked" action="#{recepExp.registrarExpediente()}" id="cmdConsultar" 
+										update=":tvRecExp:frmAsignacion msgNuevo"    oncomplete="PF('BlockUIWidget').unblock()" onstart="PF('BlockUIWidget').block();">
+										</p:commandButton>
+										
+								<p:commandButton value="Cancelar" icon="icon-cancel" action="#{recepExp.cancelarExpediente()}" id="cmdCanc" 
+										update=":tvRecExp:frmAsignacion" process="@this"   >
+								</p:commandButton>		
+						</p:panel>
+						<p:panel rendered="#{recepExp.bandIncidencia}" header="Incidencias" >
+							<h:panelGrid>			
+								<h:panelGroup id="pnlGroup" rendered="#{recepExp.bandIncidencia}">
+								
+									<h:panelGrid id="xx1" >
+									      <p:dataTable id="dtincpre" widgetVar="dtEx" var="e"
+													value="#{recepExp.listExpIncidencia}" 
+													
+													emptyMessage="No hay Incidencias disponibles" rowIndexVar="nro"
+													scrollable="true" scrollRows="13" scrollHeight="350" 
+													style="FONT-SIZE: 10px; ">
+													<p:column style="width:90px" headerText="Descripcion">
+														<h:outputText value="#{e.des_incidencia}" style="width:100px"/>
+													</p:column>
+				
+													<p:column style="width:90px" headerText="Obs" >
+														<h:outputText value="#{e.observacion}" escape="false" style="width:90px"/>
+													</p:column>
+				
+													<p:column style="width:25px" headerText="Estado">
+														<p:commandLink update=":tvRecExp:frmAsignacion:pnlGroup :dlgDetObserv" process="@this"   style="width:10%"    
+															    actionListener="#{recepExp.setIncidencia(e)}" oncomplete="validarEstado(xhr, status, args)" >
+															<h:graphicImage
+																value="#{e.valor_exp != 0?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}"
+																title="#{e.valor_exp != 0?'Activo':'Bloqueado'}" />
+														</p:commandLink>
+													</p:column>
+											</p:dataTable>
+						 			</h:panelGrid>
+								
+								</h:panelGroup>
+							</h:panelGrid>
+						</p:panel>
+						</h:panelGrid>
+				</h:form>
+				
+				<h:form id="fmdt">
+												
+					<p:panel id="pnGrilla" header="3.- Archivos cargados del expediente:"  style="width: 70%"  rendered="#{recepExp.renderedTablaDocumento}" >
+					
+					<p:dataTable rendered="#{recepExp.renderedTablaDocumento}" id="dataTable2" var="p" value="#{recepExp.listaDocumentosRegistrados}" widgetVar="dtNegocio" 
+					filteredValue="#{recepExp.listaDocumentosRegistradosF}"
+					emptyMessage="No hay Documentos Disponibles" rowIndexVar="nro" 
+					paginator="true" rows="10" paginatorPosition="bottom" style="FONT-SIZE: 10px; width:70% ">
+										 
+					<f:facet name="header">Lista Documentos Cargados</f:facet>
+					
+					<p:column headerText="Ord."  style="width:15px" >
+						#{nro+1}
+					</p:column>
+
+					<p:column style="width:70%" headerText="Descripcion de la Imagen" filterBy="#{p.nombre_archivo}"  filterStyle="width:90%;" filterMatchMode="contains">
+						<h:outputText value="#{p.nombre_archivo}" />
+					</p:column>						
+					
+					<p:column style="width:10%" headerText="Nro Hojas" filterBy="#{p.nro_paginas}"  filterStyle="width:90%;" filterMatchMode="contains">
+						<h:outputText value="#{p.nro_paginas}" />
+					</p:column>
+					
+					<p:column style="width:10%" headerText="Peso" >
+						<h:outputText value="#{p.descripcion_peso}" />
+					</p:column>
+					<p:column style="width:10%" headerText="Fecha Subida" >
+						<h:outputText value="#{p.fecha_subida}" >
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" type="date" dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:10%" headerText="Ver Archivo" >
+						<p:commandButton 
+							update=":dlgDetDocumento" actionListener="#{recepExp.selecccionarDocumento(p)}"
+							oncomplete="PF('dlgDocumento').show();mostrar(#{p.id_expediente_documento});" title="Ver Documento" icon="icon-search" />
+					</p:column>
+					
+					<p:column style="width:10%" headerText="Ver Páginas" >
+						<p:commandButton 
+							update=":dlgDetPagina" actionListener="#{recepExp.buscarPaginas(p)}"
+							oncomplete="PF('dlgPagina').show();" title="Ver Paginas" icon="icon-mant" />
+					</p:column>
+
+				</p:dataTable>
+					</p:panel>
+			</h:form>
+			
+			</p:tab>
+			<p:tab title="Lista de Expedientes">
+			
+			
+			<p:messages showDetail="false" showSummary="true" id="msgLE" style="font-size:11px;" closable="true" />
+				
+				<h:form id="fmBusListExpe">
+				
+				<h:panelGrid columns="3">
+					<h:outputLabel value="Oficina"/>
+					<p:selectOneMenu  value="#{recepExp.f_idoficina}" filter="true" filterMatchMode="contains" disabled="#{!loginMB.admin}">	
+						<f:selectItem itemLabel="--TODOS--" itemValue="0"/>
+						<f:selectItems value="#{recepExp.listaOficinas}" var="o" itemLabel="#{o.nombre}" itemValue="#{o.id_oficina}" />
+					</p:selectOneMenu>
+					
+					<p:commandButton value="Buscar" icon="icon-search"	update=":tvRecExp:fmListExpe" actionListener="#{recepExp.buscarExpedientes}"  />
+											
+				</h:panelGrid>
+				
+				</h:form>
+				
+				<h:form id="fmListExpe">
+				
+				<p:dataTable widgetVar="dtListaExpediente" var="p"
+					value="#{recepExp.listaExpedientes}"
+					filteredValue="#{recepExp.listaExpedientesFilter}"
+					emptyMessage="No hay Expediente Disponibles." rowIndexVar="nro"
+					paginator="true" rows="20" paginatorPosition="bottom"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,100,200,500,1000" style="FONT-SIZE: 10px; ">
+					<f:facet name="header">Lista de Expedientes Registrados</f:facet>
+
+					<p:column headerText="Orden" width="25" style="width:10px">
+						#{nro+1}
+					</p:column>
+
+					<p:column style="width:70px" headerText="Nro Expediente"
+						filterBy="#{p.nro_expediente}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.nro_expediente}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Oficina Origen"
+						filterBy="#{p.oficina_origen}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.oficina_origen}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Fec. Documento">
+						<h:outputText value="#{p.fecha_documento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" type="date"
+								dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Hor. Documento">
+						<h:outputText value="#{p.hora_documento}">
+							<f:convertDateTime pattern="hh:mm" type="date"
+								dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Proceso"
+						filterBy="#{p.proceso}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.proceso}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Prioridad"
+						filterBy="#{p.tipo_prioridad}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.tipo_prioridad}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Fec. Recepción">
+						<h:outputText value="#{p.fecha_recepcion}">
+							<f:convertDateTime pattern="dd/MM/yyyy" type="date"
+								dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:80px" headerText="Condición"
+						filterBy="#{p.condicion}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.condicion}" />
+					</p:column>
+					
+					<p:column style="width:80px" headerText="Estado"
+						filterBy="#{p.desestado}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.desestado}" />
+					</p:column>
+					
+
+					<p:column style="width:150px" headerText="Usuario"
+						filterBy="#{p.usuario}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.usuario}" />
+					</p:column>
+					
+					<p:column style="width:150px" headerText="Oficina"
+						filterBy="#{p.desOficina}" filterMatchMode="contains"
+						filterStyle="width:90%;">
+						<h:outputText value="#{p.desOficina}" />
+					</p:column>
+
+					
+					<p:column headerText="Eliminar" style="width:50px;text-align: center">
+						<p:commandButton rendered="#{p.id_estado eq 3}" actionListener="#{recepExp.setearEliminar(p)}" update=":dlgDetEliminar" 
+							oncomplete="PF('dlgEliminar').show();" title="Eliminar"
+							icon="icon-delete" />
+					</p:column>
+					
+				</p:dataTable>
+				
+				
+				</h:form>
+								
+					
+			</p:tab>
+			</p:tabView>
+		
+		<p:dialog header="Visualizacíon de Archivo" widgetVar="dlgDocumento" appendTo="@(body)" position="top" 
+					resizable="false" id="dlgDetDocumento" modal="true" minWidth="600" minHeight="600">
+					<h:form id="formDocumento">
+					
+						<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="Archivo : #{recepExp.expDocSelected.nombre_archivo}"></h:outputText>
+						<h:panelGrid >
+						<object id="img01"  type="application/pdf" data="" height="600" width="600"/>
+						</h:panelGrid>
+						<p:commandButton value="Cerrar" type="button" onclick="PF('dlgDocumento').hide()" icon="icon-cancel" />
+					</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Operación Exitosa" widgetVar="dlgSuccessGroup" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetSuccesGroup" modal="true" >
+					<h:form id="fmSucces">
+					
+					<h:panelGrid columns="2">
+					<p:graphicImage url="/resources/img/accept.png" height="50" />
+					
+					<h:panelGroup>
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Expediente Registrado Correctamente"/>
+					<h:panelGrid columns="2">
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="#{recepExp.nroexpediente}"/>
+					
+					</h:panelGrid>
+					</h:panelGroup>
+					</h:panelGrid>
+					
+					<p:commandButton value="Aceptar" type="button" onclick="PF('dlgSuccessGroup').hide()"  />
+					</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Modificar Observación" widgetVar="dlObserv"
+				appendTo="@(body)" resizable="false" id="dlgDetObserv" position="top" modal="true" width="620" dynamic="true" closable="false">
+				<h:form>
+					<p:fieldset legend="OBSERVACION" style="width:600">
+						<h:panelGrid columns="2">
+					
+						#{"Incidencia:"}
+						<h:outputText
+								value="#{recepExp.expedienteincidencia.des_incidencia}" />
+								<br/>
+						#{"Observación:"}
+						
+						<h:inputTextarea style="background-color:#FAFFBD;"
+								value="#{recepExp.expedienteincidencia.observacion}" rows="7" cols="60" >
+								
+								</h:inputTextarea>
+						<ui:remove>
+						<pe:ckEditor id="editor"  value="#{recepExp.expedienteincidencia.observacion}"  width="600" />
+						</ui:remove>	
+
+						</h:panelGrid>
+					</p:fieldset>
+					<p:separator/>
+					<p:commandButton value="Guardar" widgetVar="saveButton"
+								actionListener="#{recepExp.actualizarListaIncidencia()}"
+								update=":tvRecExp:frmAsignacion" onclick="PF('dlObserv').hide();"
+								icon="icon-disk" />
+					<p:commandButton value="Cancelar" type="button" actionListener="#{recepExp.cerrar()}" update=":frmAsignacion" onclick="PF('dlObserv').hide()" icon="icon-cancel" />
+				</h:form>
+			</p:dialog>
+		
+		<p:dialog header="Paginas del Archivo" widgetVar="dlgPagina" appendTo="@(body)" position="top" 
+					resizable="false" id="dlgDetPagina" modal="true" >
+					<h:form id="formPaginas">
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="Archivo : #{recepExp.expDocSelected.nombre_archivo}"></h:outputText>
+						
+					<p:dataTable  id="dataTable3" var="p" value="#{recepExp.listaPaginas}" widgetVar="wvdataTable3" 
+					emptyMessage="No hay Paginas disponibles" rowIndexVar="nro" 
+					paginator="true" rows="10" paginatorPosition="bottom" style="FONT-SIZE: 10px; width:300px ">
+										 
+					<f:facet name="header">Lista de Páginas</f:facet>
+					
+					<p:column headerText="Ord."  style="width:10%;" >
+						#{nro+1}
+					</p:column>
+					
+					<p:column style="width:45%;" headerText="Pagina" >
+						<h:outputText value="#{p.nro_pagina}" />
+					</p:column>
+					
+					<p:column style="width:45%;" headerText="Peso" >
+						<h:outputText value="#{p.descripcion_peso}" />
+					</p:column>
+				</p:dataTable>
+						<p:commandButton value="Cerrar" type="button" onclick="PF('dlgDocumento').hide()" icon="icon-cancel" />
+						
+					</h:form>
+		</p:dialog>
+		
+		
+		<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)" message="¿Desea eliminar este Expediente?" header="Eliminar Expediente"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					<p:commandButton value="Eliminar"
+						update=":tvRecExp:fmListExpe :tvRecExp:msgLE"
+						actionListener="#{recepExp.eliminar}"
+						oncomplete="PF('dlgEliminar').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgEliminar').hide()" icon="icon-cancel" />
+
+				</h:form>
+		</p:confirmDialog>
+		
+		
+		<p:confirmDialog id="cdlPesoArchivos" appendTo="@(body)" message="#{recepExp.msj_peso_archivo}" header="Archivos cuyos peso de pagina estan fuera de rango" 
+			severity="alert" widgetVar="wcdlPesoArchivos">
+				<h:form id="formOmiso" style="text-algin:center">
+				<p:commandButton value="Aceptar" oncomplete="PF('wcdlPesoArchivos').hide();" icon="icon-cancel" />
+			</h:form>
+		</p:confirmDialog>
+		
+		
+		<p:confirmDialog id="cdlExpNotfound" appendTo="@(body)" message="#{recepExp.msj_exp_not_found}" header="Expediente ya registrado" 
+			severity="alert" widgetVar="wvcdlExpNotfound">
+			<h:form  style="text-algin:center">
+				<p:commandButton value="Aceptar" oncomplete="PF('wvcdlExpNotfound').hide();" icon="icon-cancel" />
+			</h:form>
+		</p:confirmDialog>
+		
+		
+		<pe:blockUI  widgetVar="BlockUIWidgetSave">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Guardando Asignación, espere porfavor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    <pe:blockUI  widgetVar="BlockUIWidgetToogle">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Buscando, espere porfavor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    
+	    
+	    
+	    <script >  
+	function handleComplete(xhr, status, args) {  
+	    if(args.validationFailed) {  
+	        alert("Validation Failed");  
+	    } else {  
+	        alert("Save:" + args.saved);  
+	    }  
+	}  
+	
+	function justNumbers(e) {
+		var keynum = window.event ? window.event.keyCode : e.which;
+		if ( keynum == 8 ) return true;
+		return /\d/.test(String.fromCharCode(keynum));
+	}
+	
+	function mostrar(ndoc){
+		//if(valida=='0'){
+		//alert("codigo imagen:"+imgId);
+		console.log('ndoc ', ndoc);
+		var cadena = 'DisplayImage?codigo='+ndoc;
+		//alert('imagen cadena'+cadena);
+		//jQuery('#img01').show();
+		jQuery('#img01').attr('data',cadena);
+		//jQuery('#img01').attr('data',cadena);
+		//}				
+	}
+	
+	function validarEstado(xhr, status, args) {
+		if (args.esValido) {
+			PF('dlObserv').show();
+		} 
+	}
+	
+</script>
+
+
+
+	</ui:define>
+	
+	
+  
+	
+</ui:composition>
+</html>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.MediosMapper">
+
+<resultMap id="mediosResult" type="com.certicom.certiscan.domain.Medios">
+	<id column="id_medio" property="id_medio"/>
+	<result column="descripcion" property="descripcion"/>
+	<result column="total_archivos" property="total_archivos"/>
+	<result column="descripcion_peso" property="descripcion_peso"/>
+	<result column="peso" property="peso"/>
+	<result column="fecha_registro" property="fecha_registro"/>
+	<result column="ruta" property="ruta"/>
+</resultMap>
+
+<select id="consultaMedios" resultMap="mediosResult"
+		parameterType="com.certicom.certiscan.domain.Medios">
+		select m.id_medio, m.descripcion, m.total_archivos, m.fecha_registro, m.peso, m.descripcion_peso, m.ruta, m.id_estado, e.descripcion as desEstado, m.tipo_medio from t_medios m inner join t_estado e on m.id_estado = e.id_estado 
+		where m.id_estado = 21
+		
+		<if test="filtradopor==2">
+		and cast(m.fecha_registro as Date) &gt;= #{fec_ini} and cast(m.fecha_registro as Date) &lt;= #{fec_fin}
+		</if>
+		<if test="filtradopor==1">
+		and m.descripcion = #{vfiltradopor}
+		</if>
+		
+		group by m.id_medio, m.descripcion, m.total_archivos, m.fecha_registro, m.peso, m.descripcion_peso, m.ruta, m.id_estado, e.descripcion, m.tipo_medio
+		order by m.fecha_registro asc;
+</select>
+
+</mapper>	

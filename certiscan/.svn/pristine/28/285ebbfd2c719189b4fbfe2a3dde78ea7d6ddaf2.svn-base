@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+			<h:form>
+				<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: 0px">  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Configuracion" url="#" />
+    				<p:menuitem value="Gestion de Empresa" url="empresa" />   
+				</p:breadCrumb>	
+			</h:form>
+			
+			<!-- sms general -->			
+			<p:messages  id="sms" showDetail="false" showSummary="true"  closable="true"/>		
+			
+			<!-- listado de agencias -->
+			<h:form id="formListaEmpresa">
+				<br>
+				</br>
+				<p:commandButton value="Nueva Empresa" icon="icon-add" update=":dlgDetNuevo" oncomplete="PF('dlgNuevo').show();"
+				 actionListener="#{empresaMB.nuevoEmpresa()}" />
+				
+				<p:dataTable widgetVar="dtEmpresa" var="p" value="#{empresaMB.listaEmpresa}" filteredValue="#{empresaMB.listaFiltroEmpresa}"  
+					emptyMessage="No hay Empresa Disponible." rowIndexVar="nro" 
+					paginator="true"
+					rows="10" paginatorPosition="bottom" 
+					style="FONT-SIZE: 10px; width:60%">
+					<f:facet name="header">Lista de Empresas</f:facet>
+					
+					<p:column headerText="Ord." style="width:3%" >
+						#{nro+1}
+					</p:column>
+					
+					<p:column style="width:15%" headerText="Razón Social"  filterBy="#{p.razon_social}" filterMatchMode="contains" filterStyle="width:95%;">
+						<h:outputText value="#{p.razon_social}" />
+					</p:column>
+					
+					<p:column style="width:15%" headerText="RUC">
+						<h:outputText value="#{p.ruc}" />
+					</p:column>
+					
+					
+					
+					<p:column style="width:4%" headerText="Estado">
+						<p:commandLink update="@form :sms" actionListener="#{empresaMB.cambiarEstado(p)}" > 
+							<h:graphicImage value="#{p.estado?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}" 
+							title="#{p.estado?'Activo':'Bloqueado'}" />
+						</p:commandLink>
+					</p:column>
+					
+					
+					<p:column headerText="Editar/Elim." style="width:10%;text-align: center">
+					
+						<p:commandButton title="Editar"  update=":dlgDetNuevo" actionListener="#{empresaMB.editarEmpresa(p)}"
+										 oncomplete="PF('dlgNuevo').show();" icon="icon-edit">
+						</p:commandButton>
+
+						<p:commandButton title="Eliminar" oncomplete="PF('dlgEliminar').show();" update=":dlgDetEliminar" icon="icon-delete">
+							    <f:setPropertyActionListener target="#{empresaMB.empresa}" value="#{p}" />
+						</p:commandButton>
+								
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+			
+			<h:form>
+			<ui:remove>
+			<p:poll interval="1" listener="#{empresaMB.increment()}" update="chr" />
+			</ui:remove>
+			<p:chart rendered="false" id="chr" type="metergauge" model="#{empresaMB.meterGaugeModel1}" style="width:400px;height:250px" />
+ </h:form>
+			
+			<!-- #############    Dialogos      ################ -->
+			
+			<!-- dialogo nuevo/editar perfil -->
+			
+			<p:dialog header="Datos de  Empresa" widgetVar="dlgNuevo" appendTo="@(body)" dynamic="true"
+					  resizable="false" id="dlgDetNuevo" modal="true">
+					
+					<h:form>
+						<p:messages showDetail="false" showSummary="true" id="msgNuevo" closable="true"/>
+						
+						<h:panelGrid columns="2"> 
+						
+						    #{"Razón Social:"}
+							<p:inputText style="width:200px" value="#{empresaMB.empresaSelec.razon_social}" required="true" maxlength="50" requiredMessage="Se necesita Razón Social" />
+
+
+							#{"Ruc:"}
+							<p:inputText  onkeypress="return justNumbers(event);" style="width:200px" value="#{empresaMB.empresaSelec.ruc}" required="true" maxlength="11" requiredMessage="Se necesita RUC">				
+							<!-- filtrar para numeros -->
+							
+							</p:inputText>
+							
+		                    
+							#{"Estado:"}
+							<p:selectOneMenu style="width:200px" value="#{empresaMB.empresaSelec.estado}" required="true" requiredMessage="Seleccione un Estado">
+								<f:selectItem itemLabel="Seleccione..." itemValue="" />
+								<f:selectItem itemLabel="ACTIVO" itemValue="TRUE" />
+								<f:selectItem itemLabel="DESACTIVO" itemValue="FALSE" />
+							</p:selectOneMenu>
+						
+						</h:panelGrid>
+						<br/>
+						<p:commandButton value="Guardar" actionListener="#{empresaMB.guardarEmpresa()}"
+									 update=":formListaEmpresa msgNuevo"
+									 oncomplete="validar(xhr, status, args)" icon="icon-disk" />
+									 
+						<p:commandButton value="Cancelar" type="button"	 onclick="PF('dlgNuevo').hide();"  icon="icon-cancel" />
+					</h:form>	
+			</p:dialog>
+			
+
+			<!-- dialogo eliminar -->	
+			<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)"
+					message="¿Desea eliminar esta Empresa" header="Eliminar Empresa"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					Empresa a eliminar: <h:outputText value="#{empresaMB.empresa.razon_social}" style="font-size:12px;font-weight: bold;" /> 
+					                    
+					<br/>
+					<p:commandButton value="Eliminar"
+						update=":formListaEmpresa :sms"
+						actionListener="#{empresaMB.confirmaEliminar()}"
+						oncomplete="PF('dlgEliminar').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar"  type="button" 
+						onclick="PF('dlgEliminar').hide()" icon="icon-cancel"/>
+
+				</h:form>
+			</p:confirmDialog>
+		
+		<script>
+			
+		function validar(xhr, status, args) {
+			if (!args.esValido) {
+				jQuery('#dlgDetNuevo').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				//limpiando
+				
+				PF('dlgNuevo').hide();
+			}
+		}
+		function justNumbers(e) {
+			var keynum = window.event ? window.event.keyCode : e.which;
+			if ( keynum == 8 ) return true;
+			return /\d/.test(String.fromCharCode(keynum));
+			}
+		
+		</script>
+		
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource="classpath:src/com/certicom/certiscan/propiedades/database.properties"/>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driverClassName" value="org.postgresql.Driver" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="com/certicom/certiscan/mapper/impl/UsuarioMapper.xml" />
+		<mapper resource="com/certicom/certiscan/mapper/impl/SistemaMapper.xml" />
+        <mapper resource="com/certicom/certiscan/mapper/impl/PerfilMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ParametroMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/MenuMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/Centro_AtencionMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/LogMapper.xml"/>
+
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExpedienteMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExpedienteProductoMapper.xml"/>
+
+   		<mapper resource="com/certicom/certiscan/mapper/impl/TestMapper.xml"/>
+
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExpedienteTrackingMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/LoteMapper.xml"/>
+        
+        <!-- certiscan -->
+        <mapper resource="com/certicom/certiscan/mapper/impl/OficinaMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/CiiuMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/UbigeoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/TipoPlanillaMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/CargoMapper.xml"/>       
+        <mapper resource="com/certicom/certiscan/mapper/impl/TipoDocumentoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/TipoMonedaMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/NegocioMapper.xml"/>  
+        <mapper resource="com/certicom/certiscan/mapper/impl/ProductoMapper.xml"/>    
+        <mapper resource="com/certicom/certiscan/mapper/impl/CategoriaEstadosMapper.xml"/>  
+        <mapper resource="com/certicom/certiscan/mapper/impl/EstadosMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/CategoriaIndicadoresCallMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/CategoriaIndicadoresIndiceMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/IndiceMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/IndicadorCallMapper.xml"/>  
+        <mapper resource="com/certicom/certiscan/mapper/impl/SubIndicadorCallMapper.xml"/> 
+        <mapper resource="com/certicom/certiscan/mapper/impl/EmpresaMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/BaseIndecopyMapper.xml"/>    
+        <mapper resource="com/certicom/certiscan/mapper/impl/EmpresaMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/SubProductoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/CategoriaIndicadoresProductoMapper.xml"/> 
+        <mapper resource="com/certicom/certiscan/mapper/impl/PlanillaPersonalMapper.xml"/> 
+        <mapper resource="com/certicom/certiscan/mapper/impl/TerritorioMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/TelefonosExcluidosMapper.xml"/>           
+        <mapper resource="com/certicom/certiscan/mapper/impl/ResultadoContactoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/CitaContactoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/DireccionContactoMapper.xml"/>        
+        <!-- JHON -->
+        <mapper resource="com/certicom/certiscan/mapper/impl/CabeceraMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/FormatoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/FormatoDetalleMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/CabeceraNombreMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/CabeceraBaseIndecopyMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExpedienteCabeceraMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExpedienteExcluidoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/TelefonoExpedienteTemporalMapper.xml"/>
+        
+        <mapper resource="com/certicom/certiscan/mapper/impl/CabeceraFacturacionMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/CabeceraFacturacionNombreMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/FacturacionMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/FacturacionCabeceraMapper.xml"/>
+        
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExclusionOficinaMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExclusionDepartamentoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExclusionProvinciaMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExclusionDistritoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExclusionRucMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExpedienteExclusionPreviaMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/UbigeoExcluidoMapperr.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/NegocioResponsablesMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExclusionDniMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExclusionDniCabeceraMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/BonoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/TableroComisionesMapper.xml"/>
+        
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExpedienteCuentasEnvioMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ProyeccionVentasMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/CorreoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/EstadoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/CheckListMapper.xml"/>    
+        <mapper resource="com/certicom/certiscan/mapper/impl/CheckListImagenMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/LogSBSMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ComentarioMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/TipoCicloMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/CicloMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/TarifaMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/FacturacionPlanillaCabeceraMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/FacturacionPlanillaDetalleMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/ExpedienteIncidenciaMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/TipoBonoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/BonoMapper.xml"/>
+        <mapper resource="com/certicom/certiscan/mapper/impl/LoteMapper.xml"/>
+        
+	</mappers>
+</configuration>

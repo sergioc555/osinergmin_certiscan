@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+	
+			<h:form>
+				<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: 0px">  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Configuracion" url="#" />
+    				<p:menuitem value="Programación de Ventas" url="programacionVentas" />   
+				</p:breadCrumb>	
+			</h:form>
+			
+			
+			<br/>
+			<!-- growl general -->
+			<pe:blockUI widgetVar="BlockUIWidget">
+				<h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif" style="margin-right: 12px; vertical-align: middle;" />
+				<h:outputText value="Buscando, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab" />
+			</pe:blockUI>
+						
+			
+			<p:messages  id="msgGeneral" showDetail="false" showSummary="true" closable="true" />		
+			<h:form id="formConsulta">
+			<p:panel>
+				 <h:panelGrid columns="8">
+				 			#{"Negocio:"}
+			           		<p:selectOneMenu style="width:200px" value="#{programacionVentasMB.proyVenSele.id_negocio}" required="true" requiredMessage="Seleccione un Negocio">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+							<f:selectItems value="#{programacionVentasMB.listaNegocios}" var="n" itemLabel="#{n.descripcion}" itemValue="#{n.id_negocio}"/> 
+ 							<f:ajax event="valueChange" listener="#{programacionVentasMB.listarProducto()}" render="@form" execute="@this" />
+							</p:selectOneMenu>
+						
+							#{"Producto:"}
+			           		<p:selectOneMenu style="width:200px" value="#{programacionVentasMB.proyVenSele.id_producto}" required="true" requiredMessage="Seleccione un Producto" filter="true">
+							<f:selectItem itemLabel="Seleccione..." itemValue="" />							
+							<f:selectItems value="#{programacionVentasMB.listaProductos}" var="p" itemLabel="#{p.descripcion}" itemValue="#{p.id_producto}"/> 
+							</p:selectOneMenu>
+					     	 
+					     	<p:selectOneMenu value="#{programacionVentasMB.mes}" id="selMes" style="width: 100px;">
+										<f:selectItem itemLabel="Enero" itemValue="01" />
+										<f:selectItem itemLabel="Febrero" itemValue="02" />
+										<f:selectItem itemLabel="Marzo" itemValue="03" />
+										<f:selectItem itemLabel="Abril" itemValue="04" />
+										<f:selectItem itemLabel="Mayo" itemValue="05" />
+										<f:selectItem itemLabel="Junio" itemValue="06" />
+										<f:selectItem itemLabel="Julio" itemValue="07" />
+										<f:selectItem itemLabel="Agosto" itemValue="08" />
+										<f:selectItem itemLabel="Setiembre" itemValue="09" />
+										<f:selectItem itemLabel="Octubre" itemValue="10" />
+										<f:selectItem itemLabel="Noviembre" itemValue="11" />
+										<f:selectItem itemLabel="Diciembre" itemValue="12" />
+										<!--  <p:ajax process="@this :frmTabla:lisExp" listener="#{expedientePromotorMB.iniciarListaExpedientes('A')}" update=":frmTabla:lisExp :frmTabla:lblTotal :frmTabla:lblTotal1 :frmTabla:lblTotal2 :frmTabla:lblTotal3 :frmTabla:pngPie :frmTabla:dtbEstadistico :frmTabla:selProd" onstart="PF('BlockUIWidget').block();" oncomplete="PF('BlockUIWidget').unblock();" />-->
+							</p:selectOneMenu>
+							<p:selectOneMenu value="#{programacionVentasMB.anio}" id="selAnio">
+										<f:selectItem itemLabel="2014" itemValue="2014" />
+										<f:selectItem itemLabel="2015" itemValue="2015" />
+										<f:selectItem itemLabel="2016" itemValue="2016" />
+										<f:selectItem itemLabel="2017" itemValue="2017" />
+										<f:selectItem itemLabel="2018" itemValue="2018" />
+										<f:selectItem itemLabel="2019" itemValue="2019" />
+										<f:selectItem itemLabel="2020" itemValue="2020" />
+										<!-- <p:ajax process="@this :frmTabla:lisExp" listener="#{expedientePromotorMB.iniciarListaExpedientes('A')}" update=":frmTabla:lisExp :frmTabla:lblTotal :frmTabla:lblTotal1 :frmTabla:lblTotal2 :frmTabla:lblTotal3 :frmTabla:pngPie :frmTabla:dtbEstadistico :frmTabla:selProd" onstart="PF('BlockUIWidget').block();" oncomplete="PF('BlockUIWidget').unblock();" />-->
+							</p:selectOneMenu>
+							<p:commandButton value="Consultar" icon="icon-search" update=":formTable formConsulta:btnGuardar :msgGeneral"  onstart="PF('BlockUIWidget').block();" oncomplete="PF('BlockUIWidget').unblock();"
+							actionListener="#{programacionVentasMB.ListarProyeccion()}"/>
+							
+							<p:commandButton value="Guardar" icon="icon-disk"  update=":formTable @this :msgGeneral"  id="btnGuardar" disabled="#{programacionVentasMB.bvacio}" 
+							actionListener="#{programacionVentasMB.guardarEstados()}" />
+					</h:panelGrid>
+			</p:panel>
+			</h:form>
+			<h:form id="formTable">
+				<p:panel>
+					
+					<p:dataTable id="dataTable" var="tc" editMode="cell" value="#{programacionVentasMB.listaProyVen}" widgetVar="dtProgramacionVenta" 
+						emptyMessage="Tabla vacia" rowIndexVar="nro" 
+						 style="FONT-SIZE: 10px; ">
+						 <f:facet name="header">Programacion Ventas</f:facet>
+						 <p:columnGroup type="header">
+						 	<p:row>
+						 		<p:column colspan="1" headerText="Usuario" />
+						 		<p:column colspan="1" headerText="Meta" />
+						 		<p:column colspan="1" headerText="Editar/Elim." />
+						 	</p:row>
+						 </p:columnGroup>
+						 
+						 <p:subTable widgetVar="wdtLista" id="dtLista" var="p" value="#{tc.listaProyVen}"
+							emptyMessage="No hay tablero de comisiones Disponibles." rowIndexVar="nros" 
+							paginator="true" 
+							rows="15" paginatorPosition="bottom"
+							draggableColumns="true"		
+							style="FONT-SIZE: 10px">
+							
+							<f:facet name="header">
+							
+							<h:outputLabel  value="#{tc.nombre}"  style="font-size: 13px; font-weight: bold; "/>
+							<h:outputLabel  value="                                                                     
+							                                                                                 
+							                                                      "   style="font-size: 13px; font-weight: bold; width: 80px "  />
+							<h:outputLabel  value="#{tc.meta}"  style="font-size: 13px; font-weight: bold; " converter="montoDefaultConverter"/>
+							
+							</f:facet>
+							<p:column headerText="Usuario" sortBy="#{p.nombre}">
+	           				 	<h:outputText value="#{p.nombre}" />
+	        				</p:column>
+	        				<p:column headerText="Meta" sortBy="#{p.meta}">
+	        				<h:outputText value="#{p.meta}" converter="montoDefaultConverter"/>
+	        				</p:column>
+	        				<p:column headerText="Editar/Elim." style="width:30%;text-align: center">
+					
+						<p:commandButton title="Editar"  update=":dlgDetMeta" actionListener="#{programacionVentasMB.editarProgramacionVentas(p)}"
+										 oncomplete="abrirEditarMeta()" icon="icon-edit">
+						</p:commandButton>
+								<p:commandButton
+							actionListener="#{programacionVentasMB.eliminarRegistro(p)}" 
+							oncomplete="PF('dlgEliminar').show();" title="Eliminar"
+							icon="icon-delete" />
+					</p:column>
+							</p:subTable>
+					</p:dataTable>
+				
+				</p:panel>
+			</h:form>
+			
+			<p:dialog header="Registrar Meta" widgetVar="dlgMeta" appendTo="@(body)"
+					resizable="false" id="dlgDetMeta" modal="true">
+					
+					<h:form id="formTabfac">
+					<p:focus context="formTabfac"/>
+					<p:messages showDetail="false" showSummary="true" id="msgNuevo" closable="true"/>
+					
+					<h:panelGrid columns="2">
+						#{"Supervisor:"}
+						<h:outputLabel value="#{programacionVentasMB.proyVenSeleUno.nombre_padre}" style="font-weight:bold; color:blue"/>
+						
+						#{"Ejecutivo:"}
+						<h:outputLabel value="#{programacionVentasMB.proyVenSeleUno.nombre}" style="font-weight:bold; color:blue"/>
+						
+						#{"Meta:"}
+						<ui:remove>
+						<p:inputText converter="montoDefaultConverter2" value="#{programacionVentasMB.proyVenSeleUno.meta}" >
+						</p:inputText>}
+						</ui:remove>
+						<pe:inputNumber decimalPlaces="2" thousandSeparator="," decimalSeparator="." 
+							style="font-weight: bold; font-size: 18px; text-align: right; width: 150px;background-color:#6FD61B;" maxlength="50" value="#{programacionVentasMB.proyVenSeleUno.meta}">
+							</pe:inputNumber>
+						
+					</h:panelGrid>
+					<br/>
+					<p:commandButton value="Guardar" actionListener="#{programacionVentasMB.guardarMeta()}" update=":formTable"
+						 oncomplete="validarMeta(xhr, status, args)" icon="icon-disk" />
+					
+					<p:commandButton value="Cancelar" type="button" onclick="PF('dlgMeta').hide()" icon="icon-cancel" />
+					</h:form>	
+			</p:dialog>
+			
+			<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)"
+					message="¿Desea eliminar esta Programación?" header="Eliminar Programación"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					<p:commandButton value="Eliminar"
+						update=":formTable :msgGeneral"
+						actionListener="#{programacionVentasMB.confirmaEliminar}"
+						oncomplete="PF('dlgEliminar').hide();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgEliminar').hide()" icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>
+			
+		<script type="text/javascript">
+			
+		function validar(xhr, status, args) {
+			if (!args.validationFailed) {
+				jQuery('#dlgDetNuevo').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				//limpiando
+				PF('dlgNuevo').hide();
+				console.log("cerro")
+			}
+		}
+		
+		function validarAsociacion(xhr, status, args) {
+			if (!args.validationFailed) {
+				jQuery('#dlgAsociar').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				//limpiando
+				PF('dlgAsociar').hide();
+				console.log("cerro")
+			}
+		}
+
+		function abrirEditarMeta(){
+			PF('dlgMeta').show();
+			//dlgMeta.show();
+		}
+		
+		function validarMeta(xhr, status, args) {
+			if (!args.esValido) {
+				jQuery('#dlgDetMeta').effect("shake", {
+					times : 1
+				}, 100);
+			} else {
+				PF('dlgMeta').hide();
+			}
+		}
+		</script>
+		
+	</ui:define>
+</ui:composition>
+</html>

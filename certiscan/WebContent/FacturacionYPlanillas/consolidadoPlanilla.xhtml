@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+	
+		<p:panel>
+			<h:form>
+				<p:breadCrumb>  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Facturacion y Planillas" url="#" />
+    				<p:menuitem value="Consolidado Planilla" url="codTipoCiclo" />   
+				</p:breadCrumb>	
+			</h:form>
+			<br/>
+			
+			<p:messages  id="msgGeneral" showDetail="false" showSummary="true"  closable="true"/>		
+			
+			<h:form id="formGeneral">
+			
+			
+			
+			
+				<p:panel id="gAction">
+				<h:panelGrid columns="3" >
+					<p:selectOneMenu style="width:270px" value="#{consolidadoPlanillaMB.cod_ciclo_fac}" required="true" requiredMessage="Seleccione un ciclo" >
+								<f:selectItem itemValue="0" itemLabel="--Seleccione--"></f:selectItem>
+								<f:selectItems value="#{consolidadoPlanillaMB.listaCiclosPlanilla}" var="p" itemLabel="#{p.nmes} - #{p.anio} - #{p.nfecini} - #{p.nfecfin}" itemValue="#{p.cod_ciclo}" />
+								<p:ajax event="change"></p:ajax>
+					</p:selectOneMenu>
+					<p:commandButton value="Buscar" icon="icon-add" update="gAction :formGeneral"
+						actionListener="#{consolidadoPlanillaMB.listarConsolidadoPlanilla()}"/>
+					<ui:remove>
+					<p:commandButton value="IMPRIMIR" type="button" icon="ui-icon-print" style="font-size: 14px; font-weight:bold;">
+				               <p:printer target="formGeneral" />
+				    </p:commandButton>
+				    </ui:remove> 
+				    <h:commandLink id="imprimir" value="Imprimir"   style="padding: 3px 30px;background: #C0C0C0; text-decoration: none; border: solid 1px #624B1E; font-weight: bold; color: #1C190A">
+	        					<p:dataExporter   type="xls"   target=":formGeneral:dataTable" fileName="ConsolidadadoPlanilla" />
+    				</h:commandLink>
+				</h:panelGrid>
+				</p:panel>
+				<p:separator style="border: 0px; height: 25px"></p:separator>
+					<p:dataTable id="dataTable" var="tc" value="#{consolidadoPlanillaMB.listaConsolidadosComision}" widgetVar="dtTableroComisiones" 
+						emptyMessage="Tabla vacia" rowIndexVar="nro" 
+						 style="FONT-SIZE: 10px">
+						 
+						 <p:column headerText="Orden" style="width:25px" >
+						 <f:facet name="header">
+						 	<h:outputText value="Orden" />
+						 </f:facet>
+									<h:outputText value="#{nro+1}" />
+						 </p:column>
+						 
+						 <p:column filterBy="#{tc.usuarioAsignado}" style="width:120px">
+						 	<f:facet name="header">
+						 		<h:outputText value="Colaborador" />
+						 	</f:facet>
+							<h:outputText value="#{tc.usuarioAsignado}" />
+						 </p:column>
+						 
+						 <p:column headerText="Cantidad" style="width:50px">
+								<h:outputText value="#{tc.cantidadPag}" />
+						</p:column>
+						
+						<p:column headerText="Precio sin IGV">
+								<h:outputText value="#{tc.costo_planilla_facturacion}" converter="montoDefaultConverter2Decimal"  />
+						</p:column>
+						
+						<p:column style="white-space:pre-line;width:50px;background-color:rgb(152,251,152) !important">
+						 	<f:facet name="header">
+						 		<h:outputText value="Comision" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoComision}" converter="montoDefaultConverter2Decimal"  />
+						 </p:column>
+						 
+						 <p:column style="white-space:pre-line;width:50px;background-color:paleturquoise">
+						 	<f:facet name="header">
+						 		<h:outputText value="Comision Operativo" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoComisionOperativo}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						 
+						 <p:column style="white-space:pre-line;width:50px;">
+						 	<f:facet name="header">
+						 		<h:outputText value="Comision por Regularizar" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoComisionXRegularizar}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						 
+						 <p:column style="white-space:pre-line;width:50px;">
+						 	<f:facet name="header">
+						 		<h:outputText value="Penalidad por Mala Revisión" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoPenalidadXMalaRevision}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						 
+						 <p:column style="white-space:pre-line;width:50px;">
+						 	<f:facet name="header">
+						 		<h:outputText value="Penalidad por Fuerza de Plazo" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoPenalidadXFueraPlazo}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						 
+						 <p:column style="white-space:pre-line;width:50px;">
+						 	<f:facet name="header">
+						 		<h:outputText value="Penalidad por Carpeta Perdida" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoPenalidadXCarpetaPerdida}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						 
+						 <p:column style="white-space:pre-line;width:50px;">
+						 	<f:facet name="header">
+						 		<h:outputText value="Detección de error" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoDeteccionError}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						 
+						 <p:column style="white-space:pre-line;width:50px;">
+						 	<f:facet name="header">
+						 		<h:outputText value="Penalidad por Mala Detección Fraude" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoPenalidadXMalaDeteccionFraude}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						 
+						 <p:column style="white-space:pre-line;width:50px;">
+						 	<f:facet name="header">
+						 		<h:outputText value="Descuento" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoDescuento}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						 
+						 <p:column style="white-space:pre-line;width:60px;">
+						 	<f:facet name="header">
+						 		<h:outputText value="Bono Por Cumplimiento" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoBonoXCapacitacion}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						 <p:column style="white-space:pre-line;width:50px;">
+						 	<f:facet name="header">
+						 		<h:outputText value="Posible Fraude" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoBonoPosibleFraude}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						 <p:column style="white-space:pre-line;width:50px;">
+						 	<f:facet name="header">
+						 		<h:outputText value="Bono 1" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoBono1}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						 <p:column style="white-space:pre-line;width:50px;">
+						 	<f:facet name="header">
+						 		<h:outputText value="Bono 2" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoBono2}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						 <p:column style="white-space:pre-line;width:50px;">
+						 	<f:facet name="header">
+						 		<h:outputText value="Bono 3" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoBono3}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						 <p:column style="white-space:pre-line;width:60px;">
+						 	<f:facet name="header">
+						 		<h:outputText value="Total Comisiones" />
+						 	</f:facet>
+							<h:outputText value="#{tc.montoTotalComisiones}" converter="montoDefaultConverter2Decimal" />
+						 </p:column>
+						
+						<p:column headerText="Total a Facturar" style="width:60px">
+								<h:outputText value="#{tc.totalFacturar}" converter="montoDefaultConverter2Decimal" />
+						</p:column>			 			 
+					</p:dataTable>
+			
+			</h:form>			
+									
+		</p:panel>
+		
+		<script>
+			
+		
+
+		</script>
+		
+	</ui:define>
+</ui:composition>
+</html>

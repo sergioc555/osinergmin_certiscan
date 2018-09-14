@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.ExpedienteIncidenciaMapper">
+
+<resultMap id="expedienteincidenciaResult" type="com.certicom.certiscan.domain.ExpedienteIncidencia">
+	<id column="cod_expincidencia" property="cod_expincidencia"/>
+	<result column="expediente_id" property="expediente_id"/>
+	<result column="id_incidencia" property="id_incidencia"/>
+	<result column="fecregistro" property="fecregistro"/>
+	<result column="observacion" property="observacion"/>
+
+</resultMap>
+
+
+</mapper>	

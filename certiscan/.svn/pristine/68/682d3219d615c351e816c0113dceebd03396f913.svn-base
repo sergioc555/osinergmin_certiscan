@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.ExpedienteDocumentoMapper">
+
+	<resultMap id="expedienteDocumentoResult"
+		type="com.certicom.certiscan.domain.ExpedienteDocumento">
+		<id column="id_expediente_documento" property="id_expediente_documento" />
+		<result column="expediente_id" property="expediente_id" />
+		<result column="descripcion_archivo" property="descripcion_archivo" />
+		<result column="nombre_archivo" property="nombre_archivo" />
+		<result column="ruta" property="ruta" />
+		<result column="fecha_subida" property="fecha_subida" />
+		<result column="id_usuario_creacion" property="id_usuario_creacion" />
+		<result column="peso" property="peso" />
+		<result column="descripcion_peso" property="descripcion_peso" />
+		<result column="nro_paginas" property="nro_paginas" />
+		<result column="nro_archivo" property="nro_archivo" />
+		<result column="estado_accion" property="estado_accion" />
+		<result column="estado" property="estado" />
+		<result column="id_orden_padre" property="id_orden_padre" />
+		<result column="orden_expediente" property="orden_expediente" />
+		<result column="id_padre_group" property="id_padre_group" />
+		<result column="tipo_archivo" property="tipo_archivo" />
+		<result column="grupo_formato" property="grupo_formato" />
+		<result column="medio" property="medio" />
+	</resultMap>
+
+	<select id="consultaPreparadoMedioExpediente" resultMap="expedienteDocumentoResult"
+		parameterType="com.certicom.certiscan.domain.ExpedienteDocumento">
+		select ed.*
+		from ((t_expediente ex inner join t_usuario u on
+		ex.idusuario = u.idusuario) left join t_oficina o on o.id_oficina =
+		ex.id_oficina) inner join t_expediente_documento ed on ed.expediente_id = ex.expediente_id
+		where
+			ed.grupo_formato = #{grupo_formato} and
+			ed.medio = false and  
+		ex.id_estado = 6 and ed.in_process = true
+
+		<if test="filtradopor==2">
+			and cast(ex.fecha_reg as Date) &gt;= #{fec_ini} and
+			cast(ex.fecha_reg as
+			Date) &lt;= #{fec_fin}
+		</if>
+		<if test="filtradopor==1">
+			and ex.nro_expediente = #{vfiltradopor}
+		</if>
+		order by ex.fecha_reg asc;
+	</select>
+
+</mapper>	

@@ -1,0 +1,158 @@
+package com.certicom.certiscan.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
+import com.certicom.certiscan.domain.Expediente;
+import com.certicom.certiscan.domain.ExpedienteDocumento;
+
+public interface ExpedienteDocumentoMapper {
+	
+	//@SelectKey(statement="select 1 ", resultType = int.class, before = false, keyProperty = "id_expediente_documento")
+	//@Options(useGeneratedKeys=true, keyProperty="id_expediente_documento")
+	@Insert("insert into t_expediente_documento (expediente_id,nombre_archivo,ruta,fecha_subida,id_usuario_creacion,peso,descripcion_peso,nro_paginas,nro_archivo,estado_accion,estado,orden_expediente, tipo_archivo, grupo_formato, id_medio, medio) "
+			+ " values(#{expediente_id},#{nombre_archivo},#{ruta},#{fecha_subida},#{id_usuario_creacion},#{peso},#{descripcion_peso},#{nro_paginas},#{nro_archivo},#{estado_accion},#{estado},#{orden_expediente}, #{tipo_archivo}, #{grupo_formato}, #{id_medio}, #{medio})")
+	public void guardarExpedienteDocumento(ExpedienteDocumento expedienteDocumento) throws Exception;
+	
+	@Select("select * from t_expediente_documento where expediente_id =#{expediente_id} and estado and estado_accion !='E' and estado_accion !='AG' order by orden_expediente asc")
+	public List<ExpedienteDocumento> listFilesbyExpediente_id(@Param("expediente_id") Integer expediente_id) throws Exception;
+	
+	@Select("select * from t_expediente_documento where expediente_id =#{expediente_id} and estado and estado_accion !='E' order by orden_expediente asc")
+	public List<ExpedienteDocumento> listFilesSinEliminadosbyExpediente_id(@Param("expediente_id") Integer expediente_id) throws Exception;
+	
+	
+	@Select("select * from t_expediente_documento where expediente_id =#{expediente_id} and estado and estado_accion ='AG' order by orden_expediente asc")
+	public List<ExpedienteDocumento> listFilesGroupedByExpediente_id(@Param("expediente_id") Integer expediente_id) throws Exception;
+	
+	@Select("select * from t_expediente_documento where expediente_id =#{expediente_id} and medio = false")
+	public List<ExpedienteDocumento> listExpDocAgrupados(@Param("expediente_id") Integer expediente_id) throws Exception;
+	
+	/*@Select("select * from t_expediente_documento where expediente_id =#{expediente_id} and estado and estado_accion ='AG' order by orden_expediente asc")
+	public List<ExpedienteDocumento> listFilesGroupedByExpediente_idActivos(@Param("expediente_id") Integer expediente_id) throws Exception;
+	*/
+	@Select("select ed.*, (select edo.nombre_archivo from t_expediente_documento edo where edo.id_expediente_documento = ed.id_padre_group) as desNombreArchiOrig from t_expediente_documento ed  where ed.expediente_id =#{expediente_id} and ed.estado_accion ='AG' and ed.estado = false order by ed.orden_expediente asc")
+	public List<ExpedienteDocumento> listFilesDisGroupedByExpediente_idAG(@Param("expediente_id") Integer expediente_id) throws Exception;	
+	
+	@Select("select * from t_expediente_documento where expediente_id =#{expediente_id} and estado_accion ='AG' and estado = true order by orden_expediente asc")
+	public ExpedienteDocumento FilesGroupedByExpediente_idAGI(@Param("expediente_id") Integer expediente_id) throws Exception;	
+	
+	@Select("select * from t_expediente_documento where expediente_id =#{expediente_id} and estado_accion ='AG' and estado = true order by orden_expediente asc")
+	public List<ExpedienteDocumento> listFilesGroupedByExpediente_idAGI(@Param("expediente_id") Integer expediente_id) throws Exception;	
+	
+	@Select("select id_expediente_documento from t_expediente_documento where expediente_id =#{expediente_id} and nro_archivo = #{nro_archivo} limit 1")
+	public Integer getIdExpDocByExpedienteNroArchivo(@Param("expediente_id") Integer expediente_id, @Param("nro_archivo") Integer nro_archivo) throws Exception;
+	
+	@Select("select nextval('sec_nro_archivo'::regclass)")
+	public Integer getNroArchivoSeq() throws Exception;
+	
+	@Select("select  * from t_expediente_documento where id_expediente_documento =#{id_expediente_documento}")
+	public ExpedienteDocumento findByID(@Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	
+	@Update("update t_expediente_documento set estado_accion = 'E', estado = false where id_expediente_documento = #{id_expediente_documento}")
+	public void updateEstadoEliminadoByIdExpDoc(@Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	
+	@Update("update t_expediente_documento set peso = #{peso},descripcion_peso = #{descripcion_peso}, "
+			+ "nro_paginas = #{nro_paginas}, estado_accion = 'R' "
+			+ "	where id_expediente_documento = #{id_expediente_documento}")
+	public void reemplazarDocumentoByIdExpDoc(@Param("peso") Long peso, @Param("descripcion_peso") String descripcion_peso, 
+							 @Param("nro_paginas") Integer nro_paginas, @Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	
+	
+	
+	@Update("update t_expediente_documento set estado_accion = 'AG', estado = false where id_expediente_documento = #{id_expediente_documento}")
+	public void updateEstadoAgrupadoByIdExpDoc(@Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	@Update("update t_expediente_documento set estado_accion = 'D', estado = true, id_padre_group = null where id_expediente_documento = #{id_expediente_documento}")
+	public void updateEstadoDesgrupadoByIdExpDoc(@Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	@Update("update t_expediente_documento set estado_accion = 'AG', estado = true where id_expediente_documento = #{id_expediente_documento}")
+	public void updateEstadoAgrupadoByUnExpDoc(@Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	
+	@Update("update t_expediente_documento set orden_expediente = orden_expediente +1 where expediente_id = #{expediente_id} and  orden_expediente >=#{corr}")
+	public void updateCorrelativoArchivos(@Param("expediente_id") Integer expediente_id, @Param("corr") Integer corr) throws Exception;
+	
+	@Update("update t_expediente_documento set orden_expediente = orden_expediente +1 where expediente_id = #{expediente_id} and orden_expediente >=#{corr} and id_expediente_documento not in (#{id_expediente_documento})")
+	public void updateCorrelativoArchivosSinExpDrag(@Param("expediente_id") Integer expediente_id, @Param("corr") Integer corr, @Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	@Update("update t_expediente_documento set orden_expediente = orden_expediente -1 where expediente_id = #{expediente_id} and orden_expediente >#{corr} and orden_expediente <=#{corr1}")
+	public void updateCorrelativoArchivosRango(@Param("expediente_id") Integer expediente_id, @Param("corr") Integer corr, @Param("corr1") Integer corr1) throws Exception;
+	
+	
+	@Update("update t_expediente_documento set orden_expediente = #{orden_expediente} where expediente_id = #{expediente_id} and id_expediente_documento = #{id_expediente_documento}")
+	public void updateCorrelativoArchivosExpDrag(@Param("expediente_id") Integer expediente_id, @Param("orden_expediente") Integer orden_expediente, @Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	
+	@Update("update t_expediente_documento set id_padre_group = #{expediente_id} where id_expediente_documento = #{id_expediente_documento}")
+	public void updatePadreGrupo(@Param("expediente_id") Integer expediente_id, @Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	@Update("update t_expediente_documento set id_padre_group = null, estado_accion = 'D' , estado = true  where id_padre_group = #{id_expediente_documento}")
+	public void quitarPadreGrupo(@Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	
+	@Update("update t_expediente_documento set estado_accion = 'E', estado = false  where id_expediente_documento = #{id_expediente_documento}")
+	public void eliminarPadreGrupo(@Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	@Update("update t_expediente_documento set descripcion_archivo = #{descripcion_archivo} where id_expediente_documento = #{id_expediente_documento}")
+	public void actualizarDescExpDoc(ExpedienteDocumento expedienteDocumento) throws Exception;
+	
+	@Select("select * from t_expediente_documento where id_padre_group =#{id_expediente_documento} ")
+	public List<ExpedienteDocumento> listArchivosByPadre(@Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	@Select("select * from t_expediente_documento where id_medio =#{id_medio} ")
+	public List<ExpedienteDocumento> listExpDocMedio(@Param("id_medio") Integer id_medio) throws Exception;
+	
+	@Select("select * from t_expediente_documento where id_padre_group =#{id_ed_padre} and id_expediente_documento !=#{id_ed_hijo} ")
+	public List<ExpedienteDocumento> listArchivosHermanos(@Param("id_ed_padre") Integer id_ed_padre,@Param("id_ed_hijo") Integer id_ed_hijo) throws Exception;
+	
+	
+	@Delete("delete from t_expediente_documento  where id_expediente_documento = #{id_expediente_documento}")
+	public void eliminarExpedienteDocumento(@Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	
+	@Update("update t_expediente_documento set id_padre_group = null, estado_accion = 'D' , estado = true  where id_expediente_documento = #{id_expediente_documento}")
+	public void quitarPadreGrupoHijo(@Param("id_expediente_documento") Integer id_expediente_documento) throws Exception;
+	
+	@Update("update t_expediente_documento set nombre_archivo = #{nombre_archivo}, ruta = #{ruta} where id_expediente_documento = #{id_expediente_documento}")
+	public void actualizarNombreArchivo(ExpedienteDocumento exp) throws Exception;
+	
+	/*@Update("update t_expediente_documento set id_medio = #{id_medio} where id_expediente_documento = #{id_expediente_documento}")
+	public void actualizarMedio(ExpedienteDocumento exp) throws Exception;*/
+	
+	@Update("update t_expediente_documento set id_medio = #{id_medio}, medio = #{medio} where id_expediente_documento = #{id_expediente_documento}")
+	public void actualizarMedio(ExpedienteDocumento exp) throws Exception;
+	
+	// contar expedientes digitalizados que han sido agrupados o eliminados (cantidad original)
+	@Select("select count(*) from t_expediente_documento where expediente_id =#{expediente_id} "
+			+ "and ((estado and estado_accion ='D') "
+			+ "OR (not estado and estado_accion ='AG') "
+			+ "OR (not estado and estado_accion ='E')"
+			+ "OR (estado and estado_accion ='R') ) ")
+	public Integer listFilesDigitalizados(@Param("expediente_id") Integer expediente_id) throws Exception;
+	
+	// contar expedientes digitalizados que han sido eliminados
+	@Select("select count(*) from t_expediente_documento where expediente_id =#{expediente_id} "
+			+ "and (not estado and estado_accion = 'E') ")
+	public Integer listFilesDigitalizadosEliminados(@Param("expediente_id") Integer expediente_id) throws Exception;
+	
+	// contar expedientes digitalizados que han sido reemplazados
+	@Select("select count(*) from t_expediente_documento where expediente_id =#{expediente_id} "
+			+ "and (estado and estado_accion = 'R') ")
+	public Integer listFilesDigitalizadosReempl(@Param("expediente_id") Integer expediente_id) throws Exception;
+	
+	public List<ExpedienteDocumento> consultaPreparadoMedioExpediente(ExpedienteDocumento filter)throws Exception;
+	
+	@Select("select ubicacion from t_expediente_documento where  entregable = #{entregable} and grupo_formato = #{grupo_formato} and zona = #{zona} group by ubicacion;")
+	public List<ExpedienteDocumento> obtenerCarpetas(@Param("grupo_formato") String grupo_formato, @Param("zona") String zona, @Param("entregable") String entregable) throws Exception;
+	
+	@Select("select distinct(sede_oficina) as sede_oficina from t_expediente_documento where  entregable = #{entregable} and grupo_formato = #{grupo_formato} and zona = #{zona} ;")
+	public List<ExpedienteDocumento> obtenerSedes(@Param("grupo_formato") String grupo_formato, @Param("zona") String zona, @Param("entregable") String entregable) throws Exception;		
+}

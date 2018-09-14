@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+		<pe:blockUI widgetVar="BlockUIWidget">        
+	        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+	        <h:outputText value="Buscando, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+	    </pe:blockUI>
+	    	<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: -5px">  
+   				<p:menuitem value="Home" url="#" />  
+   				<p:menuitem value="Bases" url="#" />
+   				<p:menuitem value="Tracking de Expedientes" url="expedienteTracking" />   
+			</p:breadCrumb>	
+			<br/>
+			<!-- growl general -->			
+			<p:messages  id="msgGeneral" showDetail="false" showSummary="true" />		
+			<!-- tootlbar -->
+			<h:form style="margin-bottom: 8px: margin-top:8px;" id="formOpciones">
+				<p:toolbarGroup align="top">
+					Periodo:
+					<h:panelGroup>
+					<p:selectOneMenu style="width:120px"
+						value="#{expTrackingMB.mes}">
+						<f:selectItem  itemLabel="Enero" itemValue="01" />
+						<f:selectItem  itemLabel="Febrero" itemValue="02" />
+						<f:selectItem  itemLabel="Marzo" itemValue="03" />
+						<f:selectItem  itemLabel="Abril" itemValue="04" />
+						<f:selectItem  itemLabel="Mayo" itemValue="05" />
+						<f:selectItem  itemLabel="Junio" itemValue="06" />
+						<f:selectItem  itemLabel="Julio" itemValue="07" />
+						<f:selectItem  itemLabel="Agosto" itemValue="08" />
+						<f:selectItem  itemLabel="Setiembre" itemValue="09" />
+						<f:selectItem  itemLabel="Octubre" itemValue="10" />
+						<f:selectItem  itemLabel="Noviembre" itemValue="11" />
+						<f:selectItem  itemLabel="Diciembre" itemValue="12" />
+					</p:selectOneMenu>
+					<p:selectOneMenu style="width:100px"
+						value="#{expTrackingMB.anio}">
+						<f:selectItem  itemLabel="2014" itemValue="2014" />
+						<f:selectItem  itemLabel="2015" itemValue="2015" />
+						<f:selectItem  itemLabel="2016" itemValue="2016" />
+						<f:selectItem  itemLabel="2017" itemValue="2017" />
+						<f:selectItem  itemLabel="2018" itemValue="2018" />
+						<f:selectItem  itemLabel="2019" itemValue="2019" />
+						<f:selectItem  itemLabel="2020" itemValue="2020" />
+					</p:selectOneMenu>
+					</h:panelGroup>
+					
+					Negocio:
+					<p:selectOneMenu style="width:120px" value="#{expTrackingMB.negocio}" disabled="#{expTrackingMB.view}">
+						<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" noSelectionOption="true" />
+						<f:selectItems itemLabel="#{neg.descripcion}" itemValue="#{neg.id_negocio}" value="#{expTrackingMB.listaCmbNegocio}" var="neg" />
+						<f:ajax  event="valueChange" listener="#{expTrackingMB.buscarProductosXNegocio()}" execute="@this" render=":formOpciones:cmbProdAsig" />
+					</p:selectOneMenu>
+								
+					Producto:
+					<p:selectOneMenu style="width:150px" id="cmbProdAsig" value="#{expTrackingMB.producto}">
+						<f:selectItems itemLabel="#{prod.descripcion}" itemValue="#{prod.id_producto}" value="#{expTrackingMB.listaCmbProducto}" var="prod" />
+					</p:selectOneMenu>
+					
+				
+					<p:spacer width="10" height="2" />
+					<p:commandButton value="Buscar"  actionListener="#{expTrackingMB.listarPorBasePorPeriodo()}" update=":frmListaBase :msgGeneral :formOpciones:lblTotal" icon="icon-search" 
+						onstart="PF('BlockUIWidget').block();" oncomplete="PF('BlockUIWidget').unblock();"/>
+					<p:spacer width="10" height="2" />
+					<h:outputLabel value="Total Registros: #{expTrackingMB.totalRegistros}" id="lblTotal" style="font-size: 16px; font-weight: bold; color: blue;"/>
+					<p:spacer width="50" height="2" />
+				</p:toolbarGroup>
+			</h:form>
+			
+			<br/>
+			
+			<h:form id="frmListaBase">
+					<pe:blockUI  widgetVar="BlockUIWidgetPage">        
+				        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+				        <h:outputText value="Cambiando de página, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+				    </pe:blockUI>
+					<p:dataTable  var="crg" value="#{expTrackingMB.listaExpediente}" lazy="true" paginator="true" filteredValue="#{expTrackingMB.listaFiltroExpediente}"
+						emptyMessage="No hay Expediente Disponibles." rowIndexVar="nro" style="FONT-SIZE: 10px;" id="dataTableExpediente"
+						rows="10" paginatorPosition="bottom"  rowsPerPageTemplate="10,100,200,500" widgetVar="dataTableExpediente"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+						<p:blockUI block="dataTableExpediente" trigger="dataTableExpediente">
+					        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+				        	<h:outputText value="Buscando, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/>
+					    </p:blockUI>
+						<f:facet name="header">Lista de Expedientes</f:facet>
+						<p:ajax event="page" onstart="PF('BlockUIWidgetPage').block();"  oncomplete="PF('BlockUIWidgetPage').unblock();"/>
+						
+						<p:column headerText="Orden" width="20" >
+							#{nro+1}
+						</p:column>
+						
+						<p:column width="70" headerText="Id Exp" >
+							<h:outputText value="#{crg.expediente_id}" />
+						</p:column>
+	
+						<p:column width="70" headerText="Dni" filterBy="#{crg.num_doc}" filterMatchMode="contains" filterStyle="width: 95%"
+							rendered="#{expTrackingMB.negocio ne 11 and expTrackingMB.producto ne 6}">
+							<h:outputText value="#{crg.num_doc}" rendered="#{expTrackingMB.negocio ne 11 and expTrackingMB.producto ne 6}"/>
+						</p:column>
+						
+						<p:column width="200" headerText="Cliente" style="text-align: center;" filterBy="#{crg.nombre_completo}" filterMatchMode="contains" filterStyle="width: 95%" 
+							rendered="#{expTrackingMB.negocio ne 11 and expTrackingMB.producto ne 6}">
+							<h:outputText value="#{crg.nomcompletocliente}" rendered="#{expTrackingMB.negocio ne 11 and expTrackingMB.producto ne 6}"/>
+						</p:column>
+						
+						<p:column headerText="RUC" sortBy="#{crg.ruc}" filterBy="#{crg.ruc}"  filterStyle="width: 90%;"
+							rendered="#{expTrackingMB.negocio eq 11 or expTrackingMB.producto eq 6}">
+							<h:outputText value="#{crg.ruc}" rendered="#{expTrackingMB.negocio eq 11 or expTrackingMB.producto eq 6}"/>
+						</p:column>
+						
+						<p:column headerText="RAZON SOCIAL" sortBy="#{crg.nombre_completo}" filterBy="#{crg.nombre_completo}" filterStyle="width: 90%;"
+							rendered="#{expTrackingMB.negocio eq 11 or expTrackingMB.producto eq 6}">
+							<h:outputText value="#{crg.nombre_completo}" rendered="#{expTrackingMB.negocio eq 11 or expTrackingMB.producto eq 6}"/>
+						</p:column>
+						
+						
+						<p:column width="70" headerText="Producto" filterBy="#{crg.producto.descripcion}" sortBy="#{crg.producto.descripcion}"  filterStyle="width: 95%" >
+							<h:outputText value="#{crg.desproducto}" />
+						</p:column>
+						<p:column width="70" headerText="Estado" filterBy="#{crg.estado.descripcion}" sortBy="#{crg.estado.descripcion}"  filterStyle="width: 95%" >
+							<h:outputText value="#{crg.desestado}" />
+						</p:column>
+						<p:column headerText="Ejecutivo Asignado" filterBy="#{crg.ejecutivoasig}" filterMatchMode="contains" filterStyle="width: 95%" >
+							<h:outputText value="#{crg.ejecutivoasig}" />
+						</p:column>
+						<p:column headerText="Ver Tracking" style="width:10%;text-align: center">
+							<p:commandButton title="Ver tracking"  update=":dlgDetNuevo" actionListener="#{expTrackingMB.cargarDatos(crg)}"
+										 oncomplete="PF('dlgNuevo').show();" icon="icon-consultamovimiento"/>
+						</p:column>
+				</p:dataTable>
+			</h:form>
+				
+			
+			<!-- #############    Dialogos      ################ -->
+			
+			
+		<p:dialog header="Tracking de Expediente" widgetVar="dlgNuevo"  appendTo="@(body)" closeOnEscape="true" 
+					  resizable="false" id="dlgDetNuevo" modal="true" width="1200">
+					
+			<h:form id="fm">
+				<p:messages showDetail="false" showSummary="true" id="msgNuevo" closable="true"/>
+			
+				<h:panelGrid columns="3">
+				<h:panelGroup>
+					<h:panelGrid columns="4">
+						#{"Periodo"}
+						<h:outputText value="#{expTrackingMB.mesSelect}" style="font-weight:bold;font-size: 1.2em;color:black"/>
+						#{"Año:"}
+						<h:outputText value="#{expTrackingMB.anio}" style="font-weight:bold;font-size: 1.2em;color:black"/>						
+						#{"Negocio:"}
+						<h:outputText value="#{expTrackingMB.negocioSelect}" style="font-weight:bold;font-size: 1.2em;color:black"/>
+						#{"Producto:"}
+						<h:outputText value="#{expTrackingMB.expSelected.desproducto}" style="font-weight:bold;font-size: 1.2em;color:black"/>
+						#{"Dni:"}
+						<h:outputText value="#{expTrackingMB.expSelected.num_doc}" style="font-weight:bold;font-size: 1.2em;color:black"/>
+						#{"Cliente:"}
+						<h:outputText value="#{expTrackingMB.expSelected.nomcompletocliente}" style="font-weight:bold;font-size: 1.2em;color:black"/>
+					</h:panelGrid>
+				</h:panelGroup>
+				<p:spacer height="0" width="200"></p:spacer>
+				<h:panelGroup>
+					<h:panelGrid columns="6">
+						#{"Telefono 1:"}
+						<h:outputText value="#{expTrackingMB.expSelected.numero_telefono1}" style="font-weight:bold;font-size: 1.2em;color:black"/>
+						#{"Telefono 2:"}
+						<h:outputText value="#{expTrackingMB.expSelected.numero_telefono2}" style="font-weight:bold;font-size: 1.2em;color:black"/>
+						#{"Telefono 3:"}
+						<h:outputText value="#{expTrackingMB.expSelected.numero_telefono3}" style="font-weight:bold;font-size: 1.2em;color:black"/>
+						
+						#{"Celular 1:"}
+						<h:outputText value="#{expTrackingMB.expSelected.celular1}" style="font-weight:bold;font-size: 1.2em;color:black"/>
+						#{"Celular 2:"}
+						<h:outputText value="#{expTrackingMB.expSelected.celular2}" style="font-weight:bold;font-size: 1.2em;color:black"/>
+						#{"Celular 3:"}
+						<h:outputText value="#{expTrackingMB.expSelected.celular3}" style="font-weight:bold;font-size: 1.2em;color:black"/>
+						<h:outputText escape="false"></h:outputText>
+					</h:panelGrid>
+				</h:panelGroup>
+					
+			</h:panelGrid>
+							
+					<p:dataTable widgetVar="dtTrack" var="p" value="#{expTrackingMB.listaTracking}" filteredValue="#{expTrackingMB.listaTrackingFilter}"
+						emptyMessage="No hay Expediente Disponibles." rowIndexVar="nro" 
+						paginator="true" rows="10" paginatorPosition="bottom" rowsPerPageTemplate="5,10,20,30" style="FONT-SIZE: 10px; " 
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+					<f:facet name="header">Lista Tracking</f:facet>
+					
+					<p:column headerText="Orden" width="25" style="width:10px" >
+						#{nro+1}
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Condición" >
+						<h:outputText value="#{p.condicion}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Fecha Movimiento">
+						<h:outputText value="#{p.fecha_movimiento}" >
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" type="date" dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Estado" >
+						<h:outputText value="#{p.des_estado}" />
+					</p:column>
+		
+					<p:column style="width:70px" headerText="Resultado" >
+						<h:outputText value="#{p.des_estado_resultado}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Usuario Movimiento" >
+						<h:outputText value="#{p.usuarioAsignado}" />
+					</p:column>
+					
+					<p:column style="width:70px" headerText="Usuario Registro" >
+						<h:outputText value="#{p.usuarioRegistro}" />
+					</p:column>
+					
+				</p:dataTable>
+				<p:commandButton value="CERRAR" type="button"	 onclick="PF('dlgNuevo').hide();"  icon="ui-icon-circle-close" />
+			</h:form>	
+		</p:dialog>
+			
+		
+		<script>
+			
+			function validar(xhr, status, args) {
+				if (args.validationFailed) {
+					
+				} else {
+					dlgNuevo.hide();
+				}
+			}
+	
+			function validarGuardar(xhr, status, args) {
+				if (!args.esValido) {
+					jQuery('#dlgDetNuevo').effect("shake", {
+						times : 1
+					}, 100);
+				} else {
+					//limpiando
+					dlgNuevo.hide();
+					
+				}
+			}
+		</script>
+
+	
+
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+	
+	<p:panel  >
+	
+		<h:form>
+				<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: 0px">  
+    				<p:menuitem value="Home" url="#" />  
+    				<p:menuitem value="Negocio" url="#" />
+    				<p:menuitem value="Gestion de Negocio" url="negocio" /> 
+    				<p:menuitem value="Configuracion de Responsables" url="#" />     
+				</p:breadCrumb>	
+		</h:form>	
+				
+		<br/>		
+		
+		<p:messages showDetail="false" showSummary="true" id="msgGeneral" closable="true" />		
+		
+		<h:form id="fmDesc">	
+		<h:panelGrid columns="7">
+				#{"Negocio:"}
+				<h:outputText value=" #{confNegocioResponsableMB.negocio.descripcion}" 
+					style="font-weight:bold;font-size: 1.2em;" />
+				#{"Proyecto:"}
+				<h:outputText value=" #{confNegocioResponsableMB.negocio.des_proyecto}" 
+					style="font-weight:bold;font-size: 1.2em;" />
+					<p:spacer height="0" width="300"></p:spacer>
+				#{"Colaboradores:"}
+				<h:outputText value=" #{confNegocioResponsableMB.cant_resp}" 
+					style="font-weight:bold;font-size: 1.2em;color:blue" />
+		</h:panelGrid>
+		</h:form>
+		
+		<br/>		
+		<!-- toolbar -->
+		
+		<h:form id="fmRegistro">
+		<p:panel>
+			<h:panelGrid columns="4">
+			#{"Usuario: "}
+			<p:inputText id="txtDni" disabled="true" style="width:200px;"  value="#{confNegocioResponsableMB.dniUsuario}" required="true" />
+			<p:inputText id="txtNom" disabled="true" style="width:400px;" value="#{confNegocioResponsableMB.nomUsuario}" />
+			
+			<p:commandButton  actionListener="#{confNegocioResponsableMB.listarUsuario()}" oncomplete="PF('dlgUsu').show();"
+								update=":dlgDetUsu" process="@this" icon="icon-search" title="Buscar Responsable" />
+								
+			#{"Cargo: "}
+			<p:selectOneMenu value="#{confNegocioResponsableMB.negocioResponsables.id_cargo}" required="true" requiredMessage="Seleccione un cargo">
+				<f:selectItem itemLabel="Seleccione" itemValue=""/>
+				<f:selectItems value="#{confNegocioResponsableMB.listaCargo}" var="n" itemLabel="#{n.descripcion}" itemValue="#{n.id_cargo}" />
+			</p:selectOneMenu>
+											
+			
+			<p:commandButton value="Agregar Nuevo Responsable" actionListener="#{confNegocioResponsableMB.agregarResponsable()}"
+								  update=":msgGeneral :fmLista :fmRegistro :fmDesc" icon="icon-disk" />
+				
+			</h:panelGrid>
+			</p:panel>
+		</h:form>		
+			
+		<br/>
+		
+		<!-- listado de Sub Producto -->
+		<h:form id="fmLista">
+
+    			<p:dataTable id="dataTable" var="sp" value="#{confNegocioResponsableMB.listaNegResp}" filteredValue="#{confNegocioResponsableMB.listaNegRespFilter}"
+    			 widgetVar="dtSubproducto" emptyMessage="No hay Estado Disponibles." rowIndexVar="nro" 
+    			 paginator="true"
+					rows="10" paginatorPosition="bottom" 
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,20"	
+					 style="FONT-SIZE: 10px; width:850px">
+					<f:facet name="header">Lista Responsables</f:facet>
+    			
+    			
+    			<p:column headerText="Orden" width="25" style="width:3%" >
+    				#{nro+1}
+
+    			</p:column> 
+				<p:column style="width:15%" headerText="DNI" filterBy="#{sp.dni_resp}" filterMatchMode="contains" filterStyle="width:90%" >
+					<h:outputText value="#{sp.dni_resp}" />
+				</p:column>
+				<p:column style="width:50%" headerText="Responsable" filterBy="#{sp.responsable}" filterMatchMode="contains" filterStyle="width:90%" >
+					<h:outputText value="#{sp.responsable}" />
+				</p:column>
+				
+				<p:column style="width:40%" headerText="Cargo" filterBy="#{sp.des_cargo}" filterMatchMode="contains" filterStyle="width:70px">
+					<h:outputText value="#{sp.des_cargo}" />
+				</p:column>	  	  
+    			
+				<p:column style="width:30%" headerText="Negocio" >
+					<h:outputText value="#{sp.des_negocio}" />
+				</p:column>	  
+			
+				
+				
+				<ui:remove>
+				<p:column style="width:6%" headerText="Estado Sistema">
+				
+					<p:commandLink update="@form :msgGeneral" actionListener="#{confNegocioResponsableMB.cambiarEstado(sp)}"  > 
+						<h:graphicImage value="#{sp.estado?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}" 
+						title="#{sp.estado?'Activo':'Bloqueado'}" />
+					</p:commandLink>
+					
+				</p:column>
+				
+				</ui:remove>				
+				<p:column style="width:6%" headerText="Estado Sistema">
+				
+						<h:graphicImage value="#{sp.estado_sistema?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}" 
+						title="#{sp.estado_sistema?'Activo':'Bloqueado'}" />
+					
+				</p:column>				
+				<p:column style="width:6%" headerText="Estado Planilla">
+				
+						<h:graphicImage value="#{sp.estado_planilla?'/resources/img/icon-ok.png':'/resources/img/icon-block.png'}" 
+						title="#{sp.estado_planilla?'Activo':'Bloqueado'}" />
+					
+				</p:column>				
+    					
+				<p:column headerText="Elim." style="width:15%;text-align: center">
+
+					<p:commandButton
+							actionListener="#{confNegocioResponsableMB.eliminarResponsable(sp)}"
+							oncomplete="PF('dlgEliminar').show();" title="Eliminar"
+							icon="icon-delete" update=":dlgDetEliminar" />
+		
+				</p:column>
+    			
+    		</p:dataTable>
+   		</h:form>				
+		
+	
+				
+		<!-- dialogo nuevo perfil -->
+		<p:dialog header="Seleccionar Usuario" widgetVar="dlgUsu" appendTo="@(body)"
+					resizable="false" id="dlgDetUsu" modal="true">
+				
+				<p:messages showDetail="false" showSummary="true" id="mgsNuevo" />
+			<h:form>
+				<p:dataTable id="dtusuario" var="sp" value="#{confNegocioResponsableMB.listaUsuario}" filteredValue="#{confNegocioResponsableMB.listaUsuarioFilter}"
+    			 emptyMessage="No hay Usuario Disponibles." rowIndexVar="nro" 
+    			 paginator="true"
+					rows="10" paginatorPosition="bottom" 
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,20"	
+					 style="FONT-SIZE: 10px; width:600px">
+					<f:facet name="header">Lista Usuarios</f:facet>
+    			
+    			
+    			<p:column headerText="Orden" width="25"  >
+    				#{nro+1}
+    			</p:column> 
+    			
+				<p:column style="width:15%" headerText="DNI" filterBy="#{sp.dni}"  filterStyle="width:90%;" filterMatchMode="contains">
+					<h:outputText value="#{sp.dni}" />
+				</p:column>	  
+
+				<p:column style="width:25%" headerText="Negocio" filterBy="#{sp.desNegocio}"  filterStyle="width:90px;" filterMatchMode="contains">
+					<h:outputText value="#{sp.desNegocio}" />
+				</p:column>	  
+
+				<p:column style="width:25%" headerText="Usuario" filterBy="#{sp.nombre_completo}"  filterStyle="width:90px;" filterMatchMode="contains">
+					<h:outputText value="#{sp.nombre_completo}" />
+				</p:column>	  
+
+				<p:column style="width:25%" headerText="Cargo" filterBy="#{sp.desCargo}"  filterStyle="width:90px;" filterMatchMode="contains">
+					<h:outputText value="#{sp.desCargo}" />
+				</p:column>	  
+				
+    					
+				<p:column headerText="Seleccionar" style="width:10%;text-align: center">
+
+					<p:commandButton
+							actionListener="#{confNegocioResponsableMB.seleccionarUsuario(sp)}"
+							oncomplete="PF('dlgUsu').hide();" title="Seleccionar"
+							icon="icon-search" update=":fmRegistro:txtNom :fmRegistro:txtDni" />
+		
+				</p:column>
+    			
+    		</p:dataTable>
+	<br/>				
+				<p:commandButton value="Cerrar" onclick="PF('dlgUsu').hide();" type="button" icon="icon-cancel" />
+							
+			</h:form>
+		</p:dialog>
+		
+		
+			<!-- dialogo eliminar -->	
+			<p:confirmDialog id="dlgDetEliminar" appendTo="@(body)"
+					message="¿Desea eliminar al usuario de este Negocio" header="Eliminar Sub Producto"
+					severity="alert" widgetVar="dlgEliminar">
+				<h:form>
+					<p:commandButton value="Eliminar"
+						update=":fmLista :msgGeneral :fmRegistro :fmDesc"
+						actionListener="#{confNegocioResponsableMB.confirmaEliminar()}"
+						oncomplete="PF('dlgEliminar').hide(); PF('dtSubproducto').clearFilters();" icon="icon-delete" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgEliminar').hide()" icon="icon-cancel" />
+
+				</h:form>
+			</p:confirmDialog>		
+		
+		<!-- js  -->		
+		<script>
+
+			function validarCampos(xhr, status, args) {  
+    			if(args.validationFailed) {  
+      				jQuery('#detSubProductoDialog').effect("shake", { times:3 }, 100);  
+    			} else {  
+    				
+    				subProductoDialog.hide();  
+    			}  
+			}  
+
+		</script>
+				
+
+	</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+</html>

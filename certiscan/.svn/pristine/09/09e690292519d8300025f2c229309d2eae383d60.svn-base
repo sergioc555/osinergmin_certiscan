@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.IncidenciaMapper">
+
+<resultMap id="incidenciaResult" type="com.certicom.certiscan.domain.Incidencia">
+	<id column="id_incidencia" property="id_incidencia"/>
+	<result column="descripcion" property="descripcion"/>
+	<result column="modulo" property="modulo"/>
+	<result column="estado" property="estado"/>
+
+</resultMap>
+
+
+</mapper>	

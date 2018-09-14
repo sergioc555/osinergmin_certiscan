@@ -1,0 +1,549 @@
+package com.certicom.certiscan.managedBeans;
+
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+import javax.faces.model.SelectItem;
+
+import org.primefaces.context.RequestContext;
+
+import src.com.certicom.certiscan.utils.LoteFilter;
+
+import com.certicom.certiscan.commons.Constante;
+import com.certicom.certiscan.commons.FacesUtils;
+import com.certicom.certiscan.commons.GenericBeans;
+import com.certicom.certiscan.domain.Estados;
+import com.certicom.certiscan.domain.Expediente;
+import com.certicom.certiscan.domain.ExpedienteIncidencia;
+import com.certicom.certiscan.domain.ExpedienteTracking;
+import com.certicom.certiscan.domain.IndicadorCall;
+import com.certicom.certiscan.domain.Lote;
+import com.certicom.certiscan.domain.Perfil;
+import com.certicom.certiscan.domain.Usuario;
+import com.certicom.certiscan.services.EstadosServices;
+import com.certicom.certiscan.services.ExpedienteIncidenciaServices;
+import com.certicom.certiscan.services.ExpedienteService;
+import com.certicom.certiscan.services.ExpedienteTrackingService;
+import com.certicom.certiscan.services.IndicadorCallServices;
+import com.certicom.certiscan.services.LoteServices;
+
+
+@ManagedBean(name="despachoLotExpMB")
+@ViewScoped
+public class DespachoLotExpMB extends GenericBeans implements Serializable{
+	
+	private Lote loteFilter;
+	
+	private List<Lote> listaLotes;
+	private List<Lote> listaLoteFilter;
+	private List<Expediente> listExpedientes;
+	private Lote loteSelected;
+
+	private boolean _activateCmb;
+	private boolean _activateDealer;
+	private Integer totalExpeCargados;
+	private boolean bexpediente;
+	private Lote lote;
+	private LoteServices loteServices;
+	private boolean bfecha;
+	private SelectItem[] listaCanales;
+	private ExpedienteService expedienteService;
+	private ExpedienteTrackingService expedienteTrackingService;
+	private RequestContext context;
+	private Expediente expediente;
+	private Expediente expSelected;
+	private List<Estados> listEstados;
+	private EstadosServices estadosServices;
+	private List<ExpedienteIncidencia> listExpedienteIncidencias;
+	private ExpedienteIncidenciaServices expedienteIncidenciaServices;
+	private List<IndicadorCall> listIndicadorCalls;
+	private IndicadorCallServices indicadorCallServices;
+	private Integer id_indicador_call;
+	private ExpedienteIncidencia expIncSelected;
+	private Expediente[] selectedExpediente;
+	private boolean bAgrupar;
+	private Integer cantidad_expedientes;
+	private Date fechaRegistro;
+	private Integer id_estado;
+	
+	private List<ExpedienteTracking> listaExpTracking;
+	private List<ExpedienteTracking> listaExpTrackingfilter;
+	
+	//inicio piscoya
+	private String obsGen;
+	//fin piscoya
+	
+	@ManagedProperty(value="#{loginMB.perfilUsuario}")
+	private Perfil perfilUsuario;
+	
+	@ManagedProperty(value="#{loginMB.usuario}")
+	private Usuario usuarioLogin;
+
+	private Date fechaLimite;
+
+	private Date fechaActual;
+	
+	public DespachoLotExpMB(){
+	}
+	
+	@PostConstruct
+	public void inicia(){
+		this.fechaActual = new Date();
+		this.listaLotes = new ArrayList<Lote>();
+		this.listaExpTracking = new ArrayList<>();
+		this._activateCmb = Boolean.FALSE;
+		this._activateDealer = Boolean.TRUE;
+		this.loteFilter = new Lote();
+		this.loteFilter.setFiltradopor(1);
+		this.bexpediente = true;
+		this.bfecha = false;
+		this.expSelected = new Expediente();
+		this.estadosServices = new EstadosServices();
+		this.listEstados = new ArrayList<Estados>();
+		this.listIndicadorCalls = new ArrayList<IndicadorCall>();
+		this.indicadorCallServices = new IndicadorCallServices();
+		this.expedienteIncidenciaServices = new ExpedienteIncidenciaServices();
+		this.expIncSelected = new ExpedienteIncidencia();
+		this.bAgrupar = true;
+		this.loteServices = new LoteServices();
+		this.listaLoteFilter = new ArrayList<Lote>();
+		this.loteSelected = new Lote();
+		
+		
+		this.context = RequestContext.getCurrentInstance();
+		this.expedienteService = new ExpedienteService(); 
+		this.expedienteTrackingService  = new ExpedienteTrackingService();
+		
+		try {
+			
+			this.listEstados = this.estadosServices.listaEstadosActivo();
+			//this.totalExpeCargados = this.expedienteService.getExpedienteAsignados(this.usuarioLogin.getIdusuario());
+			this.listIndicadorCalls = this.indicadorCallServices.findByCategoria(Constante.IND_ASISTENTE_FEDATARIO);
+			
+			if(this.perfilUsuario.getProceso().equals("EXPEDIENTES PROPIOS") || this.perfilUsuario.getProceso().equals("OFICINA LOCAL")){
+				this._activateCmb = true;
+				this._activateDealer = false;
+			}else{
+				this._activateCmb = false;
+				this._activateDealer = true;
+			}
+			
+			
+			
+			this.listaCanales = filterCanal();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void eliminarIndidencia(ExpedienteIncidencia einc){
+		this.expIncSelected = einc;
+	}	
+	
+	public SelectItem[] filterCanal(){
+		SelectItem[] items ;
+			items = new SelectItem[]{new SelectItem("","--Seleccione--"),
+									 new SelectItem("PERSONA"),
+					 				 new SelectItem("EMPRESA")};
+			return items;
+	}
+	
+	public void guardar(){
+		try {		
+			
+			this.loteSelected.setEstado("ENTREGADO");
+			
+			this.loteServices.actualizarEstado(this.loteSelected);
+			
+			this.listExpedientes = new ArrayList<Expediente>();		
+			this.listExpedientes = this.expedienteService.findByIdLote(this.loteSelected.getId_lote());
+			
+			List<Expediente>  listExpGuardar = new ArrayList<Expediente>();
+			
+			List<ExpedienteTracking>  listExpTrackGuardar = new ArrayList<ExpedienteTracking>();
+			
+			for (Expediente e: this.listExpedientes) {
+								
+				e.setId_estado(Constante.EST_PREPARADO_PARA_SUBIR_ARCHIVOS);
+				
+				listExpGuardar.add(e);
+				
+				ExpedienteTracking et = new ExpedienteTracking();
+				et.setExpediente_id(e.getExpediente_id());
+				et.setFecha_registro(new Date());
+				et.setIdusuario(this.usuarioLogin.getIdusuario());
+				et.setIdusuario_registro(this.usuarioLogin.getIdusuario());				
+				et.setCondicion(e.getCondicion());
+				et.setFecha_recepcion(e.getFecha_recepcion());	
+				et.setId_oficina(this.usuarioLogin.getId_oficina());
+				
+				et.setId_estado(Constante.EST_ENTREGADO_A_MENSAJERIA);
+				
+				listExpTrackGuardar.add(et);
+				
+				et = new ExpedienteTracking();
+				et.setExpediente_id(e.getExpediente_id());
+				et.setFecha_registro(new Date());
+				et.setIdusuario(this.usuarioLogin.getIdusuario());
+				et.setIdusuario_registro(this.usuarioLogin.getIdusuario());				
+				et.setCondicion(e.getCondicion());
+				et.setFecha_recepcion(e.getFecha_recepcion());
+				et.setId_oficina(this.usuarioLogin.getId_oficina());
+				
+				et.setId_estado(Constante.EST_PREPARADO_PARA_SUBIR_ARCHIVOS);
+				
+				listExpTrackGuardar.add(et);
+				
+			}
+			
+			this.expedienteService.updateBatchExpedienteEstados(listExpGuardar);
+			this.expedienteTrackingService.insertBatchExpedienteTracking(listExpTrackGuardar);
+			
+			buscarExpedientes();
+			
+			this.listExpedientes = new ArrayList<Expediente>();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
+	}
+	
+	public void mostrarExpedientes(Lote l){
+		try {
+			
+			System.out.println("BUSCAR EXPEDIENTES");
+			
+			this.listExpedientes = new ArrayList<Expediente>();		
+			this.listExpedientes = this.expedienteService.findByIdLote(l.getId_lote());
+			
+			System.out.println("Tamaño de expedientes: "+this.listExpedientes.size());
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void cambiarEstado(Lote l){
+		
+		this.loteSelected = l;
+		
+		this.id_estado = Constante.EST_ENTREGADO_A_MENSAJERIA;
+		
+		
+		
+	}
+	
+	public void buscarExpedientes(){
+		
+		RequestContext context = RequestContext.getCurrentInstance();
+		
+		System.out.println("BUSCAR LOTES");
+		
+		boolean existe=false;
+		
+		
+			try {
+				//this.listaLoteFilter = new ArrayList<Lote>();
+				
+				this.listaLotes = new ArrayList<Lote>();
+				
+				this.listaLotes = this.loteServices.consultaLote(this.loteFilter);
+				
+				this.totalExpeCargados = this.listaLotes.size();
+				
+				context.update("formListaLotes");
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	//	}else{
+	//		FacesUtils.showFacesMessage("Por favor, ingresar un parametro de búsqueda",Constante.ADVERTENCIA);
+	//		context.update(":sms");
+	//	}
+	}
+	
+	
+	
+	public void cambiarFecha(){
+		//System.out.println("la fecha que se capturo es " + this.expedienteFilter.getFec_ini());
+		this.fechaLimite = this.loteFilter.getFec_ini();
+		
+	}
+	
+	public void cambiarCombo(){
+		if(this.loteFilter.getFiltradopor()==1){
+			this.loteFilter.setFec_ini(null);
+			this.loteFilter.setFec_fin(null);
+			this.bexpediente = true;
+			this.bfecha = false;
+		}else{
+			this.loteFilter.setVfiltradopor(null);
+			this.bexpediente = false;
+			this.bfecha = true;
+		}
+	}
+	
+	/**##########################setter and  getter#####################################*/
+	
+
+	public Perfil getPerfilUsuario() {
+		return perfilUsuario;
+	}
+
+	public void setPerfilUsuario(Perfil perfilUsuario) {
+		this.perfilUsuario = perfilUsuario;
+	}
+
+	public Usuario getUsuarioLogin() {
+		return usuarioLogin;
+	}
+
+	public void setUsuarioLogin(Usuario usuarioLogin) {
+		this.usuarioLogin = usuarioLogin;
+	}
+
+	public boolean is_activateCmb() {
+		return _activateCmb;
+	}
+
+	public void set_activateCmb(boolean _activateCmb) {
+		this._activateCmb = _activateCmb;
+	}
+
+	public SelectItem[] getListaCanales() {
+		return listaCanales;
+	}
+
+	public void setListaCanales(SelectItem[] listaCanales) {
+		this.listaCanales = listaCanales;
+	}
+
+	public Expediente getExpSelected() {
+		return expSelected;
+	}
+
+	public void setExpSelected(Expediente expSelected) {
+		this.expSelected = expSelected;
+	}
+
+	public List<ExpedienteTracking> getListaExpTracking() {
+		return listaExpTracking;
+	}
+
+	public void setListaExpTracking(List<ExpedienteTracking> listaExpTracking) {
+		this.listaExpTracking = listaExpTracking;
+	}
+
+	public List<ExpedienteTracking> getListaExpTrackingfilter() {
+		return listaExpTrackingfilter;
+	}
+
+	public void setListaExpTrackingfilter(
+			List<ExpedienteTracking> listaExpTrackingfilter) {
+		this.listaExpTrackingfilter = listaExpTrackingfilter;
+	}
+
+	public Integer getTotalExpeCargados() {
+		return totalExpeCargados;
+	}
+
+	public void setTotalExpeCargados(Integer totalExpeCargados) {
+		this.totalExpeCargados = totalExpeCargados;
+	}
+
+	public boolean is_activateDealer() {
+		return _activateDealer;
+	}
+
+	public void set_activateDealer(boolean _activateDealer) {
+		this._activateDealer = _activateDealer;
+	}	
+
+	public boolean isBexpediente() {
+		return bexpediente;
+	}
+
+	public void setBexpediente(boolean bexpediente) {
+		this.bexpediente = bexpediente;
+	}
+
+	public boolean isBfecha() {
+		return bfecha;
+	}
+
+	public void setBfecha(boolean bfecha) {
+		this.bfecha = bfecha;
+	}
+
+	public Expediente getExpediente() {
+		return expediente;
+	}
+
+	public void setExpediente(Expediente expediente) {
+		this.expediente = expediente;
+	}
+
+	public String getObsGen() {
+		return obsGen;
+	}
+
+	public void setObsGen(String obsGen) {
+		this.obsGen = obsGen;
+	}
+
+	public Date getFechaLimite() {
+		return fechaLimite;
+	}
+
+	public void setFechaLimite(Date fechaLimite) {
+		this.fechaLimite = fechaLimite;
+	}
+
+	public Date getFechaActual() {
+		return fechaActual;
+	}
+
+	public void setFechaActual(Date fechaActual) {
+		this.fechaActual = fechaActual;
+	}
+
+	public List<Estados> getListEstados() {
+		return listEstados;
+	}
+
+	public void setListEstados(List<Estados> listEstados) {
+		this.listEstados = listEstados;
+	}
+
+	public List<IndicadorCall> getListIndicadorCalls() {
+		return listIndicadorCalls;
+	}
+
+	public void setListIndicadorCalls(List<IndicadorCall> listIndicadorCalls) {
+		this.listIndicadorCalls = listIndicadorCalls;
+	}
+
+	public Integer getId_indicador_call() {
+		return id_indicador_call;
+	}
+
+	public void setId_indicador_call(Integer id_indicador_call) {
+		this.id_indicador_call = id_indicador_call;
+	}
+
+	public List<ExpedienteIncidencia> getListExpedienteIncidencias() {
+		return listExpedienteIncidencias;
+	}
+
+	public void setListExpedienteIncidencias(
+			List<ExpedienteIncidencia> listExpedienteIncidencias) {
+		this.listExpedienteIncidencias = listExpedienteIncidencias;
+	}
+
+	public ExpedienteIncidencia getExpIncSelected() {
+		return expIncSelected;
+	}
+
+	public void setExpIncSelected(ExpedienteIncidencia expIncSelected) {
+		this.expIncSelected = expIncSelected;
+	}
+
+	public Expediente[] getSelectedExpediente() {
+		return selectedExpediente;
+	}
+
+	public void setSelectedExpediente(Expediente[] selectedExpediente) {
+		this.selectedExpediente = selectedExpediente;
+	}
+
+	public boolean isbAgrupar() {
+		return bAgrupar;
+	}
+
+	public void setbAgrupar(boolean bAgrupar) {
+		this.bAgrupar = bAgrupar;
+	}
+
+	public Integer getCantidad_expedientes() {
+		return cantidad_expedientes;
+	}
+
+	public void setCantidad_expedientes(Integer cantidad_expedientes) {
+		this.cantidad_expedientes = cantidad_expedientes;
+	}
+
+	public Date getFechaRegistro() {
+		return fechaRegistro;
+	}
+
+	public void setFechaRegistro(Date fechaRegistro) {
+		this.fechaRegistro = fechaRegistro;
+	}
+
+	public Lote getLote() {
+		return lote;
+	}
+
+	public void setLote(Lote lote) {
+		this.lote = lote;
+	}
+
+	public List<Lote> getListaLotes() {
+		return listaLotes;
+	}
+
+	public void setListaLotes(List<Lote> listaLotes) {
+		this.listaLotes = listaLotes;
+	}
+
+	public Lote getLoteFilter() {
+		return loteFilter;
+	}
+
+	public void setLoteFilter(Lote loteFilter) {
+		this.loteFilter = loteFilter;
+	}
+
+	public List<Lote> getListaLoteFilter() {
+		return listaLoteFilter;
+	}
+
+	public void setListaLoteFilter(List<Lote> listaLoteFilter) {
+		this.listaLoteFilter = listaLoteFilter;
+	}
+
+	public List<Expediente> getListExpedientes() {
+		return listExpedientes;
+	}
+
+	public void setListExpedientes(List<Expediente> listExpedientes) {
+		this.listExpedientes = listExpedientes;
+	}
+
+	public Integer getId_estado() {
+		return id_estado;
+	}
+
+	public void setId_estado(Integer id_estado) {
+		this.id_estado = id_estado;
+	}
+
+	public Lote getLoteSelected() {
+		return loteSelected;
+	}
+
+	public void setLoteSelected(Lote loteSelected) {
+		this.loteSelected = loteSelected;
+	}
+	
+}

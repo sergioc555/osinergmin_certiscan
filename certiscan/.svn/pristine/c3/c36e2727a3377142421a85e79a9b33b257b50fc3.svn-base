@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptExpEnteDealerXLS" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b39488bd-e64e-4662-abb6-3c07198019af">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="1"/>
+	<parameter name="P_FECHA_RANGE" class="java.lang.String"/>
+	<parameter name="P_DEALER" class="java.lang.String"/>
+	<parameter name="P_CANAL" class="java.lang.String"/>
+	<parameter name="P_OFICINA" class="java.lang.String"/>
+	<parameter name="P_TOTAL" class="java.lang.String"/>
+	<parameter name="P_PERIODO" class="java.lang.String"/>
+	<field name="usuarioAsignado" class="java.lang.String"/>
+	<field name="costo" class="java.lang.String"/>
+	<field name="totFacturar" class="java.lang.String"/>
+	<field name="desOficina" class="java.lang.String"/>
+	<field name="desCargo" class="java.lang.String"/>
+	<field name="cantidadHojas" class="java.lang.String"/>
+	<field name="num_doc" class="java.lang.String"/>
+	<field name="nro_expediente" class="java.lang.String"/>
+	<field name="nro_solicitud" class="java.lang.String"/>
+	<field name="tipo_doc" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="93" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d41fce65-fdab-4277-bd94-776cb7020ad1" x="106" y="16" width="354" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE DE PLANILLA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="14562c20-a3a5-4e9d-b22f-f862c592b51b" x="0" y="55" width="38" height="18"/>
+				<textElement/>
+				<text><![CDATA[CICLO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="517d989a-0474-4de4-baa8-6f789e6a2be4" x="38" y="55" width="362" height="18"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{P_PERIODO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="15" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="1b22eb32-5cb2-43e8-bc0a-c094f54fd5df" mode="Opaque" x="390" y="0" width="100" height="15" backcolor="#999999"/>
+				<textElement/>
+				<text><![CDATA[Usuario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c17bce4-3205-4507-a0e2-fa13c9545de5" mode="Opaque" x="790" y="0" width="100" height="15" backcolor="#999999"/>
+				<textElement/>
+				<text><![CDATA[Costo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fe15a8eb-f7a0-4364-b392-b974e6f49683" mode="Opaque" x="490" y="0" width="100" height="15" backcolor="#999999"/>
+				<textElement/>
+				<text><![CDATA[Oficina]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="459dc9cc-72fb-4a9e-a6a7-ba294a486159" mode="Opaque" x="590" y="0" width="100" height="15" backcolor="#999999"/>
+				<textElement/>
+				<text><![CDATA[Cargo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9f371d34-d19a-421d-b436-7695263e05c6" mode="Opaque" x="690" y="0" width="100" height="15" backcolor="#999999"/>
+				<textElement/>
+				<text><![CDATA[Total de Páginas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="06499e33-b585-41f9-8b1e-3e45f4e5162b" mode="Opaque" x="890" y="0" width="100" height="15" backcolor="#999999"/>
+				<textElement/>
+				<text><![CDATA[Total a Facturar]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="12f810cd-e6ec-421d-92a0-a5a5775eee21" mode="Opaque" x="0" y="0" width="121" height="15" backcolor="#999999"/>
+				<textElement/>
+				<text><![CDATA[Nro Expediente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="16340742-6764-4427-a052-ba811105b319" mode="Opaque" x="121" y="0" width="115" height="15" backcolor="#999999"/>
+				<textElement/>
+				<text><![CDATA[Nro Solicitud]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3a413bb5-45e8-4c05-99ad-9c9d6a5d239e" mode="Opaque" x="236" y="0" width="92" height="15" backcolor="#999999"/>
+				<textElement/>
+				<text><![CDATA[TIPO DOCUMENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="22b0cc5e-754e-4f7f-8f92-12e0db0a108a" mode="Opaque" x="328" y="0" width="62" height="15" backcolor="#999999"/>
+				<textElement/>
+				<text><![CDATA[DNI]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ce70d90b-b2e4-4301-8fe7-9cc1a28b43e5" x="390" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{usuarioAsignado}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a4bd0a0a-674f-426e-9e28-8f2b3b91d29d" x="790" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{costo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="86e51881-21a7-45a2-8b8c-2c4f878d6c2f" x="490" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{desOficina}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="defd0125-d9d8-4774-a060-f741dc7bdee7" x="590" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{desCargo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="29657fd4-f74d-4293-986e-d3dbf43ea5ae" x="690" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidadHojas}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="254b474c-5477-4b5f-8d38-7cef1f807223" x="890" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totFacturar}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="50c0276d-524e-4d24-a4cf-147ff6a8165a" x="0" y="0" width="121" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_expediente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e58b6282-add0-4761-b813-1a6af134db86" x="121" y="0" width="115" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_solicitud}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6c72a6e0-2fb1-4970-8326-49d43084e7c9" x="236" y="0" width="92" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo_doc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="32be7c16-7954-4cc8-904e-299b758d84bf" x="328" y="0" width="62" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num_doc}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="18" splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

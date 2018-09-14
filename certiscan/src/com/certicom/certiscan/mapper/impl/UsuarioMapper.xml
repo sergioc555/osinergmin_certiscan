@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.UsuarioMapper">
+
+	<resultMap type="com.certicom.certiscan.domain.Usuario"
+		id="usuarioResult">
+		<result column="idusuario" property="idusuario" />
+		<result column="nombre" property="nombre" />
+		<result column="nombre_completo" property="nombre_completo" />
+		<result column="apellido_paterno" property="apellido_paterno" />
+		<result column="apellido_materno" property="apellido_materno" />
+		<result column="dni" property="dni" />
+		<result column="login" property="login" />
+		<result column="password" property="password" />
+		<result column="estado" property="estado" />
+		<result column="email" property="email" />
+		<result column="desEmpresa" property="desEmpresa" />
+		<result column="desNegocio" property="desNegocio" />
+		
+		<result column="fecha_registro" property="fecha_registro" />
+		<result column="fecha_acceso" property="fecha_acceso" />
+		<result column="cod_perfil" property="cod_perfil" />
+		<result column="id_centro_atencion" property="id_centro_atencion" />
+		<result column="fecha_cambio_password" property="fecha_cambio_password" />
+		<result column="es_nuevo" property="es_nuevo" javaType="boolean" jdbcType="BOOLEAN"  />
+		<!-- Ejecutivo -->
+		<result column="desTipoPlanilla" property="desTipoPlanilla" />
+		<result column="desCargo" property="desCargo" />
+		<result column="imagen" property="imagen" /> 	
+		<result column="fecha_ingreso" property="fecha_ingreso" /> 
+		<result column="departamento" property="departamento" /> 
+		<result column="provincia" property="provincia" /> 
+		<result column="distrito" property="distrito" /> 
+		<result column="id_oficina" property="id_oficina" /> 
+		<result column="id_planilla" property="id_planilla" /> 
+		<result column="id_cargo" property="id_cargo" /> 
+		<result column="sid_ubigeo" property="sid_ubigeo" /> 
+		<result column="id_empresa" property="id_empresa" />
+		<result column="id_negocio" property="id_negocio" />
+		<result column="fecha_cese" property="fecha_cese" />
+		<result column="motivo_cese" property="motivo_cese" />
+		
+		<result column="funcion" property="funcion" />
+		<result column="rpm" property="rpm" />
+		<result column="rpc" property="rpc" />
+		<result column="telefono" property="telefono" />
+		<result column="codigo_banco" property="codigoBanco" />
+		<result column="codigo_banco_supervisor" property="codigoBancoSupervisor" />
+		<result column="codigo_quality" property="codigo_quality" />
+		<result column="nom_supervisor" property="nom_supervisor" />
+		
+		<result column="dias_descanso" property="dias_descanso" />
+		<result column="dias_vacaciones" property="dias_vacaciones" />
+		<result column="sala" property="sala" />
+		<result column="sala_dueno" property="sala_dueno" />
+		<result column="idproducto" property="idproducto" />
+		<result column="producto_principal" property="producto_principal" />
+		<result column="otros_productos" property="otros_productos" />
+		<result column="negocio_asignado" property="negocio_asignado" />
+		
+		<result column="concesionario" property="concesionario" />
+		
+		 
+	</resultMap>
+	
+	
+
+	<select id="buscarPorLoginClave" parameterType="com.certicom.certiscan.domain.Usuario"
+		resultMap="usuarioResult">
+		SELECT
+		idusuario,nombre,apellido_paterno,apellido_materno,dni,email,direccion,login,password,estado,fecha_registro,fecha_mod,fecha_acceso,es_nuevo,id_centro_atencion,id_supervisor,id_negocio,idproducto, codigo_banco as codigoBanco,
+		idusuario_referente , id_oficina 
+		from t_usuario
+		where login =#{login} And password=#{password}
+	</select>
+
+	<select id="buscarPorDNI" parameterType="String" resultMap="usuarioResult">
+		SELECT
+		idusuario,nombre,apellido_paterno,apellido_materno,dni,email,direccion,login,password,estado,fecha_registro,fecha_mod,es_nuevo 
+		from t_usuario
+		where dni =#{dni}
+	</select>
+
+	<select id="buscarPorNombre" parameterType="String" resultMap="usuarioResult">
+		SELECT
+		idusuario,nombre,apellido_paterno,apellido_materno,dni,email,direccion,login,password,estado,fecha_registro,fecha_mod
+		from t_usuario
+		where nombre =#{nombre}
+	</select>
+
+	<select id="buscarPorApellido" parameterType="String" resultMap="usuarioResult">
+		SELECT
+		idusuario,nombre,apellido_paterno,apellido_materno,dni,email,direccion,login,password,estado,fecha_registro,fecha_mod
+		from t_usuario
+		where apellido_paterno =#{apellido_paterno}
+	</select>
+
+	<select id="buscarPorId" parameterType="int" resultMap="usuarioResult">
+		SELECT
+		idusuario,nombre,apellido_paterno,apellido_materno,dni,email,direccion,login,password,estado,fecha_registro,fecha_mod,es_nuevo,id_centro_atencion,
+		id_cargo,id_planilla,imagen,id_negocio,id_empresa,concesionario, id_oficina
+		from t_usuario
+		where idusuario =#{idusuario}
+	</select>
+
+
+	<insert id="insertUsuario" parameterType="com.certicom.certiscan.domain.Usuario">
+		INSERT INTO t_usuario(dni,nombre, apellido_paterno,apellido_materno,email,login,password,
+		direccion,estado,es_nuevo,id_centro_atencion,id_empresa,id_negocio,estado_planilla,concesionario, dotacion, id_oficina, id_cargo)
+		values
+		(#{dni},#{nombre},#{apellido_paterno},#{apellido_materno},#{email},#{login},#{password},
+		#{direccion},#{estado},#{es_nuevo},#{id_centro_atencion},#{id_empresa},#{id_negocio},#{estado_planilla},#{concesionario}, #{dotacion}, #{id_oficina}, #{id_cargo})
+	</insert>
+
+	<select id="getlistaUsuario" resultMap="usuarioResult">
+		SELECT a.idusuario,a.dni, a.nombre, a.apellido_paterno, a.apellido_materno, a.email, a.direccion, a.fecha_registro, a.login,a.login,a.password,
+		a.fecha_acceso, a.estado, a.es_nuevo, a.id_centro_atencion, b.nombre as nombre_centro_atencion, n.descripcion as desNegocio, e.razon_social as desEmpresa
+		FROM
+		t_usuario a, t_centros_atencion b, t_negocio n, t_empresa  e 
+		WHERE a.id_centro_atencion = b.id_centro_atencion 
+		and a.id_negocio = n.id_negocio 
+		and a.id_empresa = e.id_empresa 
+		order by idusuario asc
+	</select>
+	
+	<select id="getlistaEjecutivo" resultMap="usuarioResult">
+		SELECT  a.idusuario,a.dni, a.nombre, a.apellido_paterno, a.apellido_materno, a.email, a.direccion, a.fecha_registro, a.login,a.login,a.password, a.codigo_banco as codigoBanco, 
+		a.codigo_banco_supervisor as codigoBancoSupervisor, (s.nombre || ' ' || s.apellido_paterno || ' ' ||  s.apellido_materno) as nom_supervisor, 
+		a.fecha_acceso, a.estado, a.es_nuevo, a.id_centro_atencion, b.nombre as nombre_centro_atencion,a.id_negocio, n.descripcion as desNegocio, e.razon_social as desEmpresa
+		 ,a.departamento, a.provincia,a.distrito,a.fecha_ingreso,a.id_oficina,a.sid_ubigeo,a.id_supervisor,a.id_coordinador,
+		e.id_empresa,a.estado_planilla, a.fecha_cese,a.motivo_cese, a.funcion, a.rpm, a.rpc, a.telefono, a.codigo_quality, a.sala_dueno, a.sala, a.idproducto,
+		 a.producto_principal, a.otros_productos, a.negocio_asignado, a.estado_banco, a.direccion, a.direccion_lat, a.direccion_long, a.lat_ultimo, a.long_ultimo, a.estado_gps, a.imei, a.concesionario, a.dotacion,
+		 a.antiguedad, o.nombre as desOficina
+		FROM  ((((t_usuario a inner join  t_centros_atencion b on a.id_centro_atencion = b.id_centro_atencion)
+		     inner join t_negocio n on a.id_negocio = n.id_negocio)
+		     inner join t_empresa  e on  a.id_empresa = e.id_empresa) 
+		     left join t_oficina o on o.id_oficina = a.id_oficina)
+		     
+		     left join t_usuario s on s.idusuario = a.id_supervisor
+		order by a.apellido_paterno, a.apellido_materno, a.nombre
+	</select>	
+
+	<select id="getlistaEjecutivoByNegocio" resultMap="usuarioResult">
+		SELECT a.idusuario,a.dni, a.nombre, a.apellido_paterno, a.apellido_materno, a.email, a.direccion, a.fecha_registro, a.login,a.login,a.password, a.codigo_banco as codigoBanco,
+		a.codigo_banco_supervisor as codigoBancoSupervisor, (s.nombre || ' ' || s.apellido_paterno || ' ' || s.apellido_materno) as nom_supervisor, 
+		a.fecha_acceso, a.estado, a.es_nuevo, a.id_centro_atencion, b.nombre as nombre_centro_atencion,a.id_negocio, n.descripcion as desNegocio, e.razon_social as desEmpresa, tp.descripcion as desTipoPlanilla,
+		c.descripcion as desCargo,tp.id_planilla, c.id_cargo ,a.departamento, a.provincia,a.distrito,a.fecha_ingreso,a.id_oficina,a.sid_ubigeo,a.id_supervisor,a.id_coordinador,
+		e.id_empresa,a.estado_planilla, a.fecha_cese,a.motivo_cese, a.funcion, a.rpm, a.rpc, a.telefono, a.codigo_quality,
+		a.producto_principal, a.otros_productos , a.negocio_asignado, a.estado_banco, a.estado_banco, a.direccion, a.direccion_lat, a.direccion_long, a.lat_ultimo, a.long_ultimo, a.estado_gps, a.imei, a.concesionario, 
+		a.dotacion, a.antiguedad, o.nombre as desOficina 
+		
+		FROM ((((((t_usuario a inner join  t_centros_atencion b on a.id_centro_atencion = b.id_centro_atencion)
+		     inner join t_negocio n on a.id_negocio = n.id_negocio)
+		     inner join t_empresa  e on  a.id_empresa = e.id_empresa) 
+		     left join t_tipo_planilla tp on a.id_planilla = tp.id_planilla)
+		     left join t_cargo c on c.id_cargo = a.id_cargo)
+		     left join t_usuario s on s.idusuario = a.id_supervisor)
+		     left join t_oficina o on o.id_oficina = a.id_oficina
+	    where a.id_negocio=#{idNegocio} 
+		order by a.apellido_paterno, a.apellido_materno, a.nombre
+	</select>	
+	
+	<update id="actualizarEstado" parameterType="com.certicom.certiscan.domain.Usuario">
+		UPDATE t_usuario
+		SET estado = #{estado}
+		WHERE idusuario = #{idusuario}
+	</update>
+
+	<update id="actualizar" parameterType="com.certicom.certiscan.domain.Usuario">
+		update t_usuario
+		SET dni =
+		#{dni},
+		nombre = #{nombre},
+		apellido_paterno = #{apellido_paterno},
+		apellido_materno = #{apellido_materno},
+		email = #{email},
+		concesionario = #{concesionario},
+		direccion = #{direccion},
+		estado = #{estado},
+		fecha_acceso = #{fecha_acceso},
+		es_nuevo = #{es_nuevo},
+		password = #{password},
+		login = #{login},
+		id_centro_atencion = #{id_centro_atencion},
+		id_empresa =  #{id_empresa},
+		id_negocio = #{id_negocio},
+		id_cargo = #{id_cargo},
+		id_oficina = #{id_oficina}
+		WHERE idusuario = #{idusuario}
+	</update>
+	
+	<update id="actualizarLogin" parameterType="com.certicom.certiscan.domain.Usuario">
+		update t_usuario
+		SET 
+		login = #{login},
+		password = #{password}
+		WHERE idusuario = #{idusuario}
+	</update>
+	
+	
+	<update id="actualizarPassword" parameterType="com.certicom.certiscan.domain.Usuario">
+		update t_usuario
+		SET 
+		password = #{password},
+		fecha_cambio_password = #{fecha_cambio_password},
+		es_nuevo = #{es_nuevo}
+		WHERE idusuario = #{idusuario}
+	</update>
+	
+	
+	<update id="actualizarFechaAcceso" parameterType="com.certicom.certiscan.domain.Usuario">
+		update t_usuario SET fecha_acceso = #{fecha_acceso}
+		WHERE idusuario = #{idusuario}
+	</update>
+	
+	<select id="getlistaUsuario_Preparador" parameterType="com.certicom.certiscan.domain.Usuario" resultMap="usuarioResult">
+		SELECT		c.idusuario, dni,	c.nombre,	apellido_paterno, apellido_materno,
+		email, direccion, login
+		FROM 	t_perfil a, t_usuarioxperfil b, t_usuario c
+		where 
+		a.cod_perfil  	 	=  b.cod_perfil
+		AND b.idusuario	 	=  c.idusuario
+		AND a.ind_activo 	=  #{estado}
+		AND b.ind_activo 	=  #{estado}
+		AND c.estado     	=  #{estado}
+		AND a.nombre	 	=  'PREPARADOR'
+	</select>
+	
+	
+	<select id="getlistaUsuario_byCentroAtencion" parameterType="Integer" resultMap="usuarioResult">
+		select * from t_usuario where id_centro_atencion = #{id_centro_atencion}
+	</select>
+	
+	<select id="getlistaUsuario_Digitalizador" parameterType="com.certicom.certiscan.domain.Usuario" resultMap="usuarioResult">
+		SELECT		c.idusuario, dni,	c.nombre,	apellido_paterno, apellido_materno,
+		email, direccion, login
+		FROM 	t_perfil a, t_usuarioxperfil b, t_usuario c
+		where 
+		a.cod_perfil  	 	=  b.cod_perfil
+		AND b.idusuario	 	=  c.idusuario
+		AND a.ind_activo 	=  #{estado}
+		AND b.ind_activo 	=  #{estado}
+		AND c.estado     	=  #{estado}
+		AND a.nombre	 	=  'DIGITALIZADOR'
+	</select>
+	
+	<select id="getlistaUsuario_Perfil" parameterType="com.certicom.certiscan.domain.Usuario" resultMap="usuarioResult">
+		SELECT		c.idusuario, dni,	c.nombre,	apellido_paterno, apellido_materno,
+		email, direccion, login
+		FROM 	t_perfil a, t_usuarioxperfil b, t_usuario c
+		where 
+		a.cod_perfil  	 	=  b.cod_perfil
+		AND b.idusuario	 	=  c.idusuario
+		AND a.ind_activo 	=  #{estado}
+		AND b.ind_activo 	=  #{estado}
+		AND c.estado     	=  #{estado}
+		AND a.cod_perfil	 	=  #{cod_perfil}
+	</select>
+	
+	<select id="buscarPorLogin" parameterType="String"
+		resultMap="usuarioResult">
+		SELECT
+		idusuario,nombre,apellido_paterno,apellido_materno,dni,email,direccion,login,password,estado,fecha_registro,fecha_mod,es_nuevo,id_centro_atencion
+		from t_usuario
+		where login =#{login} 
+	</select>
+	
+	<!-- eliminar usuario: will -->
+	<delete id="deleteUsuario" parameterType="int">
+		Delete from t_usuario
+		where idusuario=#{idusuario}
+	</delete>
+	
+	
+	<!--listar usarios por proceso  -->
+	<select id="listarUsuariosXPerfilProceso" parameterType="String" resultMap="usuarioResult">
+		select us.idusuario,us.nombre,us.login,us.apellido_paterno, us.apellido_materno,pr.cod_perfil 
+		from t_usuario us, t_usuarioxperfil pu, t_perfil pr
+		where pu.idusuario = us.idusuario
+		and pu.cod_perfil = pr.cod_perfil
+		and pr.proceso=#{proceso}
+	</select>
+	
+	<select id="obtenerUsuariosxOficina" parameterType="Integer" resultMap="usuarioResult">
+		SELECT
+		idusuario,nombre,apellido_paterno,apellido_materno,dni,email,direccion,estado,fecha_registro,fecha_mod
+		from t_usuario
+		where id_centro_atencion =#{idoficina} and estado = 'true'
+	</select>
+	
+	<!--  usu.codigo_banco = f.codigo_ejecutivo  por ahora validar por el codigo de banco del ejecutivo -->
+	<select id="getUsuariosByFacturacionNegocio" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="usuarioResult">
+	select f.id_cargo as id_cargo, usu.*, c.descripcion as des_cargo, tp.descripcion as desTipoPlanilla,n.descripcion as desNegocio , sum(cast(f.bono_mi_vivienda as double precision)) as bono_mi_vivienda
+			from t_facturacion f 
+			inner join t_usuario usu on
+			usu.idusuario = f.idusuario_ejecutivo 
+			inner join t_cargo c on
+			c.id_cargo = f.id_cargo
+			inner join t_negocio n 
+			on n.id_negocio = usu.id_negocio
+			inner join t_tipo_planilla tp on 
+			tp.id_planilla = usu.id_planilla
+			and f.idnegocio = #{idnegocio}
+			and f.periodo = #{fini}
+			group by usu.idusuario ,c.descripcion,tp.descripcion ,n.descripcion, f.id_cargo 
+			order by usu.apellido_paterno,usu.apellido_materno,usu.nombre asc;
+	</select>
+	
+	<select id="getUsuariosByFacturacionNegocio2" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="usuarioResult">
+	select * from (
+select distinct u.* from t_facturacion f inner join t_usuario u on f.idusuario_ejecutivo =  u.idusuario 
+where   
+	 idusuario_ejecutivo is not null 
+	and  periodo = #{fini}
+	<if test="idnegocio!=0">
+	and idnegocio = #{idnegocio}
+	</if>
+union
+select distinct u.* from t_facturacion f inner join t_usuario u on f.idusuario_supervisor =  u.idusuario  
+where   
+	 idusuario_supervisor is not null 
+	and periodo = #{fini}
+	<if test="idnegocio!=0">
+	and idnegocio = #{idnegocio}
+	</if>
+union
+select distinct u.* from t_facturacion  f inner join t_usuario u on f.idusuario_ejecutivo_campo =  u.idusuario
+ where
+    idusuario_ejecutivo_campo is not null 
+   and periodo = #{fini}
+   <if test="idnegocio!=0">
+	and idnegocio = #{idnegocio}
+   </if>
+union
+select distinct u.* from t_facturacion  f inner join t_usuario u  on f.idusuario_supervisor_campo =  u.idusuario
+ where
+     idusuario_supervisor_campo is not null 
+    and periodo = #{fini}
+    <if test="idnegocio!=0">
+	and idnegocio = #{idnegocio}
+   </if>
+union
+select distinct u.* from t_facturacion f inner join t_usuario u  on f.idusuario_coordinador =  u.idusuario
+ where
+   idusuario_coordinador is not null 
+  and periodo = #{fini}
+  <if test="idnegocio!=0">
+	and idnegocio = #{idnegocio}
+   </if>
+union
+select distinct u.* from t_facturacion  f inner join t_usuario u on f.idusuario_back =  u.idusuario
+ where
+   idusuario_back is not null 
+  and periodo = #{fini}
+  <if test="idnegocio!=0">
+	and idnegocio = #{idnegocio}
+   </if>
+  <!-- nuevo columna de usuarios sin producion -->
+  union 
+  	SELECT distinct u.*
+			from t_bono b inner join t_usuario u on b.idusuario =  u.idusuario
+			 where
+			  b.periodo = #{fini}
+	  		<if test="idnegocio!=0">
+				and idnegocio = #{idnegocio}
+   			</if>
+   
+  ) as users
+order by users.apellido_paterno,users.apellido_materno,users.nombre
+	</select>
+	
+	
+	
+		<select id="getUsuariosCuartiles" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="usuarioResult">
+	select * from (
+		select distinct u.* from t_facturacion f inner join t_usuario u on f.idusuario_ejecutivo =  u.idusuario 
+	where   
+	  	idusuario_ejecutivo is not null and monto_soles is not null
+	  	and  periodo = #{fini}
+	  	and f.idproducto !=6
+	<if test="idnegocio!=0">
+	  and idnegocio = #{idnegocio}
+	</if>
+  			) as users
+	order by users.apellido_paterno,users.apellido_materno,users.nombre
+	</select>
+	
+	
+	<select id="getUsuariosCuartilesxProducto" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="usuarioResult">
+<!-- 	select * from ( -->
+<!-- 		select distinct u.* from t_facturacion f inner join t_usuario u on f.idusuario_ejecutivo =  u.idusuario  -->
+<!-- 	where    -->
+<!-- 	  	idusuario_ejecutivo is not null and monto_soles is not null -->
+<!-- 	  	and  periodo = #{fini} -->
+<!-- 	  	and f.idproducto !=6 -->
+<!-- 	  and idnegocio = #{idnegocio} -->
+<!-- 	  and f.idproducto = #{idproducto} -->
+	
+<!--   			) as users -->
+<!-- 	order by users.apellido_paterno,users.apellido_materno,users.nombre -->
+	
+	
+	
+	select distinct u.*, (sp.apellido_paterno || ' ' || sp.apellido_materno || ' ' || sp.nombre) as nom_supervisor
+			 from t_facturacion f inner join t_usuario u on f.idusuario_ejecutivo =  u.idusuario 
+			 left join t_usuario sp on sp.idusuario = u.id_supervisor
+	where   
+	  	idusuario_ejecutivo is not null and monto_soles is not null
+	  	and  periodo = #{fini}
+	  	and f.idproducto !=6
+	  and idnegocio = #{idnegocio}
+	  and f.idproducto = #{idproducto}
+	
+  			
+	order by u.apellido_paterno,u.apellido_materno,u.nombre
+	</select>
+	
+	
+		<select id="getUsuariosCuartilesxProductoxAnio" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="usuarioResult">
+<!-- 	select * from ( -->
+<!-- 		select distinct u.* from t_facturacion f inner join t_usuario u on f.idusuario_ejecutivo =  u.idusuario  -->
+<!-- 	where    -->
+<!-- 	  	idusuario_ejecutivo is not null and monto_soles is not null -->
+<!-- 	  	and  periodo = #{fini} -->
+<!-- 	  	and f.idproducto !=6 -->
+<!-- 	  and idnegocio = #{idnegocio} -->
+<!-- 	  and f.idproducto = #{idproducto} -->
+	
+<!--   			) as users -->
+<!-- 	order by users.apellido_paterno,users.apellido_materno,users.nombre -->
+	
+	
+	
+	select distinct u.*, (sp.apellido_paterno || ' ' || sp.apellido_materno || ' ' || sp.nombre) as nom_supervisor
+			 from t_facturacion f inner join t_usuario u on f.idusuario_ejecutivo =  u.idusuario 
+			 left join t_usuario sp on sp.idusuario = u.id_supervisor
+	where   
+	  	idusuario_ejecutivo is not null and monto_soles is not null
+	  	and cast(extract(year from f.periodo) as character varying) = #{anio} 
+<!-- 	  	and f.idproducto !=6 -->
+	  <if test="idnegocio !=0">
+	  and idnegocio = #{idnegocio}
+	  </if>
+	  <if test="idproducto !=0">
+	  and f.idproducto = #{idproducto}
+	  </if>
+	  and f.id_cargo = 4
+	
+  			
+	order by u.apellido_paterno,u.apellido_materno,u.nombre
+	</select>
+	
+	
+	<select id="listEnSalaOnlineByProductoPeriodos" resultMap="usuarioResult">
+	
+			select u.nombre,u.apellido_paterno, u.apellido_materno,  u.idusuario as id_ejecutivo, sum(pv.meta) as meta,
+			 u.sala as id_ejecutivo_padre,  6 as idproducto from t_usuario u, t_proyeccion_ventas pv where pv.id_ejecutivo_padre is null and pv.id_producto = 6 and 
+			 pv.id_ejecutivo = u.idusuario and pv.id_negocio = #{p_id_negocio} 
+				and pv.periodo in <foreach item="periodos" index="index" collection="periodos"
+					open="(" separator="," close=")">
+					#{periodos}
+				</foreach>
+				<if test="valor_dotacion ==1 ">
+					and u.dotacion 
+				</if>
+			 group by u.idusuario
+	</select>
+	
+	
+	
+	<select id="listEnSalaAsignadosOnlineByProductoPeriodos" resultMap="usuarioResult">
+	
+			
+		select u.nombre,u.apellido_paterno, u.apellido_materno, u.idusuario as id_ejecutivo, sum(pv.meta) as meta,u.sala as id_ejecutivo_padre,
+		6 as idproducto 
+			from t_usuario u, t_proyeccion_ventas pv where id_ejecutivo_padre is not null and pv.id_producto = 6 and 
+			 pv.id_ejecutivo = u.idusuario and pv.id_negocio = #{p_id_negocio}  
+			and pv.periodo in <foreach item="periodos" index="index" collection="periodos"
+					open="(" separator="," close=")">
+					#{periodos}
+				</foreach>
+				<if test="valor_dotacion ==1 ">
+					and u.dotacion 
+				</if>
+				
+			 group by u.idusuario
+	
+	</select>
+	
+<select id="listEnSalaAsignadosOnlineByProductoDOT" resultMap="usuarioResult">
+	
+		select u.nombre,u.apellido_paterno, u.apellido_materno, pv.id_proyeccion_venta as id_proyeccion_venta, 
+			pv.id_negocio as id_negocio, pv.id_producto as idproducto, pv.id_ejecutivo as id_ejecutivo, pv.meta as meta,pv.periodo as periodo, 
+			pv.id_ejecutivo_padre as id_ejecutivo_padre 
+			from t_usuario u, t_proyeccion_ventas pv where id_ejecutivo_padre is not null and pv.id_producto = #{p_idproducto_padre} and 
+			pv.id_ejecutivo = u.idusuario and pv.id_negocio = #{p_id_negocio} and pv.periodo = #{p_periodo}
+			<if test="valor_dotacion ==1 ">
+				and u.dotacion 
+			</if>
+
+</select>
+
+
+<select id="listEnSalaOnlineByProductoDOT" resultMap="usuarioResult">
+
+	select u.nombre,u.apellido_paterno, u.apellido_materno, pv.id_proyeccion_venta as id_proyeccion_venta,  
+			pv.id_negocio as id_negocio, pv.id_producto as idproducto, pv.id_ejecutivo as id_ejecutivo, pv.meta as meta,pv.periodo as periodo, 
+			pv.id_ejecutivo_padre as id_ejecutivo_padre 
+			from t_usuario u, t_proyeccion_ventas pv where pv.id_ejecutivo_padre is null and pv.id_producto = #{p_idproducto_padre} and 
+			pv.id_ejecutivo = u.idusuario and pv.id_negocio = #{p_id_negocio} and pv.periodo = #{p_periodo}
+			<if test="valor_dotacion ==1 ">
+				and u.dotacion 
+			</if>
+</select>
+	
+	<select id="listarUsuariosGpsPosActual" resultMap="usuarioResult">
+		select * from t_usuario 
+			where 
+			  estado_planilla 
+			 and imei is not null and imei !=''
+<!-- 			 and lat_ultimo is not null  -->
+<!-- 			 and long_ultimo is not null -->
+			  and lat_ultimo is not null  and lat_ultimo != '' 
+			 and long_ultimo is not null and lat_ultimo != ''
+ 			 and idproducto = #{id_producto} 
+	</select>
+	
+	<select id="getSupervisoresxTerritoriosByNegocioPeriodo" resultMap="usuarioResult">
+	
+	
+	select distinct sp.* from 
+	t_expediente ex inner join t_producto p on p.id_producto =ex.id_producto 
+	inner join t_expediente_producto ep on ex.expediente_id = ep.expediente_id 
+	inner join t_usuario sp on sp.idusuario = ep.idusuario_supervisor 
+	where 	
+		p.id_negocio = #{id_negocio} and ex.periodo = #{periodo}
+		
+		<foreach item="item" collection="territorios" open=" and (" close=")" separator=" or ">
+         			ex.territorio_ofc = #{item}  
+        </foreach> 
+	
+	</select>
+	
+	
+	<select id="rptBackLog_ListSupByTerritorio" resultMap="usuarioResult">
+			select sp.idusuario, 
+			(sp.nombre || ' ' || sp.apellido_paterno || ' ' ||  sp.apellido_materno) as nombre, sum(ex.prestamo_soles) as suma, 
+			 (select pv.meta from t_proyeccion_ventas pv where  pv.id_ejecutivo  = sp.idusuario and pv.tipo_nivel = 1 and pv.periodo = #{periodo} and pv.id_negocio = #{id_negocio}  ) as meta, 
+			 count(distinct eje.idusuario) as cantidad 
+			 from t_expediente ex inner join t_producto p on ex.id_producto = p.id_producto 
+			 inner join t_expediente_producto ep on ep.expediente_id = ex.expediente_id 
+			 inner join t_indicadores_call res on res.id_indicadores_call = ep.id_indicadores_call 
+				inner join t_usuario eje on eje.idusuario = ep.idusuario
+			 inner join t_usuario sp  on eje.id_supervisor = sp.idusuario  
+			 where 
+			  p.id_negocio = #{id_negocio} 
+			  and ex.tipo_base != 'PROPIO'
+			 <foreach item="item" collection="territorios" open=" and (" close=")" separator=" or ">
+         			ex.territorio_ofc = #{item}  
+        	 </foreach> 
+			 
+			 and ex.periodo = #{periodo} 
+			 and ep.periodo = #{periodo} 
+			 group by sp.idusuario 
+			 order by sp.nombre, sp.apellido_paterno, sp.apellido_materno 
+	</select>
+	
+	<select id="getUsuariosByFilters"  resultMap="usuarioResult">
+		select u.*, o.nombre as desOficina from t_usuario u left join t_oficina o on u.id_oficina = o.id_oficina
+		 where 1 = 1
+		 <if test="cod_oficina !=0">
+			and u.id_oficina = #{cod_oficina}
+		 </if>
+	</select>
+</mapper>
+

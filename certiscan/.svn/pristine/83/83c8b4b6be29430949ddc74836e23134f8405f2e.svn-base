@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+
+		<p:panel>
+			<h:form>
+				<p:breadCrumb>
+					<p:menuitem value="Home" url="#" />
+					<p:menuitem value="Digitalización" url="#" />
+					<p:menuitem value="Reagrupar" url="reAgrupar" />
+				</p:breadCrumb>
+			</h:form>
+			<br />
+
+			<p:messages id="sms" showDetail="false" showSummary="true"
+				closable="true" />
+
+			<h:form id="form">
+				<p:panel id="panel">
+					
+					<h:panelGrid columns="8" id="pBusqueda">
+						
+						#{"Filtro Por : "}
+				 		<p:selectOneMenu style="width:150px"
+							value="#{reAgruparMB.expedienteFilter.filtradopor}">
+							<f:selectItem itemLabel="Nro Expediente" itemValue="1" />
+							<f:selectItem itemLabel="Fecha de Registro" itemValue="2" />
+							<p:ajax event="change" update=":form" listener="#{reAgruparMB.cambiarCombo()}"/>
+						</p:selectOneMenu>
+						
+						<h:outputText value="Fecha Inicio" rendered="#{reAgruparMB.bfecha}"/>
+						<p:calendar style="width:200px"  readonlyInput="true" rendered="#{reAgruparMB.bfecha}" value="#{reAgruparMB.expedienteFilter.fec_ini}" pattern="dd/MM/yyyy" locale="es" maxdate="#{reAgruparMB.fechaActual}"
+							  navigator="true"  required="true" requiredMessage="Seleccione una fecha de inicio">
+							  <p:ajax event="dateSelect" update="form:calFfin" listener="#{reAgruparMB.cambiarFecha()}"/>
+						</p:calendar>
+						
+						<h:outputText value="Fecha Fin" rendered="#{reAgruparMB.bfecha}"/>
+						<p:calendar id="calFfin" readonlyInput="true" rendered="#{reAgruparMB.bfecha}"  style="width:200px" value="#{reAgruparMB.expedienteFilter.fec_fin}" mindate="#{reAgruparMB.fechaLimite}" pattern="dd/MM/yyyy" locale="es"
+							  navigator="true"  required="true" requiredMessage="Seleccione una fecha de fin" maxdate="#{reAgruparMB.fechaActual}">
+						</p:calendar>
+						
+						<h:panelGrid id="pBusqueda2" rendered="#{reAgruparMB.bexpediente}" >
+							<p:focus context="pBusqueda2" />
+							<h:inputText
+								value="#{reAgruparMB.expedienteFilter.vfiltradopor}"
+								style="width:150px;height:25px;background-color:#FAFFBD;font-size: 1.5em;font-weight: bold;font-family: Arial"
+								required="true"
+								requiredMessage="Debe escribir el filtro seleccionado">
+								</h:inputText>
+						</h:panelGrid>
+
+						<p:commandButton value="Buscar" icon="icon-search"
+							update=":formListaExpediente:dataExpedientes :sms :formListaExpediente" 
+							actionListener="#{reAgruparMB.buscarExpedientes()}"
+							 />
+							
+					</h:panelGrid>
+					
+				</p:panel>
+
+			</h:form>
+
+
+
+			<!-- listado de agencias -->
+			<h:form id="formListaExpediente">
+				<h:panelGrid>
+					<p:spacer></p:spacer>
+						<p:commandButton value="Agrupar Expediente" icon="icon-search" 
+							actionListener="#{reAgruparMB.cargarExpedientes()}" />
+					<p:spacer></p:spacer>
+					<p:dataTable widgetVar="dtExpediente" var="p" id="dataExpedientes"
+						value="#{reAgruparMB.listaExpedientes}"
+						filteredValue="#{reAgruparMB.listaExpedientesFilter}"
+						emptyMessage="No hay Expediente Disponibles." rowIndexVar="nro"
+						paginator="true" rows="10" paginatorPosition="bottom" rowKey="#{p.expediente_id}"
+						selection="#{reAgruparMB.selectedExpediente}" 
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="10,100,200,500,1000" style="FONT-SIZE: 10px; ">
+						<f:facet name="header">Lista de Expedientes</f:facet>
+						
+						<p:column selectionMode="multiple" style="width:16px;text-align:center"/>				
+						
+						
+						<p:column headerText="Orden" width="25" style="width:10px">
+							#{nro+1}
+						</p:column>
+						
+						<p:column style="width:70px" headerText="Nro Expediente"
+							filterBy="#{p.nro_expediente}" filterMatchMode="contains"
+							filterStyle="width:60px;">
+							<h:outputText value="#{p.nro_expediente}" />
+						</p:column>
+						
+						<p:column style="width:70px" headerText="Oficina Origen"
+							filterBy="#{p.oficina_origen}" filterMatchMode="contains"
+							filterStyle="width:60px;">
+							<h:outputText value="#{p.oficina_origen}" />
+						</p:column>
+						
+						<p:column style="width:70px" headerText="Fec. Documento">
+							<h:outputText value="#{p.fecha_documento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" type="date"
+									dateStyle="short" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column style="width:70px" headerText="Hor. Documento">
+							<h:outputText value="#{p.hora_documento}">
+								<f:convertDateTime pattern="hh:mm" type="date"
+									dateStyle="short" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column style="width:70px" headerText="Proceso"
+							filterBy="#{p.proceso}" filterMatchMode="contains"
+							filterStyle="width:60px;">
+							<h:outputText value="#{p.proceso}" />
+						</p:column>
+						
+						<p:column style="width:70px" headerText="Tipo Prioridad"
+							filterBy="#{p.tipo_prioridad}" filterMatchMode="contains"
+							filterStyle="width:60px;">
+							<h:outputText value="#{p.tipo_prioridad}" />
+						</p:column>
+						
+						<p:column style="width:70px" headerText="Fec. Recepción">
+							<h:outputText value="#{p.fecha_recepcion}">
+								<f:convertDateTime pattern="dd/MM/yyyy" type="date"
+									dateStyle="short" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column style="width:80px" headerText="Estado"
+							filterBy="#{p.desestado}" filterMatchMode="contains"
+							filterStyle="width:60px;">
+							<h:outputText value="#{p.desestado}" />
+						</p:column>
+						
+						<p:column style="width:150px" headerText="Oficina"
+							filterBy="#{p.desOficina}" filterMatchMode="contains"
+							filterStyle="width:120px;">
+							<h:outputText value="#{p.desOficina}" />
+						</p:column>						
+	
+					</p:dataTable>
+				</h:panelGrid>
+			</h:form>
+
+			<!-- #############    Dialogos      ################ -->
+
+			<!-- dialogo nuevo/editar perfil -->
+			
+			
+			<p:dialog header="Selección" widgetVar="dlgSeleccion" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetSeleccion" modal="true" >
+					<h:form id="fmSeleccion">
+					
+					<h:panelGrid columns="2">
+					
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Seleccione un expediente para agrupar"/>
+					</h:panelGrid>
+					
+					<p:commandButton value="Aceptar" type="button" onclick="PF('dlgSeleccion').hide()"  />
+					</h:form>
+			</p:dialog>
+			
+			<p:dialog header="Expedientes a Agrupar" widgetVar="dlgExpAgr" appendTo="@(body)" position="center" closable="true"
+					resizable="false" id="dlgDetExpAgr" modal="true" >
+					
+					<h:form id="frmAgr">
+						<h:panelGrid>
+							
+							<h:panelGrid columns="3">
+							
+								#{'Fecha de Registro:'}
+								
+								<h:outputLabel value="#{reAgruparMB.fechaRegistro}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputLabel>
+								
+								<p:commandButton value="Guardar" actionListener="#{reAgruparMB.guardar()}" oncomplete="PF('dlgExpAgr').hide()" update=":formListaExpediente:dataExpedientes"></p:commandButton>
+								
+								#{'Total de Expedientes:'}
+								
+								<h:outputLabel value="#{reAgruparMB.cantidad_expedientes}"/>
+								
+								<p:commandButton value="Cancelar" oncomplete="PF('dlgExpAgr').hide()"></p:commandButton>
+								
+								<h:outputLabel/>
+								
+							</h:panelGrid>
+						
+							<p:dataTable widgetVar="dtExpediente" var="p" value="#{reAgruparMB.selectedExpediente}" 
+										emptyMessage="No hay Expediente Disponibles." style="FONT-SIZE: 10px;width:600px ">
+										<f:facet name="header">Lista de Expedientes Seleccionados</f:facet>
+										<p:column style="width:100px" headerText="Nro Expediente"
+											filterBy="#{p.nro_expediente}" filterMatchMode="contains"
+											filterStyle="width:60px;">
+											<h:outputText value="#{p.nro_expediente}" />
+										</p:column>								
+										
+										<p:column style="width:100px" headerText="Proceso"
+											filterBy="#{p.proceso}" filterMatchMode="contains"
+											filterStyle="width:60px;">
+											<h:outputText value="#{p.proceso}" />
+										</p:column>
+										
+										<p:column style="width:100px" headerText="Fec. Recepción">
+											<h:outputText value="#{p.fecha_recepcion}">
+												<f:convertDateTime pattern="dd/MM/yyyy" type="date"
+													dateStyle="short" />
+											</h:outputText>
+										</p:column>
+										
+										<p:column style="width:110px" headerText="Estado"
+											filterBy="#{p.desestado}" filterMatchMode="contains"
+											filterStyle="width:60px;">
+											<h:outputText value="#{p.desestado}" />
+										</p:column>
+							</p:dataTable>
+						
+						
+						</h:panelGrid>
+					</h:form>
+			</p:dialog>
+			
+			<p:dialog header="Reagrupamiento Exitoso" widgetVar="dlgSuccessGroup" appendTo="@(body)" position="center" closable="false"
+					resizable="false" id="dlgDetSuccesGroup" modal="true" >
+				<h:form id="fmSucces">
+					
+					<h:panelGrid columns="2">
+					<p:graphicImage url="/resources/img/accept.png" height="50" />
+					
+					<h:panelGroup>
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Expediente Reagrupado"/>
+					<h:panelGrid columns="2">
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Estado Actual: Preparado Para Reagrupar"/>
+					<h:column></h:column>
+					<h:outputText  style="font-weight:bold;font-size: 1.4em;margin-left: 20px;color:blue;" value="Nuevo Estado: Preparado para Entregar a Mensajeria"/>
+					<h:column></h:column>
+					<h:outputText  style="font-weight:bold;font-size: 1.2em;margin-left: 20px;color:blue;" value="Nro Expediente:  #{reAgruparMB.nro_expediente}"/>
+					
+					</h:panelGrid>
+					</h:panelGroup>
+					</h:panelGrid>
+					
+					<p:commandButton value="Aceptar" type="button" onclick="PF('dlgSuccessGroup').hide()"  />
+				</h:form>
+			</p:dialog>
+			
+		</p:panel>
+
+		<script>
+			function validar(xhr, status, args) {
+				if (!args.esValido) {
+					jQuery('#dlgDetNuevo').effect("shake", {
+						times : 1
+					}, 100);
+				} else {
+					PF('dlgNuevo').hide();
+				}
+			}
+
+			function validarMasivo(xhr, status, args) {
+				if (!args.esValido) {
+					jQuery('#dlgDetMasivo').effect("shake", {
+						times : 1
+					}, 100);
+				} else {
+					PF('dlgMasivo').hide();
+				}
+			}
+
+			function levanarAlerta() {
+				PF('dlgCargando').show();
+			}
+			
+		</script>
+
+	</ui:define>
+</ui:composition>
+</html>

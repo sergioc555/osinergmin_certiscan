@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.IndicadorCallMapper">
+
+<resultMap id="indicadorCallResult" type="com.certicom.certiscan.domain.IndicadorCall">
+	<id column="id_indicadores_call" property="id_indicadores_call" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<id column="id_categoria_call" property="id_categoria_call" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="descripcion" property="descripcion" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="estado" property="estado" javaType="java.lang.Boolean" jdbcType="BOOLEAN"/>
+	<result column="des_ctgCall" property="des_ctgCall" />
+	<result column="cantidad" property="cantidad" />
+	<result column="tipo_planilla" property="tipo_planilla" />
+	<result column="cod_territorio" property="cod_territorio" />
+	<result column="territorio_ofc" property="territorio_ofc" />
+	<result column="desc_prioridad" property="desc_prioridad" />
+</resultMap>
+
+
+<select id="getCountIndicadoresxCategoria" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="indicadorCallResult">
+	select count(ep.id_expediente_producto) as cantidad ,icall.descripcion as descripcion
+		from t_expediente_producto ep right join t_expediente ex on
+		ep.expediente_id = ex.expediente_id 
+		and ex.periodo = #{fini}
+		<if test="idproducto !=0">
+			and ex.id_producto =#{idproducto}
+		</if>
+		<if test="sdepartamento!= 'TODOS'">
+	 		and ex.departamento = #{sdepartamento}
+	 	</if>
+		right join t_usuario u
+		on ep.idusuario = u.idusuario 
+		<if test="idsupervisor !=0">
+		and u.id_supervisor =#{idsupervisor}
+		</if>
+		<if test="idusuario !=0">
+		and u.idusuario	= #{idusuario}
+		</if>  
+		right join t_indicadores_call icall
+		on ep.id_indicadores_call = icall.id_indicadores_call
+		where icall.id_categoria_call  = #{idcatindicador}
+		and icall.estado
+		group by icall.descripcion;
+</select>
+
+
+<select id="getCountExpxIndCallxTipPlanilla" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="indicadorCallResult" >
+<!-- select count(ep.id_expediente_producto) as cantidad ,icall.descripcion,ex.tipo_planilla as tipo_planilla -->
+<!-- 		from t_expediente_producto ep right join t_expediente ex on -->
+<!-- 		ep.expediente_id = ex.expediente_id  -->
+<!-- 		and ex.periodo = #{fini} -->
+<!-- 			and ex.id_producto =#{idproducto} -->
+<!-- 		inner join t_indicadores_call icall -->
+<!-- 		on ep.id_indicadores_call = icall.id_indicadores_call -->
+<!-- 		where icall.id_categoria_call  = #{idcatindicador} -->
+<!-- 		group by icall.descripcion , ex.tipo_planilla  -->
+	select count(ep.id_expediente_producto) as cantidad ,cat.descripcion as des_ctgCall,
+		icall.descripcion, icall.id_indicadores_call , ex.tipo_planilla as tipo_planilla
+		from t_expediente_producto ep right join t_expediente ex on
+		ep.expediente_id = ex.expediente_id 
+		and ex.periodo = #{fini}
+			and ex.id_producto =#{idproducto}
+			<if test="codigo_territorio != 'TODOS'">
+			and ex.cod_territorio =#{codigo_territorio}
+			</if>
+		inner join t_indicadores_call icall
+		on ep.id_indicadores_call = icall.id_indicadores_call
+		inner join t_categoria_call cat on cat.id_categoria_call = icall.id_categoria_call
+		 	group by cat.descripcion, icall.descripcion ,icall.id_indicadores_call, ex.tipo_planilla 
+		 	order by cat.descripcion, icall.descripcion , ex.tipo_planilla
+</select>
+
+<select id="distinctIndCategorias" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="indicadorCallResult">
+select distinct cat.id_categoria_call ,cat.descripcion as des_ctgCall ,icall.descripcion,cast(icall.id_indicadores_call as integer) as id_indicadores_call
+		from t_expediente_producto ep right join t_expediente ex on
+		ep.expediente_id = ex.expediente_id 
+		and ex.periodo = #{fini}
+		and ex.id_producto =#{idproducto}
+		<if test="codigo_territorio != 'TODOS'">
+			and ex.cod_territorio =#{codigo_territorio}
+		</if>
+		inner join t_indicadores_call icall
+		on ep.id_indicadores_call = icall.id_indicadores_call
+		inner join t_categoria_call cat on cat.id_categoria_call = icall.id_categoria_call
+		 	order by cat.descripcion, icall.descripcion ;
+</select>
+
+<select id="listaIndicadorCallByNegocios" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="indicadorCallResult">
+select distinct(a.descripcion) as descripcion from t_indicadores_call a inner join t_categoria_call b on a.id_categoria_call = b.id_categoria_call inner join t_producto p on p.id_producto = b.id_producto
+			where p.id_negocio = #{idnegocio} and a.estado = 'TRUE' and b.id_producto in <foreach item="resultados1" index="index" collection="resultados1"
+					open="(" separator="," close=")">
+					#{resultados1}
+				</foreach> and a.flag_banco IS NULL 
+			order by a.descripcion asc
+</select>
+
+<select id="srptCountIndicadorexTipoPlanilla" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="indicadorCallResult">
+	select  
+		coalesce(ind.cantidad,0) as cantidad ,
+		dist.des_ctgCall,
+		dist.descripcion, 
+		dist.id_indicadores_call , 
+		dist.planilla as tipo_planilla 
+	from (select count(ep.id_expediente_producto) as cantidad ,cat.descripcion as des_ctgCall,
+		 icall.descripcion, icall.id_indicadores_call , ex.tipo_planilla as tipo_planilla
+		 from t_expediente_producto ep right join t_expediente ex on
+		 ep.expediente_id = ex.expediente_id 
+		 and ex.periodo = #{fini}
+		 and ex.id_producto =#{idproducto}
+		 <if test="codigo_territorio != 'TODOS'">
+			and ex.cod_territorio =#{codigo_territorio}
+		</if>
+		 inner join t_indicadores_call icall
+		 on ep.id_indicadores_call = icall.id_indicadores_call
+		 inner join t_categoria_call cat on cat.id_categoria_call = icall.id_categoria_call
+		 	group by cat.descripcion, icall.descripcion ,icall.id_indicadores_call, ex.tipo_planilla 
+		 	order by cat.descripcion, icall.descripcion , ex.tipo_planilla) as ind
+	right join (select distinct cat.id_categoria_call ,cat.descripcion as des_ctgCall ,icall.descripcion,cast(icall.id_indicadores_call as integer) as id_indicadores_call  ,pla.planilla
+			from t_expediente_producto ep right join t_expediente ex on
+			ep.expediente_id = ex.expediente_id 
+			and ex.periodo = #{fini}
+			and ex.id_producto = #{idproducto}
+			<if test="codigo_territorio != 'TODOS'">
+			and ex.cod_territorio =#{codigo_territorio}
+			</if>
+			inner join t_indicadores_call icall
+			on ep.id_indicadores_call = icall.id_indicadores_call
+			inner join t_categoria_call cat on cat.id_categoria_call = icall.id_categoria_call
+			cross join (select  distinct ex.tipo_planilla as planilla
+            from t_expediente ex where  
+  			ex.periodo = #{fini}
+			and ex.id_producto = #{idproducto}
+			order by ex.tipo_planilla) as pla
+		 	order by cat.descripcion, icall.descripcion) as dist
+	on dist.des_ctgCall = ind.des_ctgCall and dist.id_indicadores_call = ind.id_indicadores_call
+	and dist.planilla = ind.tipo_planilla
+</select>
+
+<select id="getCountExpxIndCallxTerritorio" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="indicadorCallResult" >
+	select count(ep.id_expediente_producto) as cantidad ,cat.descripcion as des_ctgCall,
+		   icall.descripcion, icall.id_indicadores_call ,
+		   case when  ex.territorio_ofc is null or ex.territorio_ofc =''
+				then 'BLANCO(SIN INFORMACION)'
+				else ex.territorio_ofc end  as territorio_ofc, coalesce(NULLIF(ex.cod_territorio,''),'0000') as cod_territorio
+		   from t_expediente_producto ep inner join 
+		   t_expediente ex on
+		   ep.expediente_id = ex.expediente_id 
+		
+			inner join t_indicadores_call icall
+			on ep.id_indicadores_call = icall.id_indicadores_call
+			inner join t_categoria_call cat on cat.id_categoria_call = icall.id_categoria_call
+			where  ex.periodo =  #{fini}
+			and ex.id_producto = #{idproducto}
+			
+			<if test="zona != 'TODOS'">
+			<choose>
+				<when test="zona == 'LIMA'">
+			and ((ex.departamento = 'LIMA' and ex.provincia = 'LIMA')
+			or (ex.departamento = 'CALLAO'))
+				</when>
+				<when test="zona == 'PROVINCIA'">
+			and ( case when  ex.departamento = 'LIMA'
+		 	then  (ex.departamento = 'LIMA' and ex.provincia != 'LIMA') else ex.departamento != 'CALLAO' end )
+				</when>
+			</choose>
+			</if>
+
+		 	group by cat.descripcion, icall.descripcion ,icall.id_indicadores_call, ex.cod_territorio, ex.territorio_ofc
+		 	order by cat.descripcion, icall.descripcion , ex.territorio_ofc desc;
+
+
+</select>
+
+<select id="getCountExpxIndCallxPrioridad" parameterType="src.com.certicom.certiscan.utils.ExpedienteFilter" resultMap="indicadorCallResult" >
+	select count(ep.id_expediente_producto) as cantidad ,cat.descripcion as des_ctgCall,
+		icall.descripcion, icall.id_indicadores_call,
+		case when  prioridad_cliente is null or prioridad_cliente =''
+		then 'BLANCO(SIN INFORMACION)'
+		else prioridad_cliente end as desc_prioridad 
+		
+		from t_expediente_producto ep inner join 
+		t_expediente ex on
+		ep.expediente_id = ex.expediente_id 
+		inner join t_indicadores_call icall
+		on ep.id_indicadores_call = icall.id_indicadores_call
+		inner join t_categoria_call cat on cat.id_categoria_call = icall.id_categoria_call
+		where 
+		 ex.periodo = #{fini}
+		and ex.id_producto =#{idproducto}	
+	<if test="zona != 'TODOS'">	
+	<choose>
+			<when test="zona == 'LIMA'">
+				and ((ex.departamento = 'LIMA' and ex.provincia = 'LIMA')
+				or (ex.departamento = 'CALLAO'))
+			</when>
+			<when test="zona == 'PROVINCIA'">
+				and ( case when  ex.departamento = 'LIMA'
+			    then  (ex.departamento = 'LIMA' and ex.provincia != 'LIMA') else ex.departamento != 'CALLAO' end )
+			</when>
+		</choose>
+	</if>	
+		 	group by cat.descripcion, icall.descripcion ,icall.id_indicadores_call, desc_prioridad
+		 	order by cat.descripcion, icall.descripcion ,desc_prioridad
+</select>
+
+
+
+</mapper>	

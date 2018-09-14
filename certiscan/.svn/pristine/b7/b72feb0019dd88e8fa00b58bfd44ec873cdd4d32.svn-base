@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.CitaContactoMapper">
+
+<resultMap id="citaContactoResult" type="com.certicom.certiscan.domain.CitaContacto">
+	<id column="citacontactoid" property="citacontactoid" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="tcita" property="tcita" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="fecha" property="fecha"/>
+	<result column="hora" property="hora"/>
+	<result column="departamento" property="departamento"/>
+	<result column="provincia" property="provincia"/>
+	<result column="distrito" property="distrito"/>
+	<result column="usuarioid" property="usuarioid"/>
+	<result column="id_expediente_producto" property="id_expediente_producto"/>
+</resultMap>
+
+<select id="findByEjecutivo" resultMap="citaContactoResult" >
+
+	select t_cita_contacto.*, 
+			(case when t_expediente_producto.id_producto = 6  or p.id_negocio = 11
+			 then t_expediente.nombre_empresa else  concat(t_expediente.apellido_paterno, ' ', t_expediente.apellido_materno, ' ', t_expediente.nombre_completo) end) AS nombreCliente,
+			  t_expediente_producto.id_producto as id_producto 
+			 from t_cita_contacto 
+			 inner join t_expediente_producto on t_cita_contacto.id_expediente_producto = t_expediente_producto.id_expediente_producto 
+			 inner join t_expediente on t_expediente_producto.expediente_id = t_expediente.expediente_id 
+			 inner join t_producto p on t_expediente_producto.id_producto = p.id_producto
+			 where t_cita_contacto.usuarioid = #{usuarioid}
+			 <if test="id_vendedor != 0">
+			 	and t_expediente.idusuario_referente = #{id_vendedor}
+			 </if>
+	</select>
+	
+	
+	<select id="findByVendedor" resultMap="citaContactoResult" >
+
+	select t_cita_contacto.*, 
+			(case when t_expediente_producto.id_producto = 6  or p.id_negocio = 11
+			 then t_expediente.nombre_empresa else  concat(t_expediente.apellido_paterno, ' ', t_expediente.apellido_materno, ' ', t_expediente.nombre_completo) end) AS nombreCliente,
+			  t_expediente_producto.id_producto as id_producto 
+			 from t_cita_contacto 
+			 inner join t_expediente_producto on t_cita_contacto.id_expediente_producto = t_expediente_producto.id_expediente_producto 
+			 inner join t_expediente on t_expediente_producto.expediente_id = t_expediente.expediente_id 
+			 inner join t_producto p on t_expediente_producto.id_producto = p.id_producto
+			 where 
+			  t_expediente.idusuario_referente = #{id_vendedor}
+	</select>
+
+</mapper>

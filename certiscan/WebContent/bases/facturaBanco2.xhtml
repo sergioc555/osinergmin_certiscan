@@ -1,0 +1,440 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/plantillas/plantilla.xhtml">
+	<ui:define name="contenido">
+		<p:breadCrumb style="font-size: 11px; height: 13px; margin-top: -5px">  
+  				<p:menuitem value="Home" url="#" />  
+  				<p:menuitem value="Bases" url="#" />
+  				<p:menuitem value="Carga de Bases" url="cargaBanco" />   
+		</p:breadCrumb>
+			<pe:blockUI  widgetVar="BlockUIWidgetExp">        
+		        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+		        <h:outputText value="Explorando, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+		    </pe:blockUI>
+		    
+		    <pe:blockUI  widgetVar="BlockUIWidgetLim">        
+		        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+		        <h:outputText value="Limpiando, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+		    </pe:blockUI>	
+		
+			<pe:blockUI  widgetVar="BlockUIWidgetFilt">        
+		        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+		        <h:outputText value="Buscando, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+		    </pe:blockUI>
+		    
+		    <pe:blockUI  widgetVar="BlockUIWidget">        
+		        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+		        <h:panelGrid columns="1" style="white-space: nowrap; font-weight:bold; color: #036fab">
+		        	<h:outputText value="Espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/>
+		        	<h:outputText value="Se está validando los registros de la base de datos del banco contra la base de Indecopi..." style="white-space: nowrap; font-weight:bold; color: #036fab"/>
+		        	<h:outputText value="y a la vez registrándolos en el sistema." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+		        </h:panelGrid>
+		    </pe:blockUI>
+			    
+	    	<pe:blockUI  widgetVar="BlockUIWidgetPag">        
+			        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+			        <h:outputText value="Cambiando de Pagina, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+		    </pe:blockUI>
+		    
+		    <pe:blockUI  widgetVar="BlockUIWidgetDelete">        
+			        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+			        <h:outputText value="Eliminando, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/> 
+		    </pe:blockUI>
+		    
+		    <p:tabView style="width:1215px;font-size: 11px; border:none;" id="tabView" dynamic="true" >
+		        <p:tab title="Nueva Carga de Bases">
+		        	<h:form id="frmCarga">
+							<p:messages showDetail="false" showSummary="true" id="msgNuevo" style="font-size:11px;" closable="true" />
+							<h:panelGrid columns="3">
+								<h:outputLabel value="Nota Informativa:  La última carga de la base de datos de Indecopi se realizó en el periodo: " style="font-size: 14px; color: blue; font-weight: bold; margin-left: 210px;"
+												rendered="#{facturaBancoMB.cabeceraBaseIndecopyUltimo.periodo ne null}"/>
+								<h:outputText value="#{facturaBancoMB.cabeceraBaseIndecopyUltimo.periodo}" style="font-size: 22px; color: blue; font-weight: bold;"
+												rendered="#{facturaBancoMB.cabeceraBaseIndecopyUltimo.periodo ne null}">
+									<f:convertDateTime pattern="MMMM yyyy" />
+								</h:outputText>
+								<h:outputLabel value="ADVERTENCIA: No se ha Detectado Ninguna Carga Indecopi. Por favor, realizar la carga de Indecopi. " style="font-size: 14px; color: red; font-weight: bold;"
+												rendered="#{facturaBancoMB.cabeceraBaseIndecopyUltimo.periodo eq null}"/>
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<h:panelGrid columns="1" rendered="#{facturaBancoMB.cabeceraBaseIndecopyUltimo.periodo ne null}">
+									<h:panelGrid columns="12" style="font-size: 12px;">
+										<h:outputLabel value="Periodo:" style="font-weight:  bold;"/>
+										<h:panelGroup>
+											<p:selectOneMenu style="width:100px"
+												value="#{facturaBancoMB.mes}"  disabled="#{not facturaBancoMB.disabledOpciones}">
+												<f:selectItem  itemLabel="Enero" itemValue="01" />
+												<f:selectItem  itemLabel="Febrero" itemValue="02" />
+												<f:selectItem  itemLabel="Marzo" itemValue="03" />
+												<f:selectItem  itemLabel="Abril" itemValue="04" />
+												<f:selectItem  itemLabel="Mayo" itemValue="05" />
+												<f:selectItem  itemLabel="Junio" itemValue="06" />
+												<f:selectItem  itemLabel="Julio" itemValue="07" />
+												<f:selectItem  itemLabel="Agosto" itemValue="08" />
+												<f:selectItem  itemLabel="Setiembre" itemValue="09" />
+												<f:selectItem  itemLabel="Octubre" itemValue="10" />
+												<f:selectItem  itemLabel="Noviembre" itemValue="11" />
+												<f:selectItem  itemLabel="Diciembre" itemValue="12" />
+											</p:selectOneMenu>
+											<p:selectOneMenu style="width:100px"
+												value="#{facturaBancoMB.anio}"  disabled="#{not facturaBancoMB.disabledOpciones}">
+												<f:selectItem  itemLabel="2014" itemValue="2014" />
+												<f:selectItem  itemLabel="2015" itemValue="2015" />
+												<f:selectItem  itemLabel="2016" itemValue="2016" />
+												<f:selectItem  itemLabel="2017" itemValue="2017" />
+												<f:selectItem  itemLabel="2018" itemValue="2018" />
+												<f:selectItem  itemLabel="2019" itemValue="2019" />
+												<f:selectItem  itemLabel="2020" itemValue="2020" />
+											</p:selectOneMenu>
+										</h:panelGroup>
+										<h:outputLabel value="Negocio:" style="font-weight:  bold;"/>
+										<p:selectOneMenu style="width:100px" value="#{facturaBancoMB.negocio.id_negocio}"  disabled="#{facturaBancoMB.view}">
+											<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" noSelectionOption="true" />
+											<f:selectItems itemLabel="#{neg.descripcion}" itemValue="#{neg.id_negocio}" value="#{facturaBancoMB.listaNegocios}" var="neg" />
+											<p:ajax listener="#{facturaBancoMB.buscarProductosXNegocio()}" 
+													update=":tabView:frmCarga:msgNuevo :tabView:frmCarga:cmbProduct :tabView:frmCarga:uploadFile :tabView:frmTabla :tabView:frmTabla2 :tabView:sms :tabView:frmListaPrev :tabView:frmCarga:pnlSubproducto :tabView:frmCarga:pnlTipoBase" 
+													onstart="PF('BlockUIWidgetFilt').block()" oncomplete="PF('BlockUIWidgetFilt').unblock()"/>
+										</p:selectOneMenu>
+										<h:outputLabel value="Producto:" style="font-weight:  bold;"/>
+										<p:selectOneMenu style="width:150px" id="cmbProduct" value="#{facturaBancoMB.producto.id_producto}"  disabled="#{not facturaBancoMB.disabledOpciones}">
+											<f:selectItem itemLabel="Seleccionar" itemValue=""  />
+											<f:selectItems itemLabel="#{prod.descripcion}" itemValue="#{prod.id_producto}" value="#{facturaBancoMB.listaProductos}" var="prod" />
+											<p:ajax   listener="#{facturaBancoMB.limpiarExpedientes()}" update=":tabView:frmCarga:pnlSubproducto" />
+										</p:selectOneMenu>
+										
+										<h:panelGrid columns="2" id="pnlSubproducto">
+										<h:outputLabel value="Sub. Producto:" style="font-weight:  bold;" rendered="#{facturaBancoMB.view_subproducto}"/>
+										<p:selectOneMenu style="width:150px" id="cmbSubProd" value="#{facturaBancoMB.id_sub_producto}" rendered="#{facturaBancoMB.view_subproducto}" disabled="#{not facturaBancoMB.disabledOpciones || loginMB.flagPHSupervisor}">
+											<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" noSelectionOption="true" />
+											<f:selectItems itemLabel="#{sprod.descripcion}" itemValue="#{sprod.id_sub_producto}" value="#{facturaBancoMB.listaSubProducto}" var="sprod" />
+										</p:selectOneMenu>
+										</h:panelGrid>
+										
+										<h:panelGrid columns="2" id="pnlTipoBase"> 
+										<h:outputLabel value="Tipo Base:" style="font-weight:  bold;" rendered="#{facturaBancoMB.negocio.id_negocio == 11}"/>
+										<p:selectOneMenu style="width:150px" id="cmbTipoBase"  rendered="#{facturaBancoMB.negocio.id_negocio == 11}" value="#{facturaBancoMB.f_tipoBase}">
+											<f:selectItem itemLabel="BANCO" itemValue="BANCO" />
+											<f:selectItem itemLabel="PROPIO" itemValue="PROPIO" />
+										</p:selectOneMenu>
+										</h:panelGrid>
+										
+										
+										<h:outputLabel value="Prioridad de base:" style="font-weight:  bold;" disabled="#{facturaBancoMB.view}"/>
+										<p:selectOneMenu  style="width:150px" value="#{facturaBancoMB.prioridadAtencion}" >
+											<f:selectItem  itemValue="BAJA" itemLabel="BAJA" />
+											<f:selectItem  itemValue="MEDIA" itemLabel="MEDIA" />
+											<f:selectItem  itemValue="ALTA" itemLabel="ALTA" /> 
+										</p:selectOneMenu>
+										
+										<p:commandButton value="Ver Formato" icon="ui-icon-locked" action="#{facturaBancoMB.generar()}" id="cmdFormato" disabled="#{facturaBancoMB.disabledFormato}"  update=":tabView:frmCarga :tabView:frmTabla :tabView:frmTabla2 :tabView:frmListaPrev" onstart="PF('BlockUIWidgetExp').block()"  oncomplete="PF('BlockUIWidgetExp').unblock()"/>
+										<p:commandButton value="Cancelar" icon="ui-icon-unlocked" action="#{facturaBancoMB.limpiarFormulario()}" disabled="#{facturaBancoMB.disabledOpciones}" id="cmdLimpiar" update=":tabView:frmCarga :tabView:frmTabla :tabView:frmTabla2 :tabView:frmListaPrev" onstart="PF('BlockUIWidgetLim').block()"  oncomplete="PF('BlockUIWidgetLim').unblock()"/>
+									</h:panelGrid>
+									<h:outputLabel value="Cargar Excel:" style="font-weight:  bold;"/>
+									<p:fileUpload fileUploadListener="#{facturaBancoMB.cargaArchivoBanco}"  disabled="#{facturaBancoMB.disabledUpload}"
+										allowTypes="/(\.|\/)(xls|xlsx)$/" description="selecione archivo hoja de calculo .xls" 
+										label="Seleccionar" id="uploadFile" process="@this :tabView:frmCarga :tabView:frmTabla :tabView:frmTabla2 :tabView:frmListaPrev"
+										uploadLabel="Subir"  
+										cancelLabel="Cancelar"
+										update=":tabView:frmCarga:msgNuevo :tabView:frmCarga:cmdFormato :tabView:frmCarga:pngResumen" style="font-size:11px;" />
+								</h:panelGrid>
+								<h:panelGrid id="pngResumen">
+									<p:panel header="Resumen de Carga" rendered="#{facturaBancoMB.renderedResumen}">
+										<h:panelGrid columns="2">
+											<h:outputLabel value="Total de registros cargados:" style="font-size: 12px; font-weight: bold; color: blue"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteRegistrados}" style="font-size: 14px;  color: blue"/>
+											
+											<h:outputLabel value="Registros sin datos de contacto:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_negocio ne 11 and facturaBancoMB.producto.id_producto ne 6}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteSinDatosContacto}" style="font-size: 14px;  color: blue"  rendered="#{facturaBancoMB.producto.id_negocio ne 11 and facturaBancoMB.producto.id_producto ne 6}"/>
+											
+											<h:outputLabel value="Registros con datos de contacto:" style="font-size: 12px; font-weight: bold; color: blue"  rendered="#{facturaBancoMB.producto.id_negocio ne 11 and facturaBancoMB.producto.id_producto ne 6}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteRegistrados - facturaBancoMB.numeroExpedienteSinDatosContacto}" style="font-size: 14px;  color: blue"  rendered="#{facturaBancoMB.producto.id_negocio ne 11 and facturaBancoMB.producto.id_producto ne 6}"/>
+											
+											<h:outputLabel value="Total registros repetidos:" style="font-size: 12px; font-weight: bold; color: blue" />
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteRepetido}" style="font-size: 14px;  color: blue"  />
+											
+											<h:outputLabel value="Bases sin dirección:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteSinDireccion}" style="font-size: 14px;  color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											
+											<h:outputLabel value="Bases con dirección:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteRegistrados - facturaBancoMB.numeroExpedienteSinDireccion}" style="font-size: 14px;  color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											
+											<h:outputLabel value="Bases en zonas sin cobertura:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteEnZonaSinCobertura}" style="font-size: 14px;  color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											
+											<h:outputLabel value="Bases sin ruc:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteSinRuc}" style="font-size: 14px;  color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											
+											<h:outputLabel value="Bases con RUS:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteExclusionRucRUS}" style="font-size: 14px;  color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											
+											<h:outputLabel value="Bases con RUC Inactivo:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteExclusionRucINACTIVO}" style="font-size: 14px;  color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											
+											<h:outputLabel value="Bases con RUC No Existente:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteExclusionRucNE}" style="font-size: 14px;  color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+																						
+											<h:outputLabel value="Total de telefonos excluidos:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_producto ne 6}"/>
+											<h:outputText value="#{facturaBancoMB.numeroTelefonoExcluidosRegistrados}" style="font-size: 14px;  color: blue" rendered="#{facturaBancoMB.producto.id_producto ne 6}"/>
+											
+											<h:outputLabel value="Bases Pendiente de Ajuste:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											<h:outputText value="#{facturaBancoMB.totalRegistrosExpedientePendienteFiltro}" style="font-size: 16px;  color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											
+											<h:outputLabel value="Bases Listas para Asignar:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											<h:outputText value="#{facturaBancoMB.totalRegistrosExpedientePorAsignar}" style="font-size: 16px;  color: blue" rendered="#{facturaBancoMB.producto.id_negocio eq 11}"/>
+											
+											 
+										 	<h:outputLabel value="Bases con CIIU Trabajable:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_producto eq 6}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteExclusionRucTRABAJABLE}" style="font-size: 16px;  color: blue" rendered="#{facturaBancoMB.producto.id_producto eq 6}"/>
+											
+											<h:outputLabel value="Bases con CIIU No Habido:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_producto eq 6}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteExclusionRucNOHABIDO}" style="font-size: 16px;  color: blue" rendered="#{facturaBancoMB.producto.id_producto eq 6}"/>
+											
+											<h:outputLabel value="Bases con CIIU Baja Definitiva:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_producto eq 6}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteExclusionRucBAJASERVICIO}" style="font-size: 16px;  color: blue" rendered="#{facturaBancoMB.producto.id_producto eq 6}"/>
+											
+											<h:outputLabel value="Bases con CIIU Invalido:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_producto eq 6}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteExclusionRucINVALIDO}" style="font-size: 16px;  color: blue" rendered="#{facturaBancoMB.producto.id_producto eq 6}"/>
+											
+											<h:outputLabel value="Bases Pendiente de Ajuste:" style="font-size: 12px; font-weight: bold; color: blue" rendered="#{facturaBancoMB.producto.id_producto eq 6}"/>
+											<h:outputText value="#{facturaBancoMB.numeroExpedienteExclusionRucCIIUPENDIENTE}" style="font-size: 16px;  color: blue" rendered="#{facturaBancoMB.producto.id_producto eq 6}"/>
+											
+<!-- 											<h:outputLabel value="Total exclusiones del Banco:" style="font-size: 12px; font-weight: bold; color: blue" /> -->
+<!-- 											<h:outputText value="#{facturaBancoMB.numeroExpedienteExclusionBANCO}" style="font-size: 14px;  color: blue"  /> -->
+											
+										</h:panelGrid>
+									</p:panel>
+								</h:panelGrid>
+							</h:panelGrid>
+							
+						</h:form>
+			
+			
+						<h:form id="frmTabla" rendered="#{facturaBancoMB.cabeceraBaseIndecopyUltimo.periodo ne null}">
+							
+							<h:panelGrid id="columnas" rendered="#{not facturaBancoMB.disabledOpciones}" columns="2" width="50%; padding: 0px;">
+							
+								<p:dataTable var="cc" value="#{facturaBancoMB.columnasSourceObject}"  
+									selectionMode="single" selection="#{facturaBancoMB.columnaCartera}" rowKey="#{cc.orden}" style="FONT-SIZE: 9px; margin-top: 0px; top: 0px;">
+									
+									<p:column headerText="" style="width: 5%">
+										#{cc.orden+1}
+									</p:column>	
+				    				<p:column headerText="Columna Archivo Banco (xls)" width="80" >
+										#{cc.descripcion}
+									</p:column>				
+			    			
+			    				</p:dataTable>
+			    				
+								<p:dataTable var="fd" value="#{facturaBancoMB.listFormatoDetalle}" rowIndexVar="varindex"
+								    style="FONT-SIZE: 9px; margin-top: 0px; top: 0px;" rowKey="#{fd.idFormatoDetalle}" >
+									<p:column headerText="" style="color:red; width: 5%" >
+										<h:outputText value="#{varindex+1}" style="color:blue;" />
+									</p:column>
+				    				<p:column headerText="Columnas Disponibles (Formato)" style="color:red;"  width="80">
+										<h:outputText value="#{fd.cabecera.descripcion}" style="color:blue;" />
+									</p:column>
+								</p:dataTable>
+								
+							</h:panelGrid>
+						</h:form>
+							<br/>
+							<p:messages showDetail="false" showSummary="true" id="sms" style="font-size:11px;" closable="true" />
+							<br/>
+						<h:form id="frmTabla2" >
+							<h:panelGrid id="opciones"  rendered="#{not facturaBancoMB.disabledOpciones}" columns="2">
+								<p:commandButton value="GUARDAR CARGA DE BASE DEL BANCO" id="cmdGuardar" icon="ui-icon-disk" oncomplete="PF('confirmation').show();"
+										style="font-weight: bold; font-size: 14px;" update=":confirmBaseDialog"/>
+								<h:outputText value="Total de registros: #{facturaBancoMB.archivo.nroFilas}" rendered="#{not empty facturaBancoMB.listaExpedientes}"
+									style="font-size: 15px; font-weight: bold; color: blue;"/>
+							</h:panelGrid>
+		
+						</h:form>
+					
+						
+						<h:form id="frmListaPrev" >
+			
+							<p:dataTable  var="exp" rows="10" value="#{facturaBancoMB.listaExpedientes}" paginator="true" pageLinks="5" paginatorAlwaysVisible="false" filteredValue="#{facturaBancoMB.listaExpedientesFiltered}"
+								emptyMessage="No hay Datos Disponibles." rowIndexVar="nro" rendered="#{facturaBancoMB.cabeceraBaseIndecopyUltimo.periodo ne null}" paginatorPosition="bottom"
+								style="FONT-SIZE: 9px; display: #{empty facturaBancoMB.listaExpedientes?'none':'inline'};"  scrollable="true" scrollHeight="200" scrollWidth="1100" >
+								<f:facet name="header">Vista Previa</f:facet>
+								
+								<p:columns var="cl" value="#{facturaBancoMB.columnasDy}" columnIndexVar="colIndex" width="90" filterBy="#{exp[cl.property]}" style="width: 90px;"
+										filterMatchMode="contains" sortBy="#{exp[cl.property]}" filterStyle="width: 95%">
+									<f:facet name="header">
+						                <h:outputText value="#{cl.header}" />
+						            </f:facet>
+						            <h:outputText value="#{exp[cl.property]}" />
+								</p:columns>
+			
+							</p:dataTable>
+
+						</h:form>
+		        </p:tab>
+		        
+		        <p:tab title="Lista de Cargas de Bases">
+		        	<h:form id="formLista" >	
+						 <p:messages showDetail="false" showSummary="true" id="msgNuevo2" style="font-size:11px;" closable="true" />
+						 	<p:blockUI block="cabeceraTable" trigger="cabeceraTable">
+						        <h:graphicImage library="resources/img" value="/resources/img/ajax-loader1.gif"  style="margin-right: 12px; vertical-align: middle;" />  
+					        	<h:outputText value="Buscando, espere por favor..." style="white-space: nowrap; font-weight:bold; color: #036fab"/>
+						    </p:blockUI>
+						    
+						    	<h:panelGrid columns="10" style="font-size: 12px;">
+						<h:outputLabel value="Periodo:" style="font-weight:  bold;" />
+						<h:panelGroup>
+						 <p:selectOneMenu style="width: 100px;" value="#{facturaBancoMB.mes}" >
+								<f:selectItem itemLabel="Enero" itemValue="01" />
+								<f:selectItem itemLabel="Febrero" itemValue="02" />
+								<f:selectItem itemLabel="Marzo" itemValue="03" />
+								<f:selectItem itemLabel="Abril" itemValue="04" />
+								<f:selectItem itemLabel="Mayo" itemValue="05" />
+								<f:selectItem itemLabel="Junio" itemValue="06" />
+								<f:selectItem itemLabel="Julio" itemValue="07" />
+								<f:selectItem itemLabel="Agosto" itemValue="08" />
+								<f:selectItem itemLabel="Setiembre" itemValue="09" />
+								<f:selectItem itemLabel="Octubre" itemValue="10" />
+								<f:selectItem itemLabel="Noviembre" itemValue="11" />
+								<f:selectItem itemLabel="Diciembre" itemValue="12" />
+								<p:ajax process="@this" listener="#{facturaBancoMB.iniciarCargaCabeceraExpediente()}" update=":tabView:formLista:cabeceraTable" 
+											onstart="PF('BlockUIWidgetFilt').block();"  oncomplete="PF('BlockUIWidgetFilt').unblock();"/>
+						 </p:selectOneMenu>
+						 <p:selectOneMenu style="width: 100px;" value="#{facturaBancoMB.anio}" >
+								<f:selectItem itemLabel="2014" itemValue="2014" />
+								<f:selectItem itemLabel="2015" itemValue="2015" />
+								<f:selectItem itemLabel="2016" itemValue="2016" />
+								<f:selectItem itemLabel="2017" itemValue="2017" />
+								<f:selectItem itemLabel="2018" itemValue="2018" />
+								<f:selectItem itemLabel="2019" itemValue="2019" />
+								<f:selectItem itemLabel="2020" itemValue="2020" />
+								<p:ajax process="@this" listener="#{facturaBancoMB.iniciarCargaCabeceraExpediente()}" update=":tabView:formLista:cabeceraTable" 
+											onstart="PF('BlockUIWidgetFilt').block();"  oncomplete="PF('BlockUIWidgetFilt').unblock();"/>
+						</p:selectOneMenu>
+						</h:panelGroup>
+						<h:outputLabel value="Negocio:" style="font-weight:  bold;" />
+						<p:selectOneMenu style="width: 150px;margin-right:15px;"
+												value="#{facturaBancoMB.negocio.id_negocio}"
+												disabled="#{facturaBancoMB.block_negocio}">
+													<f:selectItem itemLabel="TODOS" itemValue="0"/>
+													<f:selectItems itemLabel="#{neg.descripcion}"
+															itemValue="#{neg.id_negocio}"
+															value="#{facturaBancoMB.listaNegocios}" var="neg" />
+													<p:ajax execute="@this" listener="#{facturaBancoMB.iniciarCargaCabeceraExpediente()}"
+															update=":tabView:formLista:cabeceraTable"
+															onstart="PF('BlockUIWidgetFilt').block()"
+															oncomplete="PF('BlockUIWidgetFilt').unblock()" />
+												</p:selectOneMenu>
+												
+							</h:panelGrid>	
+						    
+						 	<p:dataTable  var="cab" value="#{facturaBancoMB.listExpedienteCabecera}" lazy="true" id="cabeceraTable"
+								emptyMessage="No se encontaron cargas." rowIndexVar="nro" filteredValue="#{facturaBancoMB.listExpedienteCabeceraFiltered}"
+								paginator="true" selection="#{facturaBancoMB.expedienteCabeceraSelected}"
+								rows="10" paginatorPosition="bottom" rowKey="#{cab.idExpedienteCabecera}" 
+								style="width:1200px;FONT-SIZE: 11px;">
+								<f:facet name="header">
+									<h:outputLabel value="Lista de Cargas de Base del Banco" style="font-size: 13px; font-weight: bold"/>
+								</f:facet>
+								<p:column headerText="" width="10" >
+									#{nro+1}
+								</p:column>
+								
+								<p:column  headerText="Periodo" style="text-align:center; width:110px" sortBy="#{cab.periodo}">
+									<h:outputText value="#{cab.periodo}">
+										<f:convertDateTime pattern="MMMMM yyyy" />
+									</h:outputText>
+								</p:column>
+								
+								<p:column  headerText="Negocio" filterStyle="width:80%" style="text-align:center"  sortBy="#{cab.negocio.descripcion}"  filterBy="#{cab.negocio.descripcion}" filterMatchMode="contains">
+									<h:outputText value="#{cab.nombreNegocio}"/>
+								</p:column>
+								
+								<p:column  headerText="Producto" filterStyle="width:80%" style="text-align:center" sortBy="#{cab.producto.descripcion}" filterBy="#{cab.producto.descripcion}" filterMatchMode="contains">
+									<h:outputText value="#{cab.nombreProducto}"/>
+								</p:column>
+								
+								<p:column  headerText="Nro Registros" style="text-align:center; width:5%">
+									<h:outputText value="#{cab.numeroRegistro}"/>
+								</p:column>
+			
+								<p:column headerText="Fecha de Carga" style="text-align:center; width: 12%" sortBy="#{cab.fecha}">
+									<h:outputText value="#{cab.fecha}" >
+										<f:convertDateTime pattern="dd MMMMM yyyy hh:mm a" type="date"/>
+									</h:outputText>
+								</p:column>
+								
+								<p:column headerText="Archivo" sortBy="#{cab.nombreArchivo}" style="text-align:center;" width="180">
+									<h:outputText value="#{cab.nombreArchivo}" />
+								</p:column>
+								
+								<p:column headerText="Usuario" filterStyle="width:95%" style="text-align:center; width: 20%" sortBy="#{cab.usuario.nombre}"  filterBy="#{cab.usuario.nombre}" filterMatchMode="contains">
+									<h:outputText value="#{cab.nombreUsuario}" />
+								</p:column>
+								
+								<p:column headerText="" style="width:5%;text-align: center">
+									<p:commandButton  update=":confDelete"
+										oncomplete="PF('confirmationDelete').show();" title="Eliminar" process="@this"
+										icon="icon-delete">
+										<f:setPropertyActionListener value="#{cab}" target="#{facturaBancoMB.expedienteCabeceraSelected}" /> 	
+									</p:commandButton>
+								</p:column>
+								
+							</p:dataTable>
+						 </h:form>
+		        </p:tab>
+			</p:tabView>
+		
+		<p:confirmDialog appendTo="@(body)" id="confirmBaseDialog" message="Esta seguro de registrar la base en el sistema?"  
+                    header="CONFIRMACIÓN" severity="alert" widgetVar="confirmation" closeOnEscape="true" >  
+	       <h:form> 
+	       		<h:panelGrid columns="2">
+	       			<h:outputLabel value="Negocio:" style="font-size: 13px; font-weight: bold;" />
+	       			<h:outputText value="#{facturaBancoMB.negocio.descripcion}" style="font-size: 13px; font-weight: bold; color: grey;"/>
+	       			<h:outputLabel value="Producto:" style="font-size: 13px; font-weight: bold;"/>
+	       			<h:outputText value="#{facturaBancoMB.producto.descripcion}" style="font-size: 13px; font-weight: bold; color: grey; "/>
+	       			<h:outputLabel value="Periodo:" style="font-size: 13px; font-weight: bold;"/>
+	       			<h:outputText value="#{facturaBancoMB.mes} - #{facturaBancoMB.anio}" style="font-size: 13px; font-weight: bold; color: grey; "/>
+	       		</h:panelGrid>
+	            <p:commandButton id="confirm" value="SI" action="#{facturaBancoMB.persistir()}" update=":tabView:frmCarga :tabView:frmTabla :tabView:frmTabla2 :tabView:frmListaPrev :tabView:formLista:cabeceraTable" 
+	            				oncomplete=" PF('BlockUIWidget').unblock()" onstart="PF('confirmation').hide(); PF('BlockUIWidget').block()" />  
+     		    <p:commandButton id="decline" value="NO" onclick="PF('confirmation').hide();" type="button" />   
+	        </h:form>   
+	   </p:confirmDialog> 
+		
+		<p:confirmDialog  appendTo="@(body)"  id="confirmDeleteBaseDialog" message="Esta seguro de eliminar esta carga de base del banco?"  
+                    header="CONFIRMACIÓN" severity="alert" widgetVar="confirmationDelete" closeOnEscape="true">  
+		       <h:form id="confDelete">
+		            <p:commandButton id="confirm2" value="SI" action="#{facturaBancoMB.eliminarCabeceraCarga()}"  process="@this" update=":tabView:formLista:cabeceraTable :tabView:formLista:msgNuevo2"
+		            		oncomplete="PF('BlockUIWidgetDelete').unblock()"  onstart="PF('confirmationDelete').hide(); PF('BlockUIWidgetDelete').block()" />  
+		            <p:commandButton id="decline2" value="NO" onclick="PF('confirmationDelete').hide();" type="button" />   
+		         </h:form>   
+		   </p:confirmDialog> 
+		
+	</ui:define>
+	
+	
+    <script type="text/javascript">  
+            function mostrarAsignarEjecutivo(xhr, status, args) {  
+                if(args.noEsValido) {  
+                     alert('SI');
+                } else {
+                	alert('NO');
+                	dlgEjecutivo.show();
+                }  
+            }
+            
+
+            function hacerClick(elementName) {  
+                 element = document.getElementById(elementName);
+                 element.click();
+            }  
+    </script> 
+	
+</ui:composition>
+</html>

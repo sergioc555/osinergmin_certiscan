@@ -1,0 +1,96 @@
+package com.certicom.certiscan.domain;
+
+import java.io.ByteArrayOutputStream;
+import java.util.Date;
+import java.util.List;
+
+public class Medios {
+	
+	private Integer id_medio;
+	private String descripcion;
+	private Integer total_archivos;
+	private String descripcion_peso;
+	private Long peso;
+	private Date fecha_registro;
+	private ByteArrayOutputStream baos;
+	private List<ExpedienteDocumento> listExpedienteDocumentos;
+	private String ruta;
+	
+	public Medios(){
+		
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public Integer getId_medio() {
+		return id_medio;
+	}
+
+	public void setId_medio(Integer id_medio) {
+		this.id_medio = id_medio;
+	}
+
+	public Integer getTotal_archivos() {
+		return total_archivos;
+	}
+
+	public void setTotal_archivos(Integer total_archivos) {
+		this.total_archivos = total_archivos;
+	}
+
+	public Date getFecha_registro() {
+		return fecha_registro;
+	}
+
+	public void setFecha_registro(Date fecha_registro) {
+		this.fecha_registro = fecha_registro;
+	}
+
+	public String getDescripcion_peso() {
+		return descripcion_peso;
+	}
+
+	public void setDescripcion_peso(String descripcion_peso) {
+		this.descripcion_peso = descripcion_peso;
+	}
+
+	public Long getPeso() {
+		return peso;
+	}
+
+	public void setPeso(Long peso) {
+		this.peso = peso;
+	}
+
+	public List<ExpedienteDocumento> getListExpedienteDocumentos() {
+		return listExpedienteDocumentos;
+	}
+
+	public void setListExpedienteDocumentos(
+			List<ExpedienteDocumento> listExpedienteDocumentos) {
+		this.listExpedienteDocumentos = listExpedienteDocumentos;
+	}
+
+	public ByteArrayOutputStream getBaos() {
+		return baos;
+	}
+
+	public void setBaos(ByteArrayOutputStream baos) {
+		this.baos = baos;
+	}
+
+	public String getRuta() {
+		return ruta;
+	}
+
+	public void setRuta(String ruta) {
+		this.ruta = ruta;
+	}	
+	
+}

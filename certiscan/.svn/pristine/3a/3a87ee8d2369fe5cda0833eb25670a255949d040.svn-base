@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.TelefonosExcluidosMapper">
+
+<resultMap id="estadoResult" type="com.certicom.certiscan.domain.TelefonosExcluidos">
+	<id column="expediente_id" property="expediente_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="id_producto" property="id_producto" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="id_negocio" property="id_negocio" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+	<result column="cod_banco" property="cod_banco" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="tipo_planilla" property="tipo_planilla" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="cod_cliente" property="cod_cliente" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="tipo_cliente" property="tipo_cliente" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="tipo_doc" property="tipo_doc" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="num_doc" property="num_doc" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="departamento" property="departamento" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="provincia" property="provincia" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="distrito" property="distrito" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="direccion" property="direccion" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="cliente" property="cliente" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="nombre_completo" property="nombre_completo" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="apellido_paterno" property="apellido_paterno" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="apellido_materno" property="apellido_materno" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="numero_telefono1" property="numero_telefono1" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="numero_telefono2" property="numero_telefono2" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="numero_telefono3" property="numero_telefono3" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="nombre_oficina" property="nombre_oficina" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="cod_oficina" property="cod_oficina" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="oficina" property="oficina" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="cod_territorio" property="cod_territorio" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="territorio_ofc" property="territorio_ofc" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="departamento_ofc" property="departamento_ofc" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="provincia_ofc" property="provincia_ofc" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="distrito_ofc" property="distrito_ofc" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	<result column="periodo" property="periodo" javaType="java.util.Date" jdbcType="DATE"/>
+	<result column="prestamo_soles" property="prestamo_soles" javaType="java.lang.String" jdbcType="VARCHAR"/>	
+	<result column="subrogado" property="subrogado" javaType="java.lang.String" jdbcType="VARCHAR"/>													
+	<result column="estado" property="estado" javaType="java.lang.Boolean" jdbcType="BOOLEAN"/>
+
+</resultMap>
+
+
+</mapper>
+
+
+
+

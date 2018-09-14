@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.certicom.certiscan.mapper.ExpedienteTrackingMapper">
+
+	<resultMap id="expedienteTrackingResult" type="com.certicom.certiscan.domain.ExpedienteTracking">
+		<id column="id_expediente_tracking" property="id_expediente_tracking" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+		<id column="idusuario" property="idusuario" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+		<id column="expediente_id" property="expediente_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+		<id column="id_estado" property="id_estado" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+		<id column="id_estado_resultado" property="id_estado_resultado" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+		<id column="id_expediente_producto" property="id_expediente_producto" javaType="java.lang.Integer" jdbcType="INTEGER"/>	
+		<result column="fecha_registro" property="fecha_registro" javaType="java.util.Date" jdbcType="DATE"/>
+		<result column="fecha_movimiento" property="fecha_movimiento" javaType="java.util.Date" jdbcType="DATE"/>
+		<result column="id_estado_expediente" property="idEstadoExpediente"/>
+		<result column="id_estado_facturacion" property="idEstadoFacturacion"/>
+		<result column="idsubindicadores_call" property="idsubindicadores_call"/>
+		<result column="condicion" property="condicion"/>
+		<result column="idusuario_registro" property="idusuario_registro"/>
+	</resultMap>
+	
+	<select id="getUltimoResultadobyExpediente"  resultType="java.util.Date" >
+			select fecha_registro 
+			from t_expediente_tracking 
+			where expediente_id = #{expediente_id} 
+				and id_estado_resultado = #{id_indicadores_call}
+			order by id_expediente_tracking desc limit 1
+    </select>
+
+</mapper>

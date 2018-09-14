@@ -1,0 +1,97 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean 
+	   class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	   <property name="location">
+		<value>classpath:com/certicom/scpf/mail/mail.properties</value>
+	   </property>
+	 
+	</bean>
+	
+	<bean id="mailSender_prueba" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${re.host}" />
+		<property name="port" value="${re.port}" />
+		<property name="username" value="${from.mail_prueba}" />
+		<property name="password" value="${from.pass_prueba}" />
+		<property name="javaMailProperties">
+			<props>
+            	<prop key="mail.smtp.auth">true</prop>
+            	<prop key="mail.smtp.starttls.enable">true</prop>
+        	</props>
+		</property>
+	</bean>
+
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${re.host}" />
+		<property name="port" value="${re.port}" />
+		<property name="username" value="${from.mail}" />
+		<property name="password" value="${from.pass}" />
+		<property name="javaMailProperties">
+			<props>
+            	<prop key="mail.smtp.auth">true</prop>
+            	<prop key="mail.smtp.starttls.enable">true</prop>
+        	</props>
+		</property>
+	</bean>
+	
+	<bean id="mailSenderBrenda" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${re.host}" />
+		<property name="port" value="${re.port}" />
+		<property name="username" value="${from.mail_b}" />
+		<property name="password" value="${from.pass_b}" />
+		<property name="javaMailProperties">
+			<props>
+            	<prop key="mail.smtp.auth">true</prop>
+            	<prop key="mail.smtp.starttls.enable">true</prop>
+        	</props>
+		</property>
+	</bean>
+	
+	<bean id="mailSenderChristian" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${re.host}" />
+		<property name="port" value="${re.port}" />
+		<property name="username" value="${from.mail_c}" />
+		<property name="password" value="${from.pass_c}" />
+		<property name="javaMailProperties">
+			<props>
+            	<prop key="mail.smtp.auth">true</prop>
+            	<prop key="mail.smtp.starttls.enable">true</prop>
+        	</props>
+		</property>
+	</bean>
+	
+	<bean id="mailMail" class="com.certicom.certiscan.mail.MailMail">
+		<property name="mailSender" ref="mailSender" />
+		<property name="mailSender_prueba" ref="mailSender_prueba" />
+		<property name="simpleMailMessage" ref="customeMailMessage" />
+	</bean>
+	
+	<bean id="customeMailMessage"
+		class="org.springframework.mail.SimpleMailMessage">
+
+		<property name="from" value="sample@sample.com" />
+		<property name="subject" value="sample" />
+		<property name="text">
+		<value>
+<![CDATA[
+%s
+%s				
+%s
+]]>
+		</value>
+	</property>
+	</bean>
+
+<!-- <![CDATA[ -->
+<!-- Estimado %s, -->
+<!-- </br> -->
+<!-- %s				 -->
+<!-- Saludos Cordiales, -->
+<!-- %s. -->
+<!-- ]]> -->
+
+
+</beans>
