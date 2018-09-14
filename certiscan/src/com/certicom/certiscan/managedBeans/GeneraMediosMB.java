@@ -561,7 +561,6 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 			this.expedienteDocumentoFilter.setUbicacion(ex.getUbicacion());
 			this.expedienteDocumentoFilter.setZona(zona);
 			this.expedienteDocumentoFilter.setEntregable(Constante.NUMERO_ENTREGABLE);
-			System.out.println(this.expedienteDocumentoFilter.toString());
 			this.listaExpedienteDocumentos.addAll(this.expedienteDocumentoServices.consultaPreparadoMedioExpediente(this.expedienteDocumentoFilter));
 			System.out.println(this.listaExpedienteDocumentos.size());
 		}
