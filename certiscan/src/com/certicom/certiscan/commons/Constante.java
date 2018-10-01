@@ -366,12 +366,13 @@ public class Constante {
 	public static final String PASSWORD_SCPF = "SKBT2015";				//CAMBIADO
 	
 	public static final String DIR_SH = "/home/rbullon/Sergio/proyectos/osinergmin/basePruebas";		//CAMBIADO
-	public static final String NUMERO_ENTREGABLE= "TERCER_ENTREGABLE";											//CAMBIADO
-	public static final String DIR_FILES = "/home/rbullon/Sergio/proyectos/osinergmin/basePruebas/PAPEL";		//CAMBIADO
-	public static final String DIR_FILES_RAR = "/home/rbullon/Sergio/proyectos/osinergmin/basePruebas/DIGITAL";	//CAMBIADO
-	public static String RUTA_DIGITILZACION = "/var/www/html/osinergminprueba/";	//CAMBIADO
-	public static String RUTA_MEDIOS = "/var/www/html/mediosprueba/";				//CAMBIADO
-	
+	public static final String NUMERO_ENTREGABLE= "CUARTO_ENTREGABLE";											//CAMBIADO
+	public static final String DIR_FILES = "/media/rbullon/TOSHIBA EXT/4firmado Papel";		//CAMBIADO ruta java
+	public static final String DIR_FILES_RAR = "/media/rbullon/TOSHIBA EXT/4firmado digital";	//CAMBIADO ruta java
+	public static String RUTA_DIGITILZACION = "/media/rbullon/LIMA NORTE/osignermin/ENTREGABLE04/PAPEL/DIGITALIZACION/";	//CAMBIADO
+	public static String RUTA_MEDIOS = "[se hara por sh]";				//CAMBIADO
+	public static final String CSV_PAPEL	= "/home/rbullon/Sergio/proyectos/osinergmin/ENTREGABLE04/BASEPAPEL04.csv";		//CAMBIADO
+	public static final String CSV_DIGITAL	= "/home/rbullon/Sergio/proyectos/osinergmin/ENTREGABLE04/BASEDIGITAL04.csv"; 	//CAMBIADO
 	//public static final String PASSWORD_SCPF = "oropendolas2015";   
 	//public static final String PASSWORD_SCPF = "s0p0rt32015oro"; //produccion oropendolas
 	//public static final String PASSWORD_SCPF = "s0p0rt32015"; //cap     

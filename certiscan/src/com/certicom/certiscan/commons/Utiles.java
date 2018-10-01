@@ -273,9 +273,9 @@ public class Utiles {
 	            canalSFTP1 = (ChannelSftp)miCanal1;//casteo
 	            canalExec = (ChannelExec)miCanal12;
 	            
-	            System.out.println("cd /home/rbullon/Sergio/proyectos/osinergmin/basePruebas ; ./prueba.sh "+m.getId_medio()+" "+m.getDescripcion().replace(" ", "")+".gz");
+	            System.out.println("cd " + Constante.DIR_SH + " ; ./prueba.sh "+m.getId_medio()+" "+m.getDescripcion().replace(" ", "")+".gz");
 	            //canalExec.setCommand("cd /opt/prueba ; mkdir /var/www/html/osinergmin/israel");
-	            canalExec.setCommand("cd /home/rbullon/Sergio/proyectos/osinergmin/basePruebas ; ./prueba.sh "+m.getId_medio()+" "+m.getDescripcion().replace(" ", "")+".gz");
+	            canalExec.setCommand("cd " + Constante.DIR_SH + " ; ./prueba.sh "+m.getId_medio()+" "+m.getDescripcion().replace(" ", "")+".gz");
 	            canalExec.connect();
 	            
 	            System.out.println("RESULTADO: "+canalExec.getExitStatus());

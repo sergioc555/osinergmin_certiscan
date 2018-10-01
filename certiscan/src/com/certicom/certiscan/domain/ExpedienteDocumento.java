@@ -61,7 +61,7 @@ public class ExpedienteDocumento {
 	private String ubicacion;
 	private String sede_oficina;
 	private String zona;
-	
+	private Date fecha_reg;
 	
 	public String getUbicacion() {
 		return ubicacion;
@@ -314,8 +314,11 @@ public class ExpedienteDocumento {
 	}
 	public void setZona(String zona) {
 		this.zona = zona;
-	}	
-	
-	
-	
+	}
+	public Date getFecha_reg() {
+		return fecha_reg;
+	}
+	public void setFecha_reg(Date fecha_reg) {
+		this.fecha_reg = fecha_reg;
+	}
 }

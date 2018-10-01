@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
@@ -37,16 +38,16 @@ import com.certicom.certiscan.services.ExpedienteService;
 import com.certicom.certiscan.services.ExpedienteTrackingService;
 import com.certicom.certiscan.services.IndicadorCallServices;
 import com.certicom.certiscan.services.MediosServices;
+import com.fasterxml.jackson.databind.util.Comparators;
 
 import src.com.certicom.certiscan.utils.Utils;
 
-
-@ManagedBean(name="generaMediosMB")
+@ManagedBean(name = "generaMediosMB")
 @ViewScoped
-public class GeneraMediosMB extends GenericBeans implements Serializable{
-	
+public class GeneraMediosMB extends GenericBeans implements Serializable {
+
 	private ExpedienteDocumento expedienteDocumentoFilter;
-	
+
 	private List<ExpedienteDocumento> listaExpedienteDocumentos;
 	private List<ExpedienteDocumento> listaExpedienteDocumentosVista;
 	private List<ExpedienteDocumento> listaExpedienteDocumentosFilter;
@@ -88,18 +89,18 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 	private List<Medios> listMedios;
 	private String vestado;
 	private EstadosServices estadoServices;
-	
+
 	private List<ExpedienteTracking> listaExpTracking;
 	private List<ExpedienteTracking> listaExpTrackingfilter;
-	
-	//inicio piscoya
+
+	// inicio piscoya
 	private String obsGen;
-	//fin piscoya
-	
-	@ManagedProperty(value="#{loginMB.perfilUsuario}")
+	// fin piscoya
+
+	@ManagedProperty(value = "#{loginMB.perfilUsuario}")
 	private Perfil perfilUsuario;
-	
-	@ManagedProperty(value="#{loginMB.usuario}")
+
+	@ManagedProperty(value = "#{loginMB.usuario}")
 	private Usuario usuarioLogin;
 
 	private Date fechaLimite;
@@ -107,12 +108,12 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 	private Date fechaActual;
 	private Date fecha_ini;
 	private Date fecha_fin;
-	
-	public GeneraMediosMB(){
+
+	public GeneraMediosMB() {
 	}
-	
+
 	@PostConstruct
-	public void inicia(){
+	public void inicia() {
 		this.fecha_ini = new Date();
 		this.fecha_fin = new Date();
 		this.fechaActual = new Date();
@@ -135,302 +136,245 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 		this.expedienteDocumentoServices = new ExpedienteDocumentoService();
 		this.listaExpedienteDocumentosFilter = new ArrayList<ExpedienteDocumento>();
 		this.loteSelected = new Lote();
-		this.mediosServices = new MediosServices();	
+		this.mediosServices = new MediosServices();
 		this.estadoServices = new EstadosServices();
-		
+
 		this.context = RequestContext.getCurrentInstance();
-		this.expedienteService = new ExpedienteService(); 
-		this.expedienteTrackingService  = new ExpedienteTrackingService();
-		
+		this.expedienteService = new ExpedienteService();
+		this.expedienteTrackingService = new ExpedienteTrackingService();
+
 		try {
-			
+
 			Estados est = new Estados();
 			this.expedienteDocumentoFilter.setFec_ini(this.fecha_ini);
 			this.expedienteDocumentoFilter.setFec_fin(this.fecha_fin);
 			est = this.estadoServices.findById(Constante.EST_PREPARADO_PARA_DESCARGA_DE_FEDATARIO);
-			
+
 			this.vestado = est.getDescripcion();
-			
+
 			this.listEstados = this.estadosServices.listaEstadosActivo();
-			//this.totalExpeCargados = this.expedienteService.getExpedienteAsignados(this.usuarioLogin.getIdusuario());
+			// this.totalExpeCargados =
+			// this.expedienteService.getExpedienteAsignados(this.usuarioLogin.getIdusuario());
 			this.listIndicadorCalls = this.indicadorCallServices.findByCategoria(Constante.IND_MEDIOS);
-			
-			if(this.perfilUsuario.getProceso().equals("EXPEDIENTES PROPIOS") || this.perfilUsuario.getProceso().equals("OFICINA LOCAL")){
+
+			if (this.perfilUsuario.getProceso().equals("EXPEDIENTES PROPIOS")
+					|| this.perfilUsuario.getProceso().equals("OFICINA LOCAL")) {
 				this._activateCmb = true;
 				this._activateDealer = false;
-			}else{
+			} else {
 				this._activateCmb = false;
 				this._activateDealer = true;
 			}
-									
+
 			this.listaCanales = filterCanal();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public SelectItem[] filterCanal(){
-		SelectItem[] items ;
-			items = new SelectItem[]{new SelectItem("","--Seleccione--"),
-									 new SelectItem("PERSONA"),
-					 				 new SelectItem("EMPRESA")};
-			return items;
+
+	public SelectItem[] filterCanal() {
+		SelectItem[] items;
+		items = new SelectItem[] { new SelectItem("", "--Seleccione--"), new SelectItem("PERSONA"),
+				new SelectItem("EMPRESA") };
+		return items;
 	}
-	
-	public void guardar(){
-		
-		try {				
-			comprimirBash();
-			this.listMedios = new ArrayList<>();								
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}		
-	
-	}
-	
-	public void comprimirBash() {	
-		System.out.println("Actualizar medios");
-		
-		try {		
-			/*Medios medio1ex = new Medios();
-			Medios medio2ex = new Medios();
-			medio1ex.setId_medio(1);
-			medio1ex.setDescripcion("Medio 1");
-			medio2ex.setId_medio(2);
-			medio2ex.setDescripcion("Medio 2");
-			
-			this.listMedios.add(medio1ex);
-			this.listMedios.add(medio2ex);*/
-			for (Medios medio : listMedios) {				
-				Date fec_ini = new Date();				
-				Utiles.ejecutarBash(medio);				
-				Date fec_fin = new Date();				
-				medio.setFecha_ini(fec_ini);
-				medio.setFecha_fin(fec_fin);				
-				this.mediosServices.actualizarFechaInicioFin(medio);				
-			}		
-		} catch (Exception e) {
-			// TODO: handle exception
-		}		
-	}
-	
-	public List<Medios> crearMultipleZipArchivos(){		
-			
-		new Thread(){
-			public void run(){
-				
-				try {
-					for (Medios m : listMedios) {
-						ByteArrayOutputStream out = new ByteArrayOutputStream();
-						ZipOutputStream zos = new ZipOutputStream(out);
-						for(ExpedienteDocumento ed: m.getListExpedienteDocumentos()){							
-							//System.out.println("Size Expediente Documento: " + m.getListExpedienteDocumentos().size());
-							System.out.println("El archivo a procesar pesa : " + ed.getPeso() + " es : " + ed.getDescripcion_peso());							
-							byte[] data = Utiles.descargarArchivoViaSFTP2(ed.getRuta());							
-							if(!(data==null)){								
-								Utiles.addToZipFile(data,""+ed.getNombre_archivo(), zos);								
-							}else{								
-								System.out.println("Error al procesar archivo : " + ed.getNombre_archivo());
-							}																
-						}
-						m.setRuta(m.getRuta());
-						zos.close();
-						File file = new File(m.getDescripcion()+".zip");
-						FileOutputStream fos = new FileOutputStream (file); 
-						out.writeTo(fos);
-						Utiles.enviarArchivoViaSFTP2(file, m.getDescripcion()+".zip", Constante.RUTA_MEDIOS);
-					}					
-				
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}	
-				
-		}.start();	
-		return listMedios;							  
-	}
-	
-	public void mostrarExpedientes(Lote l){
+
+	public void guardar() {
+
 		try {
-			
-			System.out.println("BUSCAR EXPEDIENTES");
-			
-			this.listExpedientes = new ArrayList<Expediente>();		
-			this.listExpedientes = this.expedienteService.findByIdLote(l.getId_lote());
-			
-			System.out.println("Tama�o de expedientes: "+this.listExpedientes.size());
-			
+			comprimirBash();
+			this.listMedios = new ArrayList<>();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public void cambiarEstado(Lote l) {		
-		this.loteSelected = l;		
-		this.id_estado = Constante.EST_ENTREGADO_A_MENSAJERIA;						
+
+	public void comprimirBash() {
+		System.out.println("Actualizar medios");
+
+		try {
+			/*
+			 * Medios medio1ex = new Medios(); Medios medio2ex = new Medios();
+			 * medio1ex.setId_medio(1); medio1ex.setDescripcion("Medio 1");
+			 * medio2ex.setId_medio(2); medio2ex.setDescripcion("Medio 2");
+			 * 
+			 * this.listMedios.add(medio1ex); this.listMedios.add(medio2ex);
+			 */
+			for (Medios medio : listMedios) {
+				Date fec_ini = new Date();
+				Utiles.ejecutarBash(medio);
+				Date fec_fin = new Date();
+				medio.setFecha_ini(fec_ini);
+				medio.setFecha_fin(fec_fin);
+				this.mediosServices.actualizarFechaInicioFin(medio);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
-	
-	public void visualizarExpediente(Medios medio) {		
-		this.medioSelected = medio;		
-		this.listaExpedienteDocumentosVista = medio.getListExpedienteDocumentos();		
-	}
-	
-	public void buscarExpedientes() {		
-		RequestContext context = RequestContext.getCurrentInstance();		
-		System.out.println("Buscar expediente");	
-		
-			try {
-				this.listaExpedienteDocumentos = new ArrayList<>();
-				this.expedienteDocumentoFilter.setGrupo_formato(this.formato);																				
-				
-				if (this.id_indicador.equals(Constante.IND_CD)) {				
-					this.tamanio = 629145600L;					
-				} else if (this.id_indicador.equals(Constante.IND_DVD)) {					
-					//this.tamanio = 5242880L;
-					this.tamanio = 4294967296L;					
-				}
-											
-				this.listMedios = new ArrayList<>();
-				
-				int medioId = this.mediosServices.findMax();
-												
-				String zonal = "ZONA LIMA";				
-				if (zonal.equals(Constante.ZONA_LIMA)) {
-					System.out.println("ZONA LIMA");
-					this.listaExpedienteDocumentos = obtenerLista(zonal);		
-					System.out.println("getGrupo_formato" + this.expedienteDocumentoFilter.getGrupo_formato());	
-					this.listaSedes = this.expedienteDocumentoServices.obtenerSedes(this.expedienteDocumentoFilter.getGrupo_formato(), zonal, Constante.NUMERO_ENTREGABLE);
-					System.out.println("CANTIDAD DE DOCUMENTOS LIMA: "+this.listaExpedienteDocumentos.size());
-					System.out.println("CANTIDAD DE SEDES LIMA: "+this.listaSedes.size());
-					
-					for (ExpedienteDocumento expSede : this.listaSedes) {							
-						List<ExpedienteDocumento> listaDocumentoSede = new ArrayList<>();
-						for (ExpedienteDocumento expDoc : this.listaExpedienteDocumentos) {
-							if (expSede.getSede_oficina().equals(expDoc.getSede_oficina())) {
-								listaDocumentoSede.add(expDoc);
-							}
-						}	
-						
-						List<ExpedienteDocumento> listaDocumento = new ArrayList<>();
-						int contatidadArchivo = 0;
-						Long sum_tamanio = 0L;
-						int cantidadRegistro = 0;
-						
-						for (ExpedienteDocumento docSede : listaDocumentoSede) {
-							cantidadRegistro ++;
-							sum_tamanio += docSede.getPeso();
-							if (sum_tamanio <= this.tamanio) {
-								contatidadArchivo ++;
-								listaDocumento.add(docSede);
+
+	public List<Medios> crearMultipleZipArchivos() {
+
+		new Thread() {
+			public void run() {
+
+				try {
+					for (Medios m : listMedios) {
+						ByteArrayOutputStream out = new ByteArrayOutputStream();
+						ZipOutputStream zos = new ZipOutputStream(out);
+						for (ExpedienteDocumento ed : m.getListExpedienteDocumentos()) {
+							// System.out.println("Size Expediente Documento: " +
+							// m.getListExpedienteDocumentos().size());
+							System.out.println("El archivo a procesar pesa : " + ed.getPeso() + " es : "
+									+ ed.getDescripcion_peso());
+							byte[] data = Utiles.descargarArchivoViaSFTP2(ed.getRuta());
+							if (!(data == null)) {
+								Utiles.addToZipFile(data, "" + ed.getNombre_archivo(), zos);
 							} else {
-								sum_tamanio -= docSede.getPeso();
-								medioId += 1;									
-								Medios medio = new Medios();									
-								medio.setDescripcion("Medio " + medioId);
-								medio.setId_medio(medioId);
-								medio.setDescripcion_peso(Utils.convertirLongBytes(sum_tamanio, false));
-								medio.setFecha_registro(new Date());
-								medio.setPeso(sum_tamanio);
-								medio.setTipo_medio(this.formato);
-								medio.setId_estado(Constante.EST_PREPARADO_PARA_DESCARGA_DE_FEDATARIO);
-								medio.setDesEstado(this.vestado);
-								medio.setListExpedienteDocumentos(listaDocumento);
-								medio.setTotal_archivos(contatidadArchivo);
-								medio.setRuta(Constante.RUTA_MEDIOS + medio.getDescripcion() + ".zip");
-								this.listMedios.add(medio);									
-								listaDocumento = new ArrayList<>();
-								listaDocumento.add(docSede);
-								sum_tamanio = docSede.getPeso();
-								contatidadArchivo = 1;
-							}
-							
-							if (cantidadRegistro == listaDocumentoSede.size()) {
-								medioId += 1;									
-								Medios medio = new Medios();									
-								medio.setDescripcion("Medio " + medioId);
-								medio.setId_medio(medioId);
-								medio.setDescripcion_peso(Utils.convertirLongBytes(sum_tamanio, false));
-								medio.setFecha_registro(new Date());
-								medio.setPeso(sum_tamanio);
-								medio.setTipo_medio(this.formato);
-								medio.setId_estado(Constante.EST_PREPARADO_PARA_DESCARGA_DE_FEDATARIO);
-								medio.setDesEstado(this.vestado);
-								medio.setListExpedienteDocumentos(listaDocumento);
-								medio.setTotal_archivos(contatidadArchivo);
-								medio.setRuta(Constante.RUTA_MEDIOS + medio.getDescripcion() + ".zip");
-								this.listMedios.add(medio);	
-							}
-						}					
-					}					
-					System.out.println("CANTIDAD MEDIOS ZONA LIMA: "+this.listMedios.size());				
-				} 
-				
-				zonal = "ZONA NORTE";									
-				if(zonal.equals(Constante.ZONA_NORTE)){
-					System.out.println("ZONA NORTE");
-					this.listaExpedienteDocumentos = obtenerLista(zonal);
-					this.listaSedes = this.expedienteDocumentoServices.obtenerSedes(this.expedienteDocumentoFilter.getGrupo_formato(), zonal, Constante.NUMERO_ENTREGABLE);
-					System.out.println("CANTIDAD DE DOCUMENTOS NORTE: "+this.listaExpedienteDocumentos.size());
-					System.out.println("CANTIDAD DE ZONAS NORTE: "+this.listaSedes.size());
-					
-					List<ExpedienteDocumento> listaDocumento = new ArrayList<>();
-					int contatidadArchivo = 0;
-					Long sum_tamanio = 0L;
-					Long tamanioSede = 0L;
-					int cantidadRegistro = 0;
-					
-					for (ExpedienteDocumento expSede : this.listaSedes) {		
-						cantidadRegistro ++;
-						List<ExpedienteDocumento> listaDocumentoSede = new ArrayList<>();						
-						for (ExpedienteDocumento expDoc : this.listaExpedienteDocumentos) {
-							if (expSede.getSede_oficina().equals(expDoc.getSede_oficina())) {
-								tamanioSede += expDoc.getPeso();
-								listaDocumentoSede.add(expDoc);
+								System.out.println("Error al procesar archivo : " + ed.getNombre_archivo());
 							}
 						}
+						m.setRuta(m.getRuta());
+						zos.close();
+						File file = new File(m.getDescripcion() + ".zip");
+						FileOutputStream fos = new FileOutputStream(file);
+						out.writeTo(fos);
+						Utiles.enviarArchivoViaSFTP2(file, m.getDescripcion() + ".zip", Constante.RUTA_MEDIOS);
+					}
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}.start();
+		return listMedios;
+	}
+
+	public void mostrarExpedientes(Lote l) {
+		try {
+
+			System.out.println("BUSCAR EXPEDIENTES");
+
+			this.listExpedientes = new ArrayList<Expediente>();
+			this.listExpedientes = this.expedienteService.findByIdLote(l.getId_lote());
+
+			System.out.println("Tama�o de expedientes: " + this.listExpedientes.size());
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public void cambiarEstado(Lote l) {
+		this.loteSelected = l;
+		this.id_estado = Constante.EST_ENTREGADO_A_MENSAJERIA;
+	}
+
+	public void visualizarExpediente(Medios medio) {
+		this.medioSelected = medio;
+		this.listaExpedienteDocumentosVista = medio.getListExpedienteDocumentos();
+	}
+
+	public void buscarExpedientes() {
+		RequestContext context = RequestContext.getCurrentInstance();
+		System.out.println("Buscar expediente");
+
+		try {
+			this.listaExpedienteDocumentos = new ArrayList<>();
+			this.expedienteDocumentoFilter.setGrupo_formato(this.formato);
+
+			// opcion CD o DVD
+			if (this.id_indicador.equals(Constante.IND_CD)) {
+				this.tamanio = 629145600L;
+			} else if (this.id_indicador.equals(Constante.IND_DVD)) {
+				// this.tamanio = 5242880L;
+				this.tamanio = 4294967296L;
+			}
+
+			this.listMedios = new ArrayList<>();
+
+			int medioId = this.mediosServices.findMax();
+
+			String zonal = "ZONA LIMA";
+			if (zonal.equals(Constante.ZONA_LIMA)) {
+				System.out.println("ZONA LIMA");
+				this.listaExpedienteDocumentos = obtenerLista(zonal);
+				System.out.println("getGrupo_formato" + this.expedienteDocumentoFilter.getGrupo_formato());
+				this.listaSedes = this.expedienteDocumentoServices.obtenerSedes(
+						this.expedienteDocumentoFilter.getGrupo_formato(), zonal, Constante.NUMERO_ENTREGABLE);
+				System.out.println("CANTIDAD DE DOCUMENTOS LIMA: " + this.listaExpedienteDocumentos.size());
+				System.out.println("CANTIDAD DE SEDES LIMA: " + this.listaSedes.size());
+
+				this.listaSedes.sort(Comparator.comparing(ExpedienteDocumento::getSede_oficina));
+
+				
+				for (ExpedienteDocumento expSede : this.listaSedes) {
+					List<ExpedienteDocumento> listaDocumentoSede = new ArrayList<>();
+					for (ExpedienteDocumento expDoc : this.listaExpedienteDocumentos) {
+						if (expSede.getSede_oficina().equals(expDoc.getSede_oficina())) {
+							listaDocumentoSede.add(expDoc);
+						}
+					}
+
+										
+					listaDocumentoSede.sort(Comparator.comparing(ExpedienteDocumento::getSede_oficina)
+							.thenComparing(ExpedienteDocumento::getFecha_reg)
+							.thenComparing(ExpedienteDocumento::getNombre_archivo));
+					
+
+					List<ExpedienteDocumento> listaDocumentoTemp = new ArrayList<>(1000);
+					List<ExpedienteDocumento> listaDocumento = new ArrayList<>(1000);
+					int contatidadArchivo = 0;
+					Long sum_tamanio_actual = 0L;
+					Long sum_tamanio = 0L;
+					int cantidadRegistro = 0;
+					int contatidadArchivoActual = 0;
+					
+					String ubicacionActual=listaDocumentoSede.get(0).getUbicacion();
+					
+					for (ExpedienteDocumento docSede : listaDocumentoSede) {
+
+						cantidadRegistro++;
 						
-						if (tamanioSede > this.tamanio) {
-							for (ExpedienteDocumento docSede : listaDocumentoSede) {								
-								sum_tamanio += docSede.getPeso();
-								if (sum_tamanio <= this.tamanio) {
-									contatidadArchivo ++;
-									listaDocumento.add(docSede);
-								} else {
-									sum_tamanio -= docSede.getPeso();
-									medioId += 1;									
-									Medios medio = new Medios();									
-									medio.setDescripcion("Medio " + medioId);
-									medio.setId_medio(medioId);
-									medio.setDescripcion_peso(Utils.convertirLongBytes(sum_tamanio, false));
-									medio.setFecha_registro(new Date());
-									medio.setPeso(sum_tamanio);
-									medio.setTipo_medio(this.formato);
-									medio.setId_estado(Constante.EST_PREPARADO_PARA_DESCARGA_DE_FEDATARIO);
-									medio.setDesEstado(this.vestado);
-									medio.setListExpedienteDocumentos(listaDocumento);
-									medio.setTotal_archivos(contatidadArchivo);
-									medio.setRuta(Constante.RUTA_MEDIOS + medio.getDescripcion() + ".zip");
-									this.listMedios.add(medio);									
-									listaDocumento = new ArrayList<>();
-									listaDocumento.add(docSede);
-									sum_tamanio = docSede.getPeso();
-									contatidadArchivo = 1;
-								}
-							}	
-							tamanioSede = sum_tamanio;
+						if (docSede.getUbicacion().equals(ubicacionActual)) {
+							contatidadArchivoActual++;
+							sum_tamanio_actual+=docSede.getPeso();
+							listaDocumentoTemp.add(docSede);
+						}else {
+							contatidadArchivo += contatidadArchivoActual;
+							sum_tamanio += sum_tamanio_actual;
+							listaDocumento.addAll(listaDocumentoTemp);
+							
+							ubicacionActual = docSede.getUbicacion();
+							contatidadArchivoActual=1;
+							sum_tamanio_actual = docSede.getPeso();
+							listaDocumentoTemp = new ArrayList<>(1000);
+							listaDocumentoTemp.add(docSede);
+						}
+						
+						if ((sum_tamanio + sum_tamanio_actual) <= this.tamanio) {
+
 						} else {
-							sum_tamanio = tamanioSede;
-							contatidadArchivo += listaDocumentoSede.size();
-							listaDocumento.addAll(listaDocumentoSede);
-						}	
-						
-						if (cantidadRegistro == this.listaSedes.size()) {
-							medioId += 1;									
-							Medios medio = new Medios();									
+							//sum_tamanio -= docSede.getPeso();
+							if (sum_tamanio.equals(0L))
+							{
+								contatidadArchivo = contatidadArchivoActual;
+								sum_tamanio += sum_tamanio_actual;
+								listaDocumento.addAll(listaDocumentoTemp);
+								
+								contatidadArchivoActual =0;
+								sum_tamanio_actual=0L;
+								listaDocumentoTemp = new ArrayList<>(1000);
+							}
+							
+							medioId += 1;
+							Medios medio = new Medios();
 							medio.setDescripcion("Medio " + medioId);
 							medio.setId_medio(medioId);
 							medio.setDescripcion_peso(Utils.convertirLongBytes(sum_tamanio, false));
@@ -442,46 +386,113 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 							medio.setListExpedienteDocumentos(listaDocumento);
 							medio.setTotal_archivos(contatidadArchivo);
 							medio.setRuta(Constante.RUTA_MEDIOS + medio.getDescripcion() + ".zip");
-							this.listMedios.add(medio);	
+							this.listMedios.add(medio);
+							
+							listaDocumento = new ArrayList<>();
+							sum_tamanio = 0L;
+							contatidadArchivo = 0;
 						}
-					}									
-				System.out.println("CANTIDAD MEDIOS ZONA NORTE: "+this.listMedios.size());
+
+						if (cantidadRegistro == listaDocumentoSede.size()) {
+							contatidadArchivo += contatidadArchivoActual;
+							sum_tamanio += sum_tamanio_actual;
+							listaDocumento.addAll(listaDocumentoTemp);
+							
+							medioId += 1;
+							Medios medio = new Medios();
+							medio.setDescripcion("Medio " + medioId);
+							medio.setId_medio(medioId);
+							medio.setDescripcion_peso(Utils.convertirLongBytes(sum_tamanio, false));
+							medio.setFecha_registro(new Date());
+							medio.setPeso(sum_tamanio);
+							medio.setTipo_medio(this.formato);
+							medio.setId_estado(Constante.EST_PREPARADO_PARA_DESCARGA_DE_FEDATARIO);
+							medio.setDesEstado(this.vestado);
+							medio.setListExpedienteDocumentos(listaDocumento);
+							medio.setTotal_archivos(contatidadArchivo);
+							medio.setRuta(Constante.RUTA_MEDIOS + medio.getDescripcion() + ".zip");
+							this.listMedios.add(medio);
+						}
+					}
+				}
+				System.out.println("CANTIDAD MEDIOS ZONA LIMA: " + this.listMedios.size());
 			}
-				
-			zonal = "ZONA SUR";
-			if(zonal.equals(Constante.ZONA_SUR)){
-				System.out.println("ZONA SUR");
+
+			zonal = "ZONA NORTE";
+			if (zonal.equals(Constante.ZONA_NORTE)) {
+				System.out.println("ZONA NORTE");
 				this.listaExpedienteDocumentos = obtenerLista(zonal);
-				this.listaSedes = this.expedienteDocumentoServices.obtenerSedes(this.expedienteDocumentoFilter.getGrupo_formato(), zonal, Constante.NUMERO_ENTREGABLE);
-				System.out.println("CANTIDAD DE DOCUMENTOS SUR: "+this.listaExpedienteDocumentos.size());
-				System.out.println("CANTIDAD DE ZONAS SUR: "+this.listaSedes.size());
-				
+				this.listaSedes = this.expedienteDocumentoServices.obtenerSedes(
+						this.expedienteDocumentoFilter.getGrupo_formato(), zonal, Constante.NUMERO_ENTREGABLE);
+				System.out.println("CANTIDAD DE DOCUMENTOS NORTE: " + this.listaExpedienteDocumentos.size());
+				System.out.println("CANTIDAD DE ZONAS NORTE: " + this.listaSedes.size());
+
 				List<ExpedienteDocumento> listaDocumento = new ArrayList<>();
 				int contatidadArchivo = 0;
 				Long sum_tamanio = 0L;
 				Long tamanioSede = 0L;
 				int cantidadRegistro = 0;
+
+				List<ExpedienteDocumento> listaDocumentoTemp = new ArrayList<>(1000);
+				Long sum_tamanio_actual = 0L;
+				int contatidadArchivoActual = 0;
 				
-				for (ExpedienteDocumento expSede : this.listaSedes) {		
-					cantidadRegistro ++;
-					List<ExpedienteDocumento> listaDocumentoSede = new ArrayList<>();						
+				this.listaSedes.sort(Comparator.comparing(ExpedienteDocumento::getSede_oficina));
+				
+				for (ExpedienteDocumento expSede : this.listaSedes) {
+					cantidadRegistro++;
+					List<ExpedienteDocumento> listaDocumentoSede = new ArrayList<>();
 					for (ExpedienteDocumento expDoc : this.listaExpedienteDocumentos) {
 						if (expSede.getSede_oficina().equals(expDoc.getSede_oficina())) {
 							tamanioSede += expDoc.getPeso();
 							listaDocumentoSede.add(expDoc);
 						}
 					}
+
+					listaDocumentoSede.sort(Comparator.comparing(ExpedienteDocumento::getSede_oficina)
+							.thenComparing(ExpedienteDocumento::getFecha_reg)
+							.thenComparing(ExpedienteDocumento::getNombre_archivo));
+
+					String ubicacionActual=listaDocumentoSede.get(0).getUbicacion();
 					
 					if (tamanioSede > this.tamanio) {
-						for (ExpedienteDocumento docSede : listaDocumentoSede) {								
-							sum_tamanio += docSede.getPeso();
-							if (sum_tamanio <= this.tamanio) {
-								contatidadArchivo ++;
-								listaDocumento.add(docSede);
+
+						for (ExpedienteDocumento docSede : listaDocumentoSede) {
+							//sum_tamanio += docSede.getPeso();
+							
+							if (docSede.getUbicacion().equals(ubicacionActual)) {
+								contatidadArchivoActual++;
+								sum_tamanio_actual+=docSede.getPeso();
+								listaDocumentoTemp.add(docSede);
+							}else {
+								contatidadArchivo += contatidadArchivoActual;
+								sum_tamanio += sum_tamanio_actual;
+								listaDocumento.addAll(listaDocumentoTemp);
+								
+								ubicacionActual = docSede.getUbicacion();
+								contatidadArchivoActual=1;
+								sum_tamanio_actual = docSede.getPeso();
+								listaDocumentoTemp = new ArrayList<>(1000);
+								listaDocumentoTemp.add(docSede);
+							}
+							
+							if ((sum_tamanio + sum_tamanio_actual) <= this.tamanio) {
+							//	contatidadArchivo++;
+							//	listaDocumento.add(docSede);
 							} else {
-								sum_tamanio -= docSede.getPeso();
-								medioId += 1;									
-								Medios medio = new Medios();									
+								if (sum_tamanio.equals(0L))
+								{
+									contatidadArchivo = contatidadArchivoActual;
+									sum_tamanio += sum_tamanio_actual;
+									listaDocumento.addAll(listaDocumentoTemp);
+									
+									contatidadArchivoActual =0;
+									sum_tamanio_actual=0L;
+									listaDocumentoTemp = new ArrayList<>(1000);
+								}
+								
+								medioId += 1;
+								Medios medio = new Medios();
 								medio.setDescripcion("Medio " + medioId);
 								medio.setId_medio(medioId);
 								medio.setDescripcion_peso(Utils.convertirLongBytes(sum_tamanio, false));
@@ -493,23 +504,28 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 								medio.setListExpedienteDocumentos(listaDocumento);
 								medio.setTotal_archivos(contatidadArchivo);
 								medio.setRuta(Constante.RUTA_MEDIOS + medio.getDescripcion() + ".zip");
-								this.listMedios.add(medio);									
+								this.listMedios.add(medio);
+								
 								listaDocumento = new ArrayList<>();
-								listaDocumento.add(docSede);
-								sum_tamanio = docSede.getPeso();
-								contatidadArchivo = 1;
+								sum_tamanio = 0L;
+								contatidadArchivo = 0;
 							}
-						}	
+						}
 						tamanioSede = sum_tamanio;
 					} else {
-						sum_tamanio = tamanioSede;
-						contatidadArchivo += listaDocumentoSede.size();
+						sum_tamanio_actual = sum_tamanio += tamanioSede;
+						contatidadArchivoActual = contatidadArchivo += listaDocumentoSede.size();
+						listaDocumentoTemp.addAll(listaDocumentoSede);
 						listaDocumento.addAll(listaDocumentoSede);
-					}	
-					
+					}
+
 					if (cantidadRegistro == this.listaSedes.size()) {
-						medioId += 1;									
-						Medios medio = new Medios();									
+						contatidadArchivo += contatidadArchivoActual;
+						sum_tamanio += sum_tamanio_actual;
+						listaDocumento.addAll(listaDocumentoTemp);
+						
+						medioId += 1;
+						Medios medio = new Medios();
 						medio.setDescripcion("Medio " + medioId);
 						medio.setId_medio(medioId);
 						medio.setDescripcion_peso(Utils.convertirLongBytes(sum_tamanio, false));
@@ -521,71 +537,202 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 						medio.setListExpedienteDocumentos(listaDocumento);
 						medio.setTotal_archivos(contatidadArchivo);
 						medio.setRuta(Constante.RUTA_MEDIOS + medio.getDescripcion() + ".zip");
-						this.listMedios.add(medio);	
+						this.listMedios.add(medio);
 					}
 				}
-			System.out.println("CANTIDAD MEDIOS ZONA SUR: "+this.listMedios.size());
-		}
-			
-		System.out.println("FIN DE LA GENERACION POR ZONAS");
-		this.mediosServices.generarMedios(this.listMedios, this.usuarioLogin.getIdusuario(), this.usuarioLogin.getId_oficina());
-		Medios medioFilter = new Medios();
-		medioFilter.setFec_ini(this.expedienteDocumentoFilter.getFec_ini());
-		medioFilter.setFec_fin(this.expedienteDocumentoFilter.getFec_fin());
-		medioFilter.setTipo_medio(this.expedienteDocumentoFilter.getGrupo_formato());
+				System.out.println("CANTIDAD MEDIOS ZONA NORTE: " + this.listMedios.size());
+			}
+
+			zonal = "ZONA SUR";
+			if (zonal.equals(Constante.ZONA_SUR)) {
+				System.out.println("ZONA SUR");
+				this.listaExpedienteDocumentos = obtenerLista(zonal);
+				this.listaSedes = this.expedienteDocumentoServices.obtenerSedes(
+						this.expedienteDocumentoFilter.getGrupo_formato(), zonal, Constante.NUMERO_ENTREGABLE);
+				System.out.println("CANTIDAD DE DOCUMENTOS SUR: " + this.listaExpedienteDocumentos.size());
+				System.out.println("CANTIDAD DE ZONAS SUR: " + this.listaSedes.size());
+
+				List<ExpedienteDocumento> listaDocumento = new ArrayList<>();
+				int contatidadArchivo = 0;
+				Long sum_tamanio = 0L;
+				Long tamanioSede = 0L;
+				int cantidadRegistro = 0;
+				List<ExpedienteDocumento> listaDocumentoTemp = new ArrayList<>(1000);
+				Long sum_tamanio_actual = 0L;
+				int contatidadArchivoActual = 0;
+				
+				this.listaSedes.sort(Comparator.comparing(ExpedienteDocumento::getSede_oficina));
+						
+				for (ExpedienteDocumento expSede : this.listaSedes) {
+					cantidadRegistro++;
+					List<ExpedienteDocumento> listaDocumentoSede = new ArrayList<>();
+					for (ExpedienteDocumento expDoc : this.listaExpedienteDocumentos) {
+						if (expSede.getSede_oficina().equals(expDoc.getSede_oficina())) {
+							tamanioSede += expDoc.getPeso();
+							listaDocumentoSede.add(expDoc);
+						}
+					}
+
+					listaDocumentoSede.sort(Comparator.comparing(ExpedienteDocumento::getSede_oficina)
+							.thenComparing(ExpedienteDocumento::getFecha_reg)
+							.thenComparing(ExpedienteDocumento::getNombre_archivo));
+					
+					String ubicacionActual=listaDocumentoSede.get(0).getUbicacion();
+					
+					if (tamanioSede > this.tamanio) {
+
+						for (ExpedienteDocumento docSede : listaDocumentoSede) {
+							//sum_tamanio += docSede.getPeso();
 							
-		List<Medios> listMediosPendientes = this.mediosServices.buscarPendientes(medioFilter);
+							if (docSede.getUbicacion().equals(ubicacionActual)) {
+								contatidadArchivoActual++;
+								sum_tamanio_actual+=docSede.getPeso();
+								listaDocumentoTemp.add(docSede);
+							}else {
+								contatidadArchivo += contatidadArchivoActual;
+								sum_tamanio += sum_tamanio_actual;
+								listaDocumento.addAll(listaDocumentoTemp);
 								
-		for (Medios medios : listMediosPendientes) {
-			List<ExpedienteDocumento> expDoc = new ArrayList<ExpedienteDocumento>();
-			expDoc = this.expedienteDocumentoServices.listExpDocMedio(medios.getId_medio());			
-			medios.setListExpedienteDocumentos(new ArrayList<ExpedienteDocumento>());
-			medios.setListExpedienteDocumentos(expDoc);
-		}
-		
-		this.listMedios = listMediosPendientes;
-		System.out.println("Tama�o lista pendientes: "+listMediosPendientes.size());
-		this.totalExpeCargados = this.listaExpedienteDocumentos.size();				
-		context.update("formListaLotes");
+								ubicacionActual = docSede.getUbicacion();
+								contatidadArchivoActual=1;
+								sum_tamanio_actual = docSede.getPeso();
+								listaDocumentoTemp = new ArrayList<>(1000);
+								listaDocumentoTemp.add(docSede);
+							}
+							
+							if ((sum_tamanio + sum_tamanio_actual) <= this.tamanio) {
+							//	contatidadArchivo++;
+							//	listaDocumento.add(docSede);
+							} else {
+								if (sum_tamanio.equals(0L))
+								{
+									contatidadArchivo = contatidadArchivoActual;
+									sum_tamanio += sum_tamanio_actual;
+									listaDocumento.addAll(listaDocumentoTemp);
+									
+									contatidadArchivoActual =0;
+									sum_tamanio_actual=0L;
+									listaDocumentoTemp = new ArrayList<>(1000);
+								}
+								
+								medioId += 1;
+								Medios medio = new Medios();
+								medio.setDescripcion("Medio " + medioId);
+								medio.setId_medio(medioId);
+								medio.setDescripcion_peso(Utils.convertirLongBytes(sum_tamanio, false));
+								medio.setFecha_registro(new Date());
+								medio.setPeso(sum_tamanio);
+								medio.setTipo_medio(this.formato);
+								medio.setId_estado(Constante.EST_PREPARADO_PARA_DESCARGA_DE_FEDATARIO);
+								medio.setDesEstado(this.vestado);
+								medio.setListExpedienteDocumentos(listaDocumento);
+								medio.setTotal_archivos(contatidadArchivo);
+								medio.setRuta(Constante.RUTA_MEDIOS + medio.getDescripcion() + ".zip");
+								this.listMedios.add(medio);
+								
+								listaDocumento = new ArrayList<>();
+								sum_tamanio = 0L;
+								contatidadArchivo = 0;
+							}
+						}
+						tamanioSede = sum_tamanio;
+					} else {
+						sum_tamanio_actual = sum_tamanio += tamanioSede;
+						contatidadArchivoActual = contatidadArchivo += listaDocumentoSede.size();
+						listaDocumentoTemp.addAll(listaDocumentoSede);
+						listaDocumento.addAll(listaDocumentoSede);
+					}
+
+					if (cantidadRegistro == this.listaSedes.size()) {
+						contatidadArchivo += contatidadArchivoActual;
+						sum_tamanio += sum_tamanio_actual;
+						listaDocumento.addAll(listaDocumentoTemp);
+						
+						medioId += 1;
+						Medios medio = new Medios();
+						medio.setDescripcion("Medio " + medioId);
+						medio.setId_medio(medioId);
+						medio.setDescripcion_peso(Utils.convertirLongBytes(sum_tamanio, false));
+						medio.setFecha_registro(new Date());
+						medio.setPeso(sum_tamanio);
+						medio.setTipo_medio(this.formato);
+						medio.setId_estado(Constante.EST_PREPARADO_PARA_DESCARGA_DE_FEDATARIO);
+						medio.setDesEstado(this.vestado);
+						medio.setListExpedienteDocumentos(listaDocumento);
+						medio.setTotal_archivos(contatidadArchivo);
+						medio.setRuta(Constante.RUTA_MEDIOS + medio.getDescripcion() + ".zip");
+						this.listMedios.add(medio);
+					}
+				}
+				System.out.println("CANTIDAD MEDIOS ZONA SUR: " + this.listMedios.size());
+			}
+
+			System.out.println("FIN DE LA GENERACION POR ZONAS");
+			this.mediosServices.generarMedios(this.listMedios, this.usuarioLogin.getIdusuario(),
+					this.usuarioLogin.getId_oficina());
+			Medios medioFilter = new Medios();
+			medioFilter.setFec_ini(this.expedienteDocumentoFilter.getFec_ini());
+			medioFilter.setFec_fin(this.expedienteDocumentoFilter.getFec_fin());
+			medioFilter.setTipo_medio(this.expedienteDocumentoFilter.getGrupo_formato());
+
+			List<Medios> listMediosPendientes = this.mediosServices.buscarPendientes(medioFilter);
+
+			for (Medios medios : listMediosPendientes) {
+				List<ExpedienteDocumento> expDoc = new ArrayList<ExpedienteDocumento>();
+				expDoc = this.expedienteDocumentoServices.listExpDocMedio(medios.getId_medio());
+				medios.setListExpedienteDocumentos(new ArrayList<ExpedienteDocumento>());
+				medios.setListExpedienteDocumentos(expDoc);
+			}
+
+			this.listMedios = listMediosPendientes;
+			System.out.println("Tama�o lista pendientes: " + listMediosPendientes.size());
+			this.totalExpeCargados = this.listaExpedienteDocumentos.size();
+			context.update("formListaLotes");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public List<ExpedienteDocumento> obtenerLista(String zona) throws Exception{
+
+	public List<ExpedienteDocumento> obtenerLista(String zona) throws Exception {
 		System.out.println(this.formato);
-		this.listExpedientesDocAgrupado = this.expedienteDocumentoServices.obtenerCarpetas(this.formato, zona, Constante.NUMERO_ENTREGABLE);
+		this.listExpedientesDocAgrupado = this.expedienteDocumentoServices.obtenerCarpetas(this.formato, zona,
+				Constante.NUMERO_ENTREGABLE);
 		this.listaExpedienteDocumentos = new ArrayList<>();
-		
+
+		System.out.println(this.listExpedientesDocAgrupado.size());
+
 		for (ExpedienteDocumento ex : this.listExpedientesDocAgrupado) {
 			this.expedienteDocumentoFilter.setUbicacion(ex.getUbicacion());
 			this.expedienteDocumentoFilter.setZona(zona);
 			this.expedienteDocumentoFilter.setEntregable(Constante.NUMERO_ENTREGABLE);
-			this.listaExpedienteDocumentos.addAll(this.expedienteDocumentoServices.consultaPreparadoMedioExpediente(this.expedienteDocumentoFilter));
+			this.listaExpedienteDocumentos.addAll(
+					this.expedienteDocumentoServices.consultaPreparadoMedioExpediente(this.expedienteDocumentoFilter));
 			System.out.println(this.listaExpedienteDocumentos.size());
 		}
 		return this.listaExpedienteDocumentos;
 	}
-	
-	public void cambiarFecha(){
-		this.fechaLimite = this.expedienteDocumentoFilter.getFec_ini();		
+
+	public void cambiarFecha() {
+		this.fechaLimite = this.expedienteDocumentoFilter.getFec_ini();
 	}
-	
-	public void cambiarCombo(){
-		if(this.expedienteDocumentoFilter.getFiltradopor()==1){
+
+	public void cambiarCombo() {
+		if (this.expedienteDocumentoFilter.getFiltradopor() == 1) {
 			this.expedienteDocumentoFilter.setFec_ini(null);
 			this.expedienteDocumentoFilter.setFec_fin(null);
 			this.bexpediente = true;
 			this.bfecha = false;
-		}else{
+		} else {
 			this.expedienteDocumentoFilter.setVfiltradopor(null);
 			this.bexpediente = false;
 			this.bfecha = true;
 		}
 	}
-	
-	/**##########################setter and  getter#####################################*/
-	
+
+	/**
+	 * ##########################setter and
+	 * getter#####################################
+	 */
 
 	public Perfil getPerfilUsuario() {
 		return perfilUsuario;
@@ -639,8 +786,7 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 		return listaExpTrackingfilter;
 	}
 
-	public void setListaExpTrackingfilter(
-			List<ExpedienteTracking> listaExpTrackingfilter) {
+	public void setListaExpTrackingfilter(List<ExpedienteTracking> listaExpTrackingfilter) {
 		this.listaExpTrackingfilter = listaExpTrackingfilter;
 	}
 
@@ -658,7 +804,7 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 
 	public void set_activateDealer(boolean _activateDealer) {
 		this._activateDealer = _activateDealer;
-	}	
+	}
 
 	public boolean isBexpediente() {
 		return bexpediente;
@@ -736,8 +882,7 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 		return listExpedienteIncidencias;
 	}
 
-	public void setListExpedienteIncidencias(
-			List<ExpedienteIncidencia> listExpedienteIncidencias) {
+	public void setListExpedienteIncidencias(List<ExpedienteIncidencia> listExpedienteIncidencias) {
 		this.listExpedienteIncidencias = listExpedienteIncidencias;
 	}
 
@@ -801,8 +946,7 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 		return expedienteDocumentoFilter;
 	}
 
-	public void setExpedienteDocumentoFilter(
-			ExpedienteDocumento expedienteDocumentoFilter) {
+	public void setExpedienteDocumentoFilter(ExpedienteDocumento expedienteDocumentoFilter) {
 		this.expedienteDocumentoFilter = expedienteDocumentoFilter;
 	}
 
@@ -810,8 +954,7 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 		return listaExpedienteDocumentos;
 	}
 
-	public void setListaExpedienteDocumentos(
-			List<ExpedienteDocumento> listaExpedienteDocumentos) {
+	public void setListaExpedienteDocumentos(List<ExpedienteDocumento> listaExpedienteDocumentos) {
 		this.listaExpedienteDocumentos = listaExpedienteDocumentos;
 	}
 
@@ -819,8 +962,7 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 		return listaExpedienteDocumentosFilter;
 	}
 
-	public void setListaExpedienteDocumentosFilter(
-			List<ExpedienteDocumento> listaExpedienteDocumentosFilter) {
+	public void setListaExpedienteDocumentosFilter(List<ExpedienteDocumento> listaExpedienteDocumentosFilter) {
 		this.listaExpedienteDocumentosFilter = listaExpedienteDocumentosFilter;
 	}
 
@@ -868,8 +1010,7 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 		return listaExpedienteDocumentosVista;
 	}
 
-	public void setListaExpedienteDocumentosVista(
-			List<ExpedienteDocumento> listaExpedienteDocumentosVista) {
+	public void setListaExpedienteDocumentosVista(List<ExpedienteDocumento> listaExpedienteDocumentosVista) {
 		this.listaExpedienteDocumentosVista = listaExpedienteDocumentosVista;
 	}
 
@@ -909,8 +1050,7 @@ public class GeneraMediosMB extends GenericBeans implements Serializable{
 		return listExpedientesDocAgrupado;
 	}
 
-	public void setListExpedientesDocAgrupado(
-			List<ExpedienteDocumento> listExpedientesDocAgrupado) {
+	public void setListExpedientesDocAgrupado(List<ExpedienteDocumento> listExpedientesDocAgrupado) {
 		this.listExpedientesDocAgrupado = listExpedientesDocAgrupado;
-	}		
+	}
 }
