@@ -359,20 +359,34 @@ public class Constante {
 	public static final Integer PUERTO_SCPF = 22;
 	public static final String USUARIO_SCPF = "root";
 	*/
-	public static final String HOST_SCPF = "127.0.0.1"; // local		//CAMBIADO
-	public static final Integer PUERTO_SCPF = 22;						//CAMBIADO
-	public static final String USUARIO_SCPF = "rbullon";				//CAMBIADO
+	public static final String HOST_SCPF = "127.0.0.1"; // local		//NO SE USA
+	public static final Integer PUERTO_SCPF = 22;						//NO SE USA
+	public static final String USUARIO_SCPF = "rbullon";				//NO SE USA
 	/*public static final String PASSWORD_SCPF = "s0p0rt32017certiscan"; //produccion */
-	public static final String PASSWORD_SCPF = "SKBT2015";				//CAMBIADO
+	public static final String PASSWORD_SCPF = "SKBT2015";				//NO SE USA
 	
-	public static final String DIR_SH = "/home/rbullon/Sergio/proyectos/osinergmin/basePruebas";		//CAMBIADO
-	public static final String NUMERO_ENTREGABLE= "CUARTO_ENTREGABLE";											//CAMBIADO
-	public static final String DIR_FILES = "/media/rbullon/TOSHIBA EXT/4firmado Papel";		//CAMBIADO ruta java
-	public static final String DIR_FILES_RAR = "/media/rbullon/TOSHIBA EXT/4firmado digital";	//CAMBIADO ruta java
-	public static String RUTA_DIGITILZACION = "/media/rbullon/LIMA NORTE/osignermin/ENTREGABLE04/PAPEL/DIGITALIZACION/";	//CAMBIADO
-	public static String RUTA_MEDIOS = "[se hara por sh]";				//CAMBIADO
-	public static final String CSV_PAPEL	= "/home/rbullon/Sergio/proyectos/osinergmin/ENTREGABLE04/BASEPAPEL04.csv";		//CAMBIADO
-	public static final String CSV_DIGITAL	= "/home/rbullon/Sergio/proyectos/osinergmin/ENTREGABLE04/BASEDIGITAL04.csv"; 	//CAMBIADO
+	//public static final String RUTA_MEDIOS_PAP = "/media/rbullon/Elements/ENTREGABLE18/PAPEL/MEDIOS_ESTRUC/";
+	public static final String RUTA_MEDIOS_PAP = "/media/rbullon/My Passport/ENTREGABLE10/PAPEL/MEDIOS";	//CAMBIADO
+//	public static final String RUTA_MEDIOS_DIG = "/media/rbullon/Elements/ENTREGABLE18/DIGITAL/MEDIOS/";
+	public static final String RUTA_MEDIOS_DIG = "/media/rbullon/My Passport/ENTREGABLE10/DIGITAL/MEDIOS/";	//CAMBIADO
+	public static final String RUTA_SQLITE = "/home/rbullon/Sergio/proyectos/osinergmin/00_IECER_PAP_00/base.db";	//CAMBIADO
+	public static final String RUTA_ESTRUCTURA_PAP = "/home/rbullon/Sergio/proyectos/osinergmin/00_IECER_PAP_00/";	//CAMBIADO
+	public static final String RUTA_ESTRUCTURA_DIG = "/home/rbullon/Sergio/proyectos/osinergmin/00_IECER_DIG_00/";	//CAMBIADO
+	public static final String ETIQUETA_ENTREGABLE_PAP = "10_IECER_PAP_";	//CAMBIADO
+	public static final String ETIQUETA_ENTREGABLE_DIG = "10_IECER_DIG_";	//CAMBIADO
+	
+	public static final String NUMERO_ENTREGABLE= "DECIMO_ENTREGABLE";		//CAMBIADO
+	public static final String DIR_SH = "/home/rbullon/Sergio/proyectos/osinergmin/basePruebas";		//NO SE USA
+	public static final String DIR_FILES = "/media/rbullon/TOSHIBA EXT/firma papel/10_XFIR PAPEL/";		//CAMBIADO ruta java
+	public static final String DIR_FILES_RAR = "/media/rbullon/TOSHIBA EXT/firma digital/10_XFIR DIG/";	//CAMBIADO ruta java
+	public static final String RUTA_DIGITILZACION = "/media/rbullon/TOSHIBA EXT/ENTREGABLE09/DIGITAL/DIGITALIZACION/";	//NO SE USA
+	public static final String RUTA_DIGITILZACION_DIG = "/media/rbullon/My Passport/ENTREGABLE10/DIGITAL/DIGITALIZACION2/";	//CAMBIADO
+	public static final String RUTA_DIGITILZACION_PAP = "/media/rbullon/My Passport/ENTREGABLE10/PAPEL/DIGITALIZACION/";	//CAMBIADO
+	public static final String RUTA_MEDIOS = "se hara por sh";//NO SE USA
+	//public static final String RUTA_DIGITILZACION_PAP = "/media/rbullon/TOSHIBA EXT/ENTREGABLE02/PAPEL/DIGITALIZACION/";	//CAMBIADO
+
+	public static final String CSV_PAPEL	= "/home/rbullon/Sergio/proyectos/osinergmin/ENTREGABLE10/BASEPAPEL10.csv";		//CAMBIADO
+	public static final String CSV_DIGITAL	= "/home/rbullon/Sergio/proyectos/osinergmin/ENTREGABLE10/BASEDIGITAL10.csv"; 	//CAMBIADO
 	//public static final String PASSWORD_SCPF = "oropendolas2015";   
 	//public static final String PASSWORD_SCPF = "s0p0rt32015oro"; //produccion oropendolas
 	//public static final String PASSWORD_SCPF = "s0p0rt32015"; //cap     
